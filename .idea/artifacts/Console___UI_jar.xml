@@ -2,8 +2,8 @@
   <artifact type="jar" name="Console - UI:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/Console___UI_jar</output-path>
     <root id="archive" name="Console - UI.jar">
-      <element id="module-output" name="Console - UI" />
-      <element id="module-output" name="Evolutionary - Logic" />
+      <element id="module-output" name="ConsoleUI" />
+      <element id="module-output" name="EvolutionaryLogic" />
     </root>
   </artifact>
 </component>

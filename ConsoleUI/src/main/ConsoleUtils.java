@@ -5,6 +5,7 @@ import commands.innerCommands.ClassDisplayCommand;
 import commands.innerCommands.RawDisplayCommand;
 import commands.innerCommands.TeacherDisplayCommand;
 import interfaces.EvolutionarySystem;
+import models.ResultParse;
 import utils.ETTXmlParser;
 
 import javax.xml.bind.JAXBException;
@@ -78,9 +79,18 @@ public class ConsoleUtils {
         System.out.println("Please enter the full path of your file:");
         String answer = scan.nextLine();
         try {
-            system = ETTXmlParser.parse(answer);
-            isFileLoaded = true;
-            System.out.println("File loaded successfully.");
+            ResultParse result = ETTXmlParser.parse(answer);
+            if(result.isSucceeded()){
+                isFileLoaded = true;
+                System.out.println("File loaded successfully.");
+            }
+            else{
+                // do something with result.getErrors()
+                result.getErrors().forEach(error ->{
+                    System.out.println("errors:");
+                    System.out.println(error);
+                });
+            }
         } catch (JAXBException | FileNotFoundException e) {
             System.out.println("Failed to use the file path you entered, please check your file (it might be not found)");
         } catch (Exception e){

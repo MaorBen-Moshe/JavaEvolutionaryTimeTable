@@ -236,5 +236,4 @@ public class ValidateUtils {
             throw new IllegalArgumentException("you must supply parameter of TotalTupples in order to use sizer mutation");
         }
     }
-
 }

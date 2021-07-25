@@ -2,6 +2,8 @@ package models;
 
 import com.sun.istack.internal.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class BestSolutionItem<T> {
@@ -29,9 +31,12 @@ public class BestSolutionItem<T> {
 
     private T solution;
 
+    private Map<Rules.eRules, Double> rulesScore;
+
     public BestSolutionItem(T table, double fitness){
         setSolution(table);
         setFitness(fitness);
+        rulesScore = new HashMap<>();
     }
 
     @Override
@@ -45,5 +50,14 @@ public class BestSolutionItem<T> {
     @Override
     public int hashCode() {
         return Objects.hash(fitness, solution);
+    }
+
+    public void addRuleScore(Rules.eRules rule, double score){
+        if(rulesScore.containsKey(rule)){
+            rulesScore.replace(rule, score);
+        }
+        else{
+            rulesScore.put(rule, score);
+        }
     }
 }

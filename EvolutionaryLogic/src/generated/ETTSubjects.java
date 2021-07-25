@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element ref="{}ETT-Teacher" maxOccurs="unbounded"/>
+ *         &lt;element ref="{}ETT-Subject" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -38,41 +38,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "ettTeacher"
+    "ettSubject"
 })
-@XmlRootElement(name = "ETT-Teachers")
-public class ETTTeachers {
+@XmlRootElement(name = "ETT-Subjects")
+public class ETTSubjects {
 
-    @XmlElement(name = "ETT-Teacher", required = true)
-    protected List<ETTTeacher> ettTeacher;
+    @XmlElement(name = "ETT-Subject", required = true)
+    protected List<ETTSubject> ettSubject;
 
     /**
-     * Gets the value of the ettTeacher property.
+     * Gets the value of the ettSubject property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the ettTeacher property.
+     * This is why there is not a <CODE>set</CODE> method for the ettSubject property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getETTTeacher().add(newItem);
+     *    getETTSubject().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link ETTTeacher }
+     * {@link ETTSubject }
      * 
      * 
      */
-    public List<ETTTeacher> getETTTeacher() {
-        if (ettTeacher == null) {
-            ettTeacher = new ArrayList<ETTTeacher>();
+    public List<ETTSubject> getETTSubject() {
+        if (ettSubject == null) {
+            ettSubject = new ArrayList<>();
         }
-        return this.ettTeacher;
+        return this.ettSubject;
     }
 
 }

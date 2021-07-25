@@ -208,7 +208,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "", name = "ETT-Name")
     public JAXBElement<String> createETTName(String value) {
-        return new JAXBElement<String>(_ETTName_QNAME, String.class, null, value);
+        return new JAXBElement<>(_ETTName_QNAME, String.class, null, value);
     }
 
     /**
@@ -217,7 +217,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "", name = "ETT-RuleId")
     public JAXBElement<String> createETTRuleId(String value) {
-        return new JAXBElement<String>(_ETTRuleId_QNAME, String.class, null, value);
+        return new JAXBElement<>(_ETTRuleId_QNAME, String.class, null, value);
     }
 
     /**
@@ -226,7 +226,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "", name = "ETT-Configuration")
     public JAXBElement<String> createETTConfiguration(String value) {
-        return new JAXBElement<String>(_ETTConfiguration_QNAME, String.class, null, value);
+        return new JAXBElement<>(_ETTConfiguration_QNAME, String.class, null, value);
     }
 
 }

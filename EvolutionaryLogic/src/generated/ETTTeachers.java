@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element ref="{}ETT-Study" maxOccurs="unbounded"/>
+ *         &lt;element ref="{}ETT-Teacher" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -38,41 +38,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "ettStudy"
+    "ettTeacher"
 })
-@XmlRootElement(name = "ETT-Requirements")
-public class ETTRequirements {
+@XmlRootElement(name = "ETT-Teachers")
+public class ETTTeachers {
 
-    @XmlElement(name = "ETT-Study", required = true)
-    protected List<ETTStudy> ettStudy;
+    @XmlElement(name = "ETT-Teacher", required = true)
+    protected List<ETTTeacher> ettTeacher;
 
     /**
-     * Gets the value of the ettStudy property.
+     * Gets the value of the ettTeacher property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the ettStudy property.
+     * This is why there is not a <CODE>set</CODE> method for the ettTeacher property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getETTStudy().add(newItem);
+     *    getETTTeacher().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link ETTStudy }
+     * {@link ETTTeacher }
      * 
      * 
      */
-    public List<ETTStudy> getETTStudy() {
-        if (ettStudy == null) {
-            ettStudy = new ArrayList<ETTStudy>();
+    public List<ETTTeacher> getETTTeacher() {
+        if (ettTeacher == null) {
+            ettTeacher = new ArrayList<>();
         }
-        return this.ettStudy;
+        return this.ettTeacher;
     }
 
 }

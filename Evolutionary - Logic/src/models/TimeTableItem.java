@@ -6,6 +6,27 @@ public class TimeTableItem implements Comparable<TimeTableItem> {
     private final int day;
     private final int hour;
     private final SchoolClass schoolClass;
+
+    public int getDay() {
+        return day;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public SchoolClass getSchoolClass() {
+        return schoolClass;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public Subject getSubject() {
+        return subject;
+    }
+
     private final Teacher teacher;
     private final Subject subject;
 

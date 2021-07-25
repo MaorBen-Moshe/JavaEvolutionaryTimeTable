@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Console - UI/Console - UI.iml" filepath="$PROJECT_DIR$/Console - UI/Console - UI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Evolutionary - Logic/Evolutionary - Logic.iml" filepath="$PROJECT_DIR$/Evolutionary - Logic/Evolutionary - Logic.iml" />
+    </modules>
+  </component>
+</project>

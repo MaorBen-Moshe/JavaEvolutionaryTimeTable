@@ -81,6 +81,7 @@ public class ConsoleUtils {
         try {
             ResultParse result = ETTXmlParser.parse(answer);
             if(result.isSucceeded()){
+                system = result.getSystem().orElse(null);
                 isFileLoaded = true;
                 System.out.println("File loaded successfully.");
             }

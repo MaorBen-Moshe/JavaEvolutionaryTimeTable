@@ -82,7 +82,7 @@ public class ConsoleUtils {
             isFileLoaded = true;
             System.out.println("File loaded successfully.");
         } catch (JAXBException | FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("Failed to use the file path you entered, please check your file (it might be not found)");
         } catch (Exception e){
             System.out.println(e.getMessage());
         }

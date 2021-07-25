@@ -1,13 +1,15 @@
 package interfaces;
 
+import models.BestSolutionItem;
+
 import java.util.Map;
 
 public interface EvolutionarySystem<T> {
-    Map.Entry<T, Integer> StartAlgorithm();
+    BestSolutionItem<T> StartAlgorithm();
 
-    T getBestSolution();
+    BestSolutionItem<T> getBestSolution();
 
-    int getFitness(T item) throws ClassNotFoundException;
+    double getFitness(T item) throws ClassNotFoundException;
 
     boolean IsRunningProcess();
 }

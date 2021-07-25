@@ -3,15 +3,16 @@ package evolutinary;
 import interfaces.Crossover;
 import interfaces.Mutation;
 import interfaces.Selection;
+import models.BestSolutionItem;
 
 import java.util.*;
 
 // T is a population item
 public abstract class EvolutionarySystemImpel<T> implements interfaces.EvolutionarySystem<T> {
 
-    private Map<T, Integer> population;
+    private Map<T, Double> population;
     private List<Integer> generationFitnessHistory; // cell 0: best fitness of generation 1 and so on...
-    private T bestItem;
+    private BestSolutionItem<T> bestItem;
     private boolean isRunning = false;
 
     public Crossover<T> getCrossOver() {
@@ -46,7 +47,7 @@ public abstract class EvolutionarySystemImpel<T> implements interfaces.Evolution
         this.initialPopulationSize = initialPopulationSize;
     }
 
-    public Map<T, Integer> getPopulation() {
+    public Map<T, Double> getPopulation() {
         return population;
     }
 
@@ -60,8 +61,8 @@ public abstract class EvolutionarySystemImpel<T> implements interfaces.Evolution
     }
 
     @Override
-    public Map.Entry<T, Integer> StartAlgorithm() {
-        Map.Entry<T, Integer> currentBestFitness;
+    public BestSolutionItem<T> StartAlgorithm() {
+        BestSolutionItem<T> currentBestFitness;
         isRunning = true;
         /* initial*/
         initialPopulation();
@@ -73,16 +74,17 @@ public abstract class EvolutionarySystemImpel<T> implements interfaces.Evolution
         }
 
         isRunning = false;
-        return currentBestFitness;
-    }
-
-    @Override
-    public T getBestSolution() {
+        bestItem = currentBestFitness;
         return bestItem;
     }
 
     @Override
-    public int getFitness(T item) throws ClassNotFoundException {
+    public BestSolutionItem<T> getBestSolution() {
+        return bestItem;
+    }
+
+    @Override
+    public double getFitness(T item) throws ClassNotFoundException {
         if(population.containsKey(item)){
             return population.get(item);
         }
@@ -102,13 +104,19 @@ public abstract class EvolutionarySystemImpel<T> implements interfaces.Evolution
         }
     }
 
-    private Map.Entry<T, Integer> evaluateGeneration() {
+    private BestSolutionItem<T> evaluateGeneration() {
+        BestSolutionItem<T> retVal = null;
         population.keySet().forEach(item -> population.replace(item, population.get(item), evaluate(item)));
-        Optional<Map.Entry<T, Integer>> optional = population.entrySet()
+        Optional<Map.Entry<T, Double>> optional = population.entrySet()
                                                             .stream()
-                                                            .max(Comparator.comparingInt(Map.Entry::getValue));
+                                                            .max(Comparator.comparingDouble(Map.Entry::getValue));
 
-        return optional.orElse(null);
+        Map.Entry<T, Double> temp = optional.orElse(null);
+        if(temp != null){
+            retVal = new BestSolutionItem<>(temp.getKey(), temp.getValue());
+        }
+
+        return retVal;
     }
 
     protected void createGeneration(){
@@ -118,7 +126,7 @@ public abstract class EvolutionarySystemImpel<T> implements interfaces.Evolution
         // save children
     }
 
-    protected abstract int evaluate(T optional);
+    protected abstract double evaluate(T optional);
 
     protected abstract T createOptionalSolution();
 

@@ -116,16 +116,17 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
     protected double evaluate(TimeTable optional) {
         double hard = 100;
         double soft = 100;
+        double answer = 0;
         for (Rule rule: rules) {
-            double answer = switch (rule.getRuleType()) {
-                case Sequentiality -> evalSeq(optional);
-                case DayOffClass -> evalDayOffClass(optional);
-                case Singularity -> evalSingul(optional);
-                case Satisfactory -> evalSatis(optional);
-                case DayOffTeacher -> evalDayOffTeacher(optional);
-                case Knowledgeable -> evalKnow(optional);
-                case TeacherIsHuman -> evalHuman(optional);
-                case WorkingHoursPreference -> evalWork(optional);
+            switch (rule.getRuleType()) {
+                case Sequentiality: answer = evalSeq(optional); break;
+                case DayOffClass: answer = evalDayOffClass(optional); break;
+                case Singularity: answer = evalSingul(optional); break;
+                case Satisfactory: answer = evalSatis(optional); break;
+                case DayOffTeacher: answer = evalDayOffTeacher(optional); break;
+                case Knowledgeable: answer = evalKnow(optional); break;
+                case TeacherIsHuman: answer = evalHuman(optional); break;
+                case WorkingHoursPreference: answer = evalWork(optional); break;
             };
 
             if(rule.getStrength().equals(Rule.eStrength.Hard)){

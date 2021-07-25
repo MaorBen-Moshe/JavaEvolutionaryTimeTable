@@ -138,6 +138,7 @@ public class ConsoleUtils {
     }
 
     private static void displayBestMenu(){
+        System.out.println("Best solution display:");
         System.out.println("Please choose the way you want the solution would display:");
         for(int i = 0; i < bestDisplayCommands.length; i++){
             System.out.println((i + 1) + ". " + bestDisplayCommands[i].getCommandName());

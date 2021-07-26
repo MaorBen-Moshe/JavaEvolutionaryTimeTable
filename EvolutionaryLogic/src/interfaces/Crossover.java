@@ -1,7 +1,9 @@
 package interfaces;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface Crossover<T> {
-    List<T> crossOver(List<T> parents);
+    Set<T> crossOver(Map<T, Double> parents);
 }

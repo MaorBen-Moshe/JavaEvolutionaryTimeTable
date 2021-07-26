@@ -4,6 +4,8 @@ import interfaces.Crossover;
 import models.TimeTable;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class DayTimeOrientedCrossover implements Crossover<TimeTable> {
     private final int cuttingPoints;
@@ -13,7 +15,7 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable> {
     }
 
     @Override
-    public List<TimeTable> crossOver(List<TimeTable> parents) {
+    public Set<TimeTable> crossOver(Map<TimeTable, Double> parents) {
         return null;
     }
 }

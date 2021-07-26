@@ -1,7 +1,7 @@
 package interfaces;
 
-import java.util.List;
+import java.util.Map;
 
 public interface Selection<T> {
-    List<T> select(List<T> population);
+    Map<T, Double> select(Map<T, Double> population);
 }

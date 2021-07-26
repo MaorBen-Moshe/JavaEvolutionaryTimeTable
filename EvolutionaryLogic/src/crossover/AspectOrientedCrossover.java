@@ -4,6 +4,8 @@ import interfaces.Crossover;
 import models.TimeTable;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class AspectOrientedCrossover implements Crossover<TimeTable> {
     public enum Orientation{
@@ -18,7 +20,7 @@ public class AspectOrientedCrossover implements Crossover<TimeTable> {
     }
 
     @Override
-    public List<TimeTable> crossOver(List<TimeTable> parents) {
+    public Set<TimeTable> crossOver(Map<TimeTable, Double> parents) {
         return null;
     }
 }

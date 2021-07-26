@@ -9,11 +9,50 @@ import java.util.*;
 
 // T is a population item
 public abstract class EvolutionarySystemImpel<T> implements interfaces.EvolutionarySystem<T> {
-
     private Map<T, Double> population;
-    private List<Integer> generationFitnessHistory; // cell 0: best fitness of generation 1 and so on...
+    private Map<T, Double> childPopulation;
+    private List<Double> generationFitnessHistory; // cell 0: best fitness of generation 1 and so on...
     private BestSolutionItem<T> bestItem;
     private boolean isRunning = false;
+
+    public int getJumpInGenerations() {
+        return jumpInGenerations;
+    }
+
+    public void setJumpInGenerations(int jumpInGenerations) {
+        if(jumpInGenerations <= 0){
+            throw new IllegalArgumentException("Jump in generations must be positive number");
+        }
+        this.jumpInGenerations = jumpInGenerations;
+    }
+
+    private int jumpInGenerations;
+
+    public int getCurrentNumberOfGenerations() {
+        return currentNumberOfGenerations;
+    }
+
+    private int currentNumberOfGenerations;
+
+    public void setAcceptedFitness(double acceptedFitness) {
+        if(acceptedFitness < 0 || acceptedFitness > 100){
+            throw new IllegalArgumentException("Fitness must be a positive number between 0-100");
+        }
+
+        this.acceptedFitness = acceptedFitness;
+    }
+
+    private double acceptedFitness;
+
+    public void setAcceptedNumberOfGenerations(int acceptedNumberOfGenerations) {
+        if(acceptedNumberOfGenerations < 100){
+            throw new IllegalArgumentException("accepted number of generations must be at least 100");
+        }
+
+        this.acceptedNumberOfGenerations = acceptedNumberOfGenerations;
+    }
+
+    private int acceptedNumberOfGenerations;
 
     public Crossover<T> getCrossOver() {
         return crossOver;
@@ -57,20 +96,23 @@ public abstract class EvolutionarySystemImpel<T> implements interfaces.Evolution
     private int initialPopulationSize;
 
     protected EvolutionarySystemImpel(){
+        jumpInGenerations = 1;
         population = new HashMap<>();
+        childPopulation = new HashMap<>();
     }
 
     @Override
-    public BestSolutionItem<T> StartAlgorithm() {
+    public BestSolutionItem<T> StartAlgorithm(Set<TerminateRules> terminateBy) {
         BestSolutionItem<T> currentBestFitness;
         isRunning = true;
         /* initial*/
         initialPopulation();
         currentBestFitness = evaluateGeneration();
         /* iterative*/
-        while(!isTerminate()){
+        while(!isTerminate(terminateBy)){
             createGeneration();
             currentBestFitness = evaluateGeneration();
+            currentNumberOfGenerations++;
         }
 
         isRunning = false;
@@ -120,17 +162,37 @@ public abstract class EvolutionarySystemImpel<T> implements interfaces.Evolution
     }
 
     protected void createGeneration(){
-        List<T> selected = selection.select(new ArrayList<>(population.keySet()));
-        List<T> children = crossOver.crossOver(selected);
-        children.forEach(child -> mutations.forEach(mutation -> mutation.mutate(child)));
-        // save children
+        Map<T, Double> selected = selection.select(population);
+        while(childPopulation.size() <= population.size()){
+            Set<T> children = crossOver.crossOver(selected);
+            children.forEach(child ->{
+                mutations.forEach(mutation -> mutation.mutate(child));
+                childPopulation.put(child, 0.);
+            });
+        }
+
+        population = new HashMap<>(childPopulation);
+        childPopulation.clear();
     }
 
     protected abstract double evaluate(T optional);
 
     protected abstract T createOptionalSolution();
 
-    private boolean isTerminate() {
-        return false;
+    private boolean isTerminate(Set<TerminateRules> terminateBy) {
+        boolean answer = false;
+        for (TerminateRules terminate : terminateBy) {
+            switch (terminate){
+                case NumberOfGenerations: answer = currentNumberOfGenerations >= acceptedNumberOfGenerations;  break;
+                case ByFitness: answer = bestItem.getFitness() >= acceptedFitness; break;
+                default: answer = false; break;
+            }
+
+            if(answer){
+                break;
+            }
+        }
+
+        return answer;
     }
 }

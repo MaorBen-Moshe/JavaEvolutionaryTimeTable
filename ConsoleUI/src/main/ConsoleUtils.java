@@ -1,16 +1,14 @@
 package main;
 
 import commands.*;
-import commands.innerCommands.ClassDisplayCommand;
-import commands.innerCommands.RawDisplayCommand;
-import commands.innerCommands.TeacherDisplayCommand;
+import commands.bestDisplayCommands.ClassDisplayCommand;
+import commands.bestDisplayCommands.RawDisplayCommand;
+import commands.bestDisplayCommands.TeacherDisplayCommand;
 import interfaces.EvolutionarySystem;
-import models.ResultParse;
-import utils.ETTXmlParser;
 
-import javax.xml.bind.JAXBException;
-import java.io.FileNotFoundException;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class ConsoleUtils {
 
@@ -25,7 +23,16 @@ public class ConsoleUtils {
         isFileLoaded = false;
         system = null;
         commands = new Command[] {
-          new LoadCommand(ConsoleUtils::load),
+          new LoadCommand(() -> {
+              System.out.println("Please enter the full path of your file:");
+              return scan.nextLine();
+          }, (result) -> {
+              if(result.isSucceeded()){
+                  system = result.getSystem().orElse(null);
+                  isFileLoaded = true;
+                  System.out.println("File loaded successfully.");
+              }
+          }),
           new SystemInfoCommand(ConsoleUtils::displaySystemInfo),
           new StartSystemCommand(ConsoleUtils::startAlgorithm),
           new BestSolutionCommand(ConsoleUtils::displayBestSolution),
@@ -75,31 +82,8 @@ public class ConsoleUtils {
         System.out.println("please choose an option. (1 - " + (commands.length + 1) + ")");
     }
 
-    private static void load(Object... args){
-        System.out.println("Please enter the full path of your file:");
-        String answer = scan.nextLine();
-        try {
-            ResultParse result = ETTXmlParser.parse(answer);
-            if(result.isSucceeded()){
-                system = result.getSystem().orElse(null);
-                isFileLoaded = true;
-                System.out.println("File loaded successfully.");
-            }
-            else{
-                // do something with result.getErrors()
-                result.getErrors().forEach(error ->{
-                    System.out.println("errors:");
-                    System.out.println(error);
-                });
-            }
-        } catch (JAXBException | FileNotFoundException e) {
-            System.out.println("Failed to use the file path you entered, please check your file (it might be not found)");
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-    }
-
     private static void startAlgorithm(Object... args){
+        Set<EvolutionarySystem.TerminateRules> rules;
         if(isFileLoaded) {
             if(system.IsRunningProcess()){
                 System.out.println("There is a running process");
@@ -107,18 +91,68 @@ public class ConsoleUtils {
                 String answer = scan.nextLine();
                 if(answer.equalsIgnoreCase("y")){
                     // need to reset algorithm first
-                    system.StartAlgorithm();
+                    rules = getTerminate();
+                    system.StartAlgorithm(rules);
                     System.out.println("Process finished!");
                 }
             }
             else{
-                system.StartAlgorithm();
+                rules = getTerminate();
+                system.StartAlgorithm(rules);
                 System.out.println("Process finished!");
             }
         }
         else{
             System.out.println("Please load a file first.");
         }
+    }
+
+    private static Set<EvolutionarySystem.TerminateRules> getTerminate(){
+        Set<EvolutionarySystem.TerminateRules> retRules = new HashSet<>();
+        while(true){
+            System.out.println("please enter the way you want the algorithm would terminate (write all the numbers of rules you want with coma between each one):");
+            EvolutionarySystem.TerminateRules[] rules = EvolutionarySystem.TerminateRules.values();
+            for(int i = 1; i <= rules.length; i++){
+                System.out.println(i + ". " + rules[i - 1].toString());
+            }
+
+            String answer= scan.nextLine();
+            String[] splitted = answer.replace(" ", "").split(",");
+            if(splitted.length > 0  && splitted.length <= rules.length){
+                for(String ruleId : splitted){
+                    try{
+                        int choice = Integer.parseInt(ruleId);
+                        EvolutionarySystem.TerminateRules current = rules[choice -1];
+                        switch (current){
+                            case NumberOfGenerations:
+                                System.out.println("please enter the number of generations (at least 100):");
+                                system.setAcceptedNumberOfGenerations(scan.nextInt());
+                                break;
+                            case ByFitness:
+                                System.out.println("please enter the max fitness(positive number between 0-100):");
+                                system.setAcceptedFitness(scan.nextInt());
+                                break;
+                        }
+                    }catch (Exception e){
+                        throw new IllegalArgumentException("terminate rule inserted is illegal");
+                    }
+
+                    try{
+                        System.out.println("please enter a number which you see the algorithm process generation with jump of each generation:");
+                        system.setJumpInGenerations(scan.nextInt());
+                    }catch (Exception e){
+                        throw new IllegalArgumentException("jump in generations number must be positive");
+                    }
+                }
+
+                break;
+            }
+            else{
+                throw new IllegalArgumentException("terminate rules inserted is illegal");
+            }
+        }
+
+        return retRules;
     }
 
     private static void displaySystemInfo(Object... args){

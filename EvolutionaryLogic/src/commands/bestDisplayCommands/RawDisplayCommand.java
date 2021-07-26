@@ -1,4 +1,4 @@
-package commands.innerCommands;
+package commands.bestDisplayCommands;
 
 import commands.Command;
 

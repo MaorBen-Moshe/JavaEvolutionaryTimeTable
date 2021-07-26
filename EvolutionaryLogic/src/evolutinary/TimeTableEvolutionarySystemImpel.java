@@ -119,10 +119,14 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
             }else {
                 softList.add(answer);
             }
+
+            optional.addRuleScore(rule, answer);
         }
 
         double hard = getAvg(hardList);
         double soft = getAvg(softList);
+        optional.setHardRulesAvg(hard);
+        optional.setSoftRulesAvg(soft);
         int hardWeight = rules.getHardRulesWeight();
         return ((hardWeight * hard) + ((100 - hardWeight) * soft)) / 100;
     }
@@ -219,7 +223,7 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
             }
         }
 
-        ret -= ((double)(100 / classes.size()) * falseTeachers.size());
+        ret -= ((double)(100 / teachers.size()) * falseTeachers.size());
         return ret;
     }
 
@@ -245,7 +249,7 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
             }
         }
 
-        ret -= ((double)(100 / classes.size()) * falseTeachers.size());
+        ret -= ((double)(100 / teachers.size()) * falseTeachers.size());
         return ret;
     }
 

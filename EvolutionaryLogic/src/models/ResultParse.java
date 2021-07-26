@@ -6,28 +6,25 @@ import java.util.*;
 
 public class ResultParse {
     private EvolutionarySystem<?> system; // null if parseSucceeded = false;
-    private final List<String> errors;
+
+    private boolean isSucceeded;
 
     public ResultParse(){
         system = null;
-        errors = new ArrayList<>();
+        isSucceeded = false;
     }
 
-    public boolean isSucceeded() { return errors.size() == 0; }
+    public boolean isSucceeded() { return isSucceeded; }
+
+    public void setSucceeded(boolean succeeded) {
+        isSucceeded = succeeded;
+    }
 
     public Optional<EvolutionarySystem<?>> getSystem() {
         return Optional.of(system);
     }
 
-    public List<String> getErrors() {
-        return errors;
-    }
-
     public void setSystem(EvolutionarySystem<?> system) {
         this.system = system;
-    }
-
-    public boolean addError(String error){
-        return errors.add(error);
     }
 }

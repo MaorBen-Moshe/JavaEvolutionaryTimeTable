@@ -1,13 +1,13 @@
-package commands.innerCommands;
+package commands.bestDisplayCommands;
 
 import commands.Command;
 
 import java.util.function.Consumer;
 
-public class ClassDisplayCommand implements Command {
+public class TeacherDisplayCommand implements Command {
     private Consumer<?> action;
 
-    public ClassDisplayCommand(Consumer<?> o) {
+    public TeacherDisplayCommand(Consumer<?> o) {
         this.action = o;
     }
 
@@ -18,6 +18,6 @@ public class ClassDisplayCommand implements Command {
 
     @Override
     public String getCommandName() {
-        return "Display Class";
+        return "Display Teacher";
     }
 }

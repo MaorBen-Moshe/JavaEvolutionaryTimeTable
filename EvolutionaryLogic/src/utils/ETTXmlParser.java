@@ -39,6 +39,7 @@ public class ETTXmlParser {
         InputStream inputStream = new FileInputStream(file);
         ETTDescriptor descriptor = deserializeFrom(inputStream);
         result.setSystem(createTimeTableImpel(descriptor.getETTTimeTable(), descriptor.getETTEvolutionEngine()));
+        result.setSucceeded(true);
         return result;
     }
 
@@ -74,7 +75,6 @@ public class ETTXmlParser {
         if(ValidateUtils.initialPopulationPositive(initialPopulation)){
             system.setInitialPopulationSize(initialPopulation);
         }else{
-            //result.addError()
             throw new IllegalArgumentException("initial population must be positive number. you insert: " + initialPopulation);
         }
     }
@@ -101,7 +101,6 @@ public class ETTXmlParser {
                 }
             }
         }catch (Exception e){
-            //result.addError()
             throw new Exception(e.getMessage() + ". creation of mutations failed");
         }
 
@@ -121,7 +120,6 @@ public class ETTXmlParser {
             retVal = Integer.parseInt(second[1]);
         }
         else{
-            //result.addError()
             throw new IllegalArgumentException("Failed to find MaxTupples in ETTXmlParser:getFlippingMaxTupples");
         }
 
@@ -141,7 +139,6 @@ public class ETTXmlParser {
             retVal = FlippingMutation.Component.valueOf(second[1]);
         }
         else{
-            //result.addError()
             throw new IllegalArgumentException("Failed to find Component in ETTXmlParser:getFlippingComponent");
         }
 
@@ -165,7 +162,6 @@ public class ETTXmlParser {
                 }
             }
         }catch (Exception e){
-            //result.addError()
             throw new Exception(e.getMessage() + ". creation of crossover failed");
         }
 
@@ -192,7 +188,6 @@ public class ETTXmlParser {
                 }
             }
         }catch (Exception e){
-            //result.addError()
             throw new Exception(e.getMessage() + ". creation of selection failed");
         }
 
@@ -212,12 +207,10 @@ public class ETTXmlParser {
 
         Set<SchoolClass> retClasses = new HashSet<>(tempClasses);
         if(retClasses.size() != tempClasses.size()){
-            //result.addError()
             throw new IllegalArgumentException("Classes cannot have same id");
         }
 
         if(ValidateUtils.serialItemsNotValid(retClasses)){
-            //result.addError()
             throw new IllegalArgumentException("Classes ids should start from 1 and grow by 1 for each item");
         }
 
@@ -236,7 +229,6 @@ public class ETTXmlParser {
         try{
             subjects = getSubjectsById(allSubjects, allIds);
         }catch (Exception e){
-            //result.addError()
             throw new Exception("In classes part: " + e.getMessage());
         }
         subjects.forEach(subject -> ettStudies.forEach(study -> {
@@ -265,19 +257,16 @@ public class ETTXmlParser {
                                              teacher.getId(),
                                              getSubjectsById(allSubjectsInSystem, ids)));
             }catch (Exception e){
-                //result.addError()
                 throw new Exception("In teachers: " + teacher.getETTName() + ", " + teacher.getId() + e.getMessage());
             }
         }
 
         Set<Teacher> retTeachers = new HashSet<>(tempTeachers);
         if(retTeachers.size() != tempTeachers.size()){
-            //result.addError()
             throw new IllegalArgumentException("Teachers cannot have same id");
         }
 
         if(ValidateUtils.serialItemsNotValid(retTeachers)){
-            //result.addError()
             throw new IllegalArgumentException("Teachers ids should start from 1 and grow by 1 for each item");
         }
 
@@ -296,7 +285,6 @@ public class ETTXmlParser {
             });
 
             if(oldSize == tempSubjects.size()){
-                //result.addError()
                 throw new IllegalArgumentException(id + " of subject that you provided is not one of the subjects ids");
             }
         });
@@ -304,7 +292,6 @@ public class ETTXmlParser {
         // if there was an id that repeated itself we throw exception
         Set<Subject> retSubjects = new HashSet<>(tempSubjects);
         if(tempSubjects.size() != retSubjects.size()){
-            //result.addError()
             throw new IllegalArgumentException("In Subjects, ids cannot repeat themselves!");
         }
 
@@ -317,12 +304,10 @@ public class ETTXmlParser {
         ettSubjectsList.forEach(subject -> tempSubjects.add(new Subject(subject.getName(), subject.getId())));
         Set<Subject> retSubjects = new HashSet<>(tempSubjects);
         if(retSubjects.size() != tempSubjects.size()){
-            //result.addError()
             throw new IllegalArgumentException("Subjects cannot have duplication ids");
         }
 
         if(ValidateUtils.serialItemsNotValid(retSubjects)){
-            //result.addError()
             throw new IllegalArgumentException("Subjects ids should start from 1 and grow by 1 for each item");
         }
 
@@ -333,7 +318,6 @@ public class ETTXmlParser {
         List<ETTRule> ettRulesList = ettRules.getETTRule();
         int rulesWeight = ettRules.getHardRulesWeight();
         if(!(rulesWeight >= 0 && rulesWeight <= 100)){
-            //result.addError()
             throw new IllegalArgumentException("Hard rules weight must be an integer between 0-100. you insert: " + rulesWeight);
         }
 
@@ -351,7 +335,6 @@ public class ETTXmlParser {
             }
 
             if(rules.contains(current)){
-                //result.addError()
                 throw new IllegalArgumentException(current + " cannot be duplicated in rules. each rule must be shown at most one time!");
             }
 
@@ -363,13 +346,11 @@ public class ETTXmlParser {
 
     private static int setSequentiality(String configurations){
         if(configurations == null || configurations.replace(" ", "").isEmpty()){
-            //result.addError()
             throw new IllegalArgumentException("Rule Sequentiality must supply Total hours only!");
         }
 
         String[] configurationSplit = configurations.split("=");
         if(!(configurationSplit[0].equalsIgnoreCase("TotalHours"))){
-            //result.addError()
             throw new IllegalArgumentException("Rule Sequentiality must supply Total hours!");
         }
         else{
@@ -379,11 +360,9 @@ public class ETTXmlParser {
                     return total;
                 }
                 else{
-                    //result.addError()
                     throw new IllegalArgumentException("Total hours of rule Sequentiality must be positive integer you insert: totalHours = " + total);
                 }
             }catch (NumberFormatException e){
-                //result.addError()
                 throw new IllegalArgumentException("Total hours of rule Sequentiality must be a positive integer!");
             }
         }
@@ -395,7 +374,6 @@ public class ETTXmlParser {
             system.setHours(hours);
         }
         else{
-            //result.addError()
             throw new IllegalArgumentException(days + ", " + hours + " in file must be positive integers");
         }
     }

@@ -20,8 +20,8 @@ public class ResultParse {
         isSucceeded = succeeded;
     }
 
-    public Optional<EvolutionarySystem<?>> getSystem() {
-        return Optional.of(system);
+    public EvolutionarySystem<?> getSystem() {
+        return system;
     }
 
     public void setSystem(EvolutionarySystem<?> system) {

@@ -3,9 +3,22 @@ package models;
 import java.util.Objects;
 
 public class TimeTableItem implements Comparable<TimeTableItem> {
-    private final int day;
-    private final int hour;
-    private final SchoolClass schoolClass;
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
+    }
+
+    private int day;
+    private int hour;
+
+    public void setSchoolClass(SchoolClass schoolClass) {
+        this.schoolClass = schoolClass;
+    }
+
+    private SchoolClass schoolClass;
 
     public int getDay() {
         return day;
@@ -27,8 +40,17 @@ public class TimeTableItem implements Comparable<TimeTableItem> {
         return subject;
     }
 
-    private final Teacher teacher;
-    private final Subject subject;
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
+
+    private Teacher teacher;
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
+    }
+
+    private Subject subject;
 
     public TimeTableItem(int day, int hour, SchoolClass schoolClass, Teacher teacher, Subject subject) {
         this.day = day;

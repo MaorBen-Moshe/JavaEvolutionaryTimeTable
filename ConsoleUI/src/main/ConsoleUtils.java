@@ -28,7 +28,7 @@ public class ConsoleUtils {
               return scan.nextLine();
           }, (result) -> {
               if(result.isSucceeded()){
-                  system = result.getSystem().orElse(null);
+                  system = result.getSystem();
                   isFileLoaded = true;
                   System.out.println("File loaded successfully.");
               }

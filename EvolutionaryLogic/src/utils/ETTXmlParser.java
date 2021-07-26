@@ -56,8 +56,8 @@ public class ETTXmlParser {
         setDaysHours(ret, timeTable.getDays(), timeTable.getHours());
         ret.setRules(createRules(timeTable.getETTRules()));
         ret.setSubjects(new HashSet<>(createSubjects(timeTable.getETTSubjects())));
-        ret.setTeachers(new HashSet<>(createTeachers(timeTable.getETTTeachers(), ret.getSubjects())));
-        ret.setClasses(new HashSet<>(createClasses(timeTable.getETTClasses(), ret.getSubjects(), ret.getHours() * ret.getDays())));
+        ret.setTeachers(new HashSet<>(createTeachers(timeTable.getETTTeachers(), ret.getSubjects().values())));
+        ret.setClasses(new HashSet<>(createClasses(timeTable.getETTClasses(), ret.getSubjects().values(), ret.getHours() * ret.getDays())));
 
         // create the engine part
         int initialPopulation = engine.getETTInitialPopulation().getSize();
@@ -65,6 +65,8 @@ public class ETTXmlParser {
         ret.setSelection(createSelection(engine.getETTSelection()));
         ret.setCrossOver(createCrossover(engine.getETTCrossover()));
         ret.setMutations(createMutations(engine.getETTMutations()));
+
+        SystemUtils.getInstance().setSystem(ret);
         return ret;
     }
 

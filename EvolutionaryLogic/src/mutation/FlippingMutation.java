@@ -1,10 +1,12 @@
 package mutation;
 
+import evolutinary.TimeTableEvolutionarySystemImpel;
 import interfaces.Mutation;
-import models.TimeTable;
-import models.TimeTableItem;
+import models.*;
+import utils.SystemUtils;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -52,15 +54,36 @@ public class FlippingMutation implements Mutation<TimeTable> {
             i++;
         }
 
+        SystemUtils instance = SystemUtils.getInstance();
         itemsChosen.forEach(chosen -> {
-
+            int randSize = 0;
             switch(component){
-                case C: break;
-                case D: break;
-                case H: break;
-                case S: break;
-                case T: break;
+                case C:
+                    Map<Integer, SchoolClass> classes = instance.getClasses();
+                    chosen.setSchoolClass(getItem(classes));
+                    break;
+                case D:
+                    randSize = rand.nextInt(instance.getDays()) - 1;
+                    chosen.setDay(randSize);
+                    break;
+                case H:
+                    randSize = rand.nextInt(instance.geHours()) - 1;
+                    chosen.setHour(randSize);
+                    break;
+                case S:
+                    Map<Integer, Subject> subjects = instance.getSubjects();
+                    chosen.setSubject(getItem(subjects));
+                    break;
+                case T:
+                    Map<Integer, Teacher> teachers = instance.getTeachers();
+                    chosen.setTeacher(getItem(teachers));
+                    break;
             }
         });
+    }
+
+    private <T extends SerialItem> T getItem(Map<Integer, T> collection){
+        int randSize = rand.nextInt(collection.size());
+        return collection.get(randSize);
     }
 }

@@ -17,8 +17,8 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
         this.subjects = createMapFromSet(subjects);
     }
 
-    public Collection<Subject> getSubjects() {
-        return subjects.values();
+    public Map<Integer, Subject> getSubjects() {
+        return subjects;
     }
 
     public void setClasses(Set<SchoolClass> classes) {
@@ -47,6 +47,15 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
 
     //configuration of time table
     private Rules rules;
+
+    public Map<Integer, Teacher> getTeachers() {
+        return teachers;
+    }
+
+    public Map<Integer, SchoolClass> getClasses() {
+        return classes;
+    }
+
     private Map<Integer, Teacher> teachers;
 
     private Map<Integer, Subject> subjects;

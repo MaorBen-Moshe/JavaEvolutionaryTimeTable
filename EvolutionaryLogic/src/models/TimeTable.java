@@ -37,6 +37,10 @@ public class TimeTable {
         return sortedItems.add(item);
     }
 
+    public boolean remove(TimeTableItem item){
+        return sortedItems.remove(item);
+    }
+
     public int size() {return sortedItems.size(); }
 
 

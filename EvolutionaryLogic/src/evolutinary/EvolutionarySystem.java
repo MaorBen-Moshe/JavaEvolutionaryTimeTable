@@ -1,4 +1,4 @@
-package interfaces;
+package evolutinary;
 
 import models.BestSolutionItem;
 import java.util.Set;

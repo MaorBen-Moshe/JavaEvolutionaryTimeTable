@@ -1,16 +1,13 @@
 package mutation;
 
-import evolutinary.TimeTableEvolutionarySystemImpel;
-import interfaces.Mutation;
 import models.*;
-import utils.SystemUtils;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-public class FlippingMutation implements Mutation<TimeTable> {
+public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemDataSupplier> {
     public enum Component {
         S, T, C, H, D
     }
@@ -19,12 +16,14 @@ public class FlippingMutation implements Mutation<TimeTable> {
     private final int maxTupples;
     private final Component component;
     private final Random rand;
+    private TimeTableSystemDataSupplier supplier;
 
-    public FlippingMutation(double probability, int maxTupples, Component component){
+    public FlippingMutation(double probability, int maxTupples, Component component, TimeTableSystemDataSupplier supplier){
         this.maxTupples = maxTupples;
         this.component = component;
         this.probability = probability;
         rand = new Random();
+        this.supplier = supplier;
     }
 
     @Override
@@ -54,28 +53,27 @@ public class FlippingMutation implements Mutation<TimeTable> {
             i++;
         }
 
-        SystemUtils instance = SystemUtils.getInstance();
         itemsChosen.forEach(chosen -> {
             int randSize = 0;
             switch(component){
                 case C:
-                    Map<Integer, SchoolClass> classes = instance.getClasses();
+                    Map<Integer, SchoolClass> classes = supplier.getClasses();
                     chosen.setSchoolClass(getItem(classes));
                     break;
                 case D:
-                    randSize = rand.nextInt(instance.getDays()) - 1;
+                    randSize = rand.nextInt(supplier.getDays()) - 1;
                     chosen.setDay(randSize);
                     break;
                 case H:
-                    randSize = rand.nextInt(instance.geHours()) - 1;
+                    randSize = rand.nextInt(supplier.getHours()) - 1;
                     chosen.setHour(randSize);
                     break;
                 case S:
-                    Map<Integer, Subject> subjects = instance.getSubjects();
+                    Map<Integer, Subject> subjects = supplier.getSubjects();
                     chosen.setSubject(getItem(subjects));
                     break;
                 case T:
-                    Map<Integer, Teacher> teachers = instance.getTeachers();
+                    Map<Integer, Teacher> teachers = supplier.getTeachers();
                     chosen.setTeacher(getItem(teachers));
                     break;
             }

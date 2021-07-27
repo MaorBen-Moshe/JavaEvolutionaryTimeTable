@@ -4,7 +4,7 @@ import models.*;
 
 import java.util.*;
 
-public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<TimeTable> {
+public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<TimeTable, TimeTableSystemDataSupplier> {
     public void setRules(Rules rules) {
         this.rules = rules;
     }

@@ -1,14 +1,15 @@
 package utils;
 
+import Interfaces.DataSupplier;
 import crossover.AspectOrientedCrossover;
 import crossover.CrossoverTypes;
 import crossover.DayTimeOrientedCrossover;
 import evolutinary.TimeTableEvolutionarySystemImpel;
 import generated.*;
-import interfaces.Crossover;
-import interfaces.EvolutionarySystem;
-import interfaces.Mutation;
-import interfaces.Selection;
+import crossover.Crossover;
+import evolutinary.EvolutionarySystem;
+import mutation.Mutation;
+import selection.Selection;
 import models.*;
 import mutation.FlippingMutation;
 import mutation.MutationTypes;
@@ -59,14 +60,20 @@ public class ETTXmlParser {
         ret.setTeachers(new HashSet<>(createTeachers(timeTable.getETTTeachers(), ret.getSubjects().values())));
         ret.setClasses(new HashSet<>(createClasses(timeTable.getETTClasses(), ret.getSubjects().values(), ret.getHours() * ret.getDays())));
 
+        // create supplier
+        TimeTableSystemDataSupplier supplier = new TimeTableSystemDataSupplier(ret.getDays(),
+                                                                ret.getHours(),
+                                                                ret.getTeachers(),
+                                                                ret.getSubjects(),
+                                                                ret.getClasses());
+
         // create the engine part
         int initialPopulation = engine.getETTInitialPopulation().getSize();
         setInitialPopulation(ret, initialPopulation);
         ret.setSelection(createSelection(engine.getETTSelection()));
-        ret.setCrossOver(createCrossover(engine.getETTCrossover()));
-        ret.setMutations(createMutations(engine.getETTMutations()));
+        ret.setCrossOver(createCrossover(engine.getETTCrossover(), supplier));
+        ret.setMutations(createMutations(engine.getETTMutations(), supplier));
 
-        SystemUtils.getInstance().setSystem(ret);
         return ret;
     }
 
@@ -81,8 +88,8 @@ public class ETTXmlParser {
         }
     }
 
-    private static List<Mutation<TimeTable>> createMutations(ETTMutations ettMutations) throws Exception {
-        List<Mutation<TimeTable>> retMutations = new ArrayList<>();
+    private static List<Mutation<TimeTable, TimeTableSystemDataSupplier>> createMutations(ETTMutations ettMutations, TimeTableSystemDataSupplier supplier) throws Exception {
+        List<Mutation<TimeTable, TimeTableSystemDataSupplier>> retMutations = new ArrayList<>();
         MutationTypes type;
         List<ETTMutation> ettMutationsList = ettMutations.getETTMutation();
 
@@ -94,11 +101,14 @@ public class ETTXmlParser {
                     double probability = mutation.getProbability();
                     switch (type){
                         case Flipping:
-                            retMutations.add(new FlippingMutation(probability, getFlippingMaxTupples(mutation.getConfiguration()), getFlippingComponent(mutation.getConfiguration())));
+                            retMutations.add(new FlippingMutation(probability,
+                                                                  getFlippingMaxTupples(mutation.getConfiguration()),
+                                                                  getFlippingComponent(mutation.getConfiguration()),
+                                                                  supplier));
                             break;
                         case Sizer:
                             int totalTupples = Integer.parseInt(mutation.getConfiguration().split("=")[1]);
-                            retMutations.add(new SizerMutation(probability, totalTupples));
+                            retMutations.add(new SizerMutation(probability, totalTupples, supplier));
                     }
                 }
             }
@@ -147,8 +157,8 @@ public class ETTXmlParser {
         return retVal;
     }
 
-    private static Crossover<TimeTable> createCrossover(ETTCrossover ettCrossover) throws Exception {
-        Crossover<TimeTable> retCrossover = null;
+    private static Crossover<TimeTable, TimeTableSystemDataSupplier> createCrossover(ETTCrossover ettCrossover, TimeTableSystemDataSupplier supplier) throws Exception {
+        Crossover<TimeTable, TimeTableSystemDataSupplier> retCrossover = null;
         CrossoverTypes type = CrossoverTypes.valueOf(ettCrossover.getName());
         int cuttingPoints = ettCrossover.getCuttingPoints();
         try{
@@ -156,10 +166,10 @@ public class ETTXmlParser {
                 switch (type){
                     case AspectOriented:
                         AspectOrientedCrossover.Orientation orientation = AspectOrientedCrossover.Orientation.valueOf(ettCrossover.getConfiguration().replace(" ", "").split("=")[1]);
-                        retCrossover = new AspectOrientedCrossover(cuttingPoints, orientation);
+                        retCrossover = new AspectOrientedCrossover(cuttingPoints, orientation, supplier);
                         break;
                     case DayTimeOriented:
-                        retCrossover = new DayTimeOrientedCrossover(cuttingPoints);
+                        retCrossover = new DayTimeOrientedCrossover(cuttingPoints, supplier);
                         break;
                 }
             }

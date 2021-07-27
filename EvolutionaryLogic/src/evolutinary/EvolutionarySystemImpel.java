@@ -1,14 +1,15 @@
 package evolutinary;
 
-import interfaces.Crossover;
-import interfaces.Mutation;
-import interfaces.Selection;
+import Interfaces.DataSupplier;
+import crossover.Crossover;
+import mutation.Mutation;
+import selection.Selection;
 import models.BestSolutionItem;
 
 import java.util.*;
 
 // T is a population item
-public abstract class EvolutionarySystemImpel<T> implements interfaces.EvolutionarySystem<T> {
+public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> implements EvolutionarySystem<T> {
     private Map<T, Double> population;
     private Map<T, Double> childPopulation;
     private List<Double> generationFitnessHistory; // cell 0: best fitness of generation 1 and so on...
@@ -54,19 +55,19 @@ public abstract class EvolutionarySystemImpel<T> implements interfaces.Evolution
 
     private int acceptedNumberOfGenerations;
 
-    public Crossover<T> getCrossOver() {
+    public Crossover<T, S> getCrossOver() {
         return crossOver;
     }
 
-    public void setCrossOver(Crossover<T> crossOver) {
+    public void setCrossOver(Crossover<T, S> crossOver) {
         this.crossOver = crossOver;
     }
 
-    public List<Mutation<T>> getMutations() {
+    public List<Mutation<T, S>> getMutations() {
         return mutations;
     }
 
-    public void setMutations(List<Mutation<T>> mutations) {
+    public void setMutations(List<Mutation<T, S>> mutations) {
         this.mutations = mutations;
     }
 
@@ -90,9 +91,9 @@ public abstract class EvolutionarySystemImpel<T> implements interfaces.Evolution
         return population;
     }
 
-    private Crossover<T> crossOver;
+    private Crossover<T, S> crossOver;
     private Selection<T> selection;
-    private List<Mutation<T>> mutations;
+    private List<Mutation<T, S>> mutations;
     private int initialPopulationSize;
 
     protected EvolutionarySystemImpel(){

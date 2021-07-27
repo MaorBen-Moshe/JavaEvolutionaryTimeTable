@@ -1,22 +1,23 @@
 package crossover;
 
-import interfaces.Crossover;
 import models.TimeTable;
+import models.TimeTableSystemDataSupplier;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class AspectOrientedCrossover implements Crossover<TimeTable> {
+public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSystemDataSupplier> {
     public enum Orientation{
         Class, Teacher
     }
     private final int cuttingPoints;
     private Orientation orientation;
+    private final TimeTableSystemDataSupplier supplier;
 
-    public AspectOrientedCrossover(int cuttingPoints, Orientation orientation){
+    public AspectOrientedCrossover(int cuttingPoints, Orientation orientation, TimeTableSystemDataSupplier supplier){
         this.cuttingPoints = cuttingPoints;
         this.orientation = orientation;
+        this.supplier = supplier;
     }
 
     @Override

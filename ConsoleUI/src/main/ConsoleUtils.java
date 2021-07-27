@@ -4,7 +4,7 @@ import commands.*;
 import commands.bestDisplayCommands.ClassDisplayCommand;
 import commands.bestDisplayCommands.RawDisplayCommand;
 import commands.bestDisplayCommands.TeacherDisplayCommand;
-import interfaces.EvolutionarySystem;
+import evolutinary.EvolutionarySystem;
 
 import java.util.HashSet;
 import java.util.Scanner;

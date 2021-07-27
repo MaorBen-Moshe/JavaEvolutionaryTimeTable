@@ -1,8 +1,6 @@
 package models;
 
-import interfaces.EvolutionarySystem;
-
-import java.util.*;
+import evolutinary.EvolutionarySystem;
 
 public class ResultParse {
     private EvolutionarySystem<?> system; // null if parseSucceeded = false;

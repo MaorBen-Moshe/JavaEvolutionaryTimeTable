@@ -1,9 +1,7 @@
 package selection;
 
-import interfaces.Selection;
 import models.TimeTable;
 
-import java.util.List;
 import java.util.Map;
 
 public class TournamentSelection implements Selection<TimeTable> {

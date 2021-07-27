@@ -8,7 +8,7 @@ public class SchoolClass extends SerialItem {
     private final Map<Subject, Integer> subjectsNeeded; // subject and the hours the class needs in a week
 
     public Map<Subject, Integer> getSubjectsNeeded() {
-        return subjectsNeeded;
+        return new HashMap<>(subjectsNeeded);
     }
 
     public int getTotalNumberOfHours() {
@@ -19,8 +19,7 @@ public class SchoolClass extends SerialItem {
 
     public SchoolClass(String name, int id, Map<Subject, Integer> subjects) {
         super(name, id);
-        subjectsNeeded = new HashMap<>(subjects.size());
-        subjectsNeeded.putAll(subjects);
+        subjectsNeeded = new HashMap<>(subjects);
         totalNumberOfHours = subjectsNeeded.values().stream().mapToInt(integer -> integer).sum();
     }
 

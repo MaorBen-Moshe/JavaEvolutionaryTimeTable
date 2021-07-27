@@ -51,7 +51,7 @@ public class SizerMutation implements Mutation<TimeTable, TimeTableSystemDataSup
         }
         else if(totalTupples > 0){
             int tupplesToChange = rand.nextInt(totalTupples);
-            int maxItemsToAdd = Math.min(supplier.getHours() * supplier.getDays(), totalTupples);
+            int maxItemsToAdd = Math.min(supplier.getHours() * supplier.getDays(), tupplesToChange);
             int i = 0;
             while(i < maxItemsToAdd){
                 if(child.add(createItem())){

@@ -26,11 +26,11 @@ public class TimeTableSystemDataSupplier implements DataSupplier {
         return hours;
     }
 
-    private Map<Integer, Teacher> teachers;
-    private Map<Integer, Subject> subjects;
-    private Map<Integer, SchoolClass> classes;
-    private int days;
-    private int hours;
+    private final Map<Integer, Teacher> teachers;
+    private final Map<Integer, Subject> subjects;
+    private final Map<Integer, SchoolClass> classes;
+    private final int days;
+    private final int hours;
 
     public TimeTableSystemDataSupplier(int days,
                                        int hours,

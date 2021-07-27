@@ -28,20 +28,13 @@ import java.io.InputStream;
 import java.util.*;
 
 public class ETTXmlParser {
-    private final static ResultParse result;
-
-    static {
-        result = new ResultParse();
-    }
 
     // parse region
-    public static ResultParse parse(String filePath) throws Exception {
+    public static EvolutionarySystem<TimeTable> parse(String filePath) throws Exception {
         File file = new File(filePath);
         InputStream inputStream = new FileInputStream(file);
         ETTDescriptor descriptor = deserializeFrom(inputStream);
-        result.setSystem(createTimeTableImpel(descriptor.getETTTimeTable(), descriptor.getETTEvolutionEngine()));
-        result.setSucceeded(true);
-        return result;
+        return createTimeTableImpel(descriptor.getETTTimeTable(), descriptor.getETTEvolutionEngine());
     }
 
     private static ETTDescriptor deserializeFrom(InputStream in) throws JAXBException {

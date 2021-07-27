@@ -1,10 +1,11 @@
 package commands.bestDisplayCommands;
 
 import commands.Command;
+import commands.CommandImpel;
 
 import java.util.function.Consumer;
 
-public class RawDisplayCommand implements Command {
+public class RawDisplayCommand extends CommandImpel {
     private Consumer<?> action;
 
     public RawDisplayCommand(Consumer<?> o) {

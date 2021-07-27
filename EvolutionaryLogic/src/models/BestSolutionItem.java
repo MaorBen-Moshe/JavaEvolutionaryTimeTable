@@ -1,7 +1,5 @@
 package models;
 
-import com.sun.istack.internal.NotNull;
-import java.util.Map;
 import java.util.Objects;
 
 public class BestSolutionItem<T> {
@@ -17,16 +15,15 @@ public class BestSolutionItem<T> {
         this.fitness = fitness;
     }
 
-    private double fitness;
-
     public T getSolution() {
         return solution;
     }
 
-    private void setSolution(@NotNull T solution) {
+    private void setSolution(T solution) {
         this.solution = solution;
     }
 
+    private double fitness;
     private T solution;
 
     public BestSolutionItem(T table, double fitness){

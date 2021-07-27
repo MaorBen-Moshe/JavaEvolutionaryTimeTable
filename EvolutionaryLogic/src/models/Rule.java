@@ -20,13 +20,7 @@ public class Rule {
 
     private final Rules.eRules ruleType;
 
-    public int getTotalHours() throws Exception {
-        if(!ruleType.equals(Rules.eRules.Sequentiality)){
-            throw new Exception("To use this method you must be of type " + Rules.eRules.Sequentiality);
-        }
-
-        return totalHours;
-    }
+    public int getTotalHours(){ return totalHours; }
 
     private int totalHours; // if(ruleType is sequentiality)
 

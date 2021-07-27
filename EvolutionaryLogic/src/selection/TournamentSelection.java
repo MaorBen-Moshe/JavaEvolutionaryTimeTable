@@ -15,8 +15,4 @@ public class TournamentSelection implements Selection<TimeTable> {
     public Map<TimeTable, Double> select(Map<TimeTable, Double> population) {
         return null;
     }
-
-    public float getPte() {
-        return pte;
-    }
 }

@@ -1,16 +1,14 @@
 package commands;
 
-import models.ResultParse;
 import utils.ETTXmlParser;
-
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class LoadCommand implements Command{
-    private Consumer<ResultParse> after;
+public class LoadCommand extends CommandImpel{
+    private Consumer<?> after;
     private Supplier<String> before;
 
-    public LoadCommand(Supplier<String> before, Consumer<ResultParse> after) {
+    public LoadCommand(Supplier<String> before, Consumer<?> after) {
         this.before = before;
         this.after = after;
     }
@@ -18,8 +16,9 @@ public class LoadCommand implements Command{
     @Override
     public void execute() throws Exception {
         String input = before.get();
-        ResultParse system = ETTXmlParser.parse(input);
-        after.accept(system);
+        evolutionarySystem = ETTXmlParser.parse(input);
+        isFileLoaded = true;
+        after.accept(null);
     }
 
     @Override

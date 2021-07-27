@@ -11,7 +11,7 @@ import java.util.*;
 // T is a population item
 public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> implements EvolutionarySystem<T> {
     private Map<T, Double> population;
-    private Map<T, Double> childPopulation;
+    private final Map<T, Double> childPopulation;
     private List<Double> generationFitnessHistory; // cell 0: best fitness of generation 1 and so on...
     private BestSolutionItem<T> bestItem;
     private boolean isRunning = false;
@@ -27,8 +27,6 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         this.jumpInGenerations = jumpInGenerations;
     }
 
-    private int jumpInGenerations;
-
     public int getCurrentNumberOfGenerations() {
         return currentNumberOfGenerations;
     }
@@ -43,8 +41,6 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         this.acceptedFitness = acceptedFitness;
     }
 
-    private double acceptedFitness;
-
     public void setAcceptedNumberOfGenerations(int acceptedNumberOfGenerations) {
         if(acceptedNumberOfGenerations < 100){
             throw new IllegalArgumentException("accepted number of generations must be at least 100");
@@ -53,18 +49,8 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         this.acceptedNumberOfGenerations = acceptedNumberOfGenerations;
     }
 
-    private int acceptedNumberOfGenerations;
-
-    public Crossover<T, S> getCrossOver() {
-        return crossOver;
-    }
-
     public void setCrossOver(Crossover<T, S> crossOver) {
         this.crossOver = crossOver;
-    }
-
-    public List<Mutation<T, S>> getMutations() {
-        return mutations;
     }
 
     public void setMutations(List<Mutation<T, S>> mutations) {
@@ -79,10 +65,6 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         this.selection = selection;
     }
 
-    public int getInitialPopulationSize() {
-        return initialPopulationSize;
-    }
-
     public void setInitialPopulationSize(int initialPopulationSize) {
         this.initialPopulationSize = initialPopulationSize;
     }
@@ -95,6 +77,9 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     private Selection<T> selection;
     private List<Mutation<T, S>> mutations;
     private int initialPopulationSize;
+    private int acceptedNumberOfGenerations;
+    private int jumpInGenerations;
+    private double acceptedFitness;
 
     protected EvolutionarySystemImpel(){
         jumpInGenerations = 1;

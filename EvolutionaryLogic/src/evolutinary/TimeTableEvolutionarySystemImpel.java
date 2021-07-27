@@ -46,8 +46,6 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
     }
 
     //configuration of time table
-    private Rules rules;
-
     public Map<Integer, Teacher> getTeachers() {
         return teachers;
     }
@@ -57,9 +55,9 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
     }
 
     private Map<Integer, Teacher> teachers;
-
     private Map<Integer, Subject> subjects;
     private Map<Integer, SchoolClass> classes;
+    private Rules rules;
     private int days;
     private int hours;
     private final Random random;

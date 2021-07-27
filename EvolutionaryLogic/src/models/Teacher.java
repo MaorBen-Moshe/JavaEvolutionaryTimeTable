@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Teacher extends SerialItem {
     public Set<Subject> getSubjects() {
-        return subjects;
+        return new HashSet<>(subjects);
     }
 
     private final Set<Subject> subjects;

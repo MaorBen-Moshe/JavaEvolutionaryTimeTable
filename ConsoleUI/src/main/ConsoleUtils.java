@@ -24,15 +24,9 @@ public class ConsoleUtils {
         system = null;
         commands = new Command[] {
           new LoadCommand(() -> {
-              System.out.println("Please enter the full path of your file:");
+              System.out.println("Please enter the full path of your file: (don't forget .xml at the end of the path)");
               return scan.nextLine();
-          }, (result) -> {
-              if(result.isSucceeded()){
-                  system = result.getSystem();
-                  isFileLoaded = true;
-                  System.out.println("File loaded successfully.");
-              }
-          }),
+          }, (result) -> System.out.println("File loaded successfully.")),
           new SystemInfoCommand(ConsoleUtils::displaySystemInfo),
           new StartSystemCommand(ConsoleUtils::startAlgorithm),
           new BestSolutionCommand(ConsoleUtils::displayBestSolution),

@@ -4,7 +4,7 @@ import models.*;
 
 import java.util.*;
 
-public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<TimeTable, TimeTableSystemDataSupplier> {
+public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<TimeTable> {
     public void setRules(Rules rules) {
         this.rules = rules;
     }
@@ -18,7 +18,7 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
     }
 
     public Map<Integer, Subject> getSubjects() {
-        return subjects;
+        return new HashMap<>(subjects);
     }
 
     public void setClasses(Set<SchoolClass> classes) {
@@ -45,13 +45,17 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
         }
     }
 
+    public Rules getRules() {
+        return rules;
+    }
+
     //configuration of time table
     public Map<Integer, Teacher> getTeachers() {
-        return teachers;
+        return new HashMap<>(teachers);
     }
 
     public Map<Integer, SchoolClass> getClasses() {
-        return classes;
+        return new HashMap<>(classes);
     }
 
     private Map<Integer, Teacher> teachers;

@@ -9,10 +9,16 @@ import models.BestSolutionItem;
 import java.util.*;
 
 // T is a population item
-public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> implements EvolutionarySystem<T> {
+public abstract class EvolutionarySystemImpel<T> implements EvolutionarySystem<T> {
     private Map<T, Double> population;
     private final Map<T, Double> childPopulation;
-    private List<Double> generationFitnessHistory; // cell 0: best fitness of generation 1 and so on...
+
+    @Override
+    public List<Double> getGenerationFitnessHistory() {
+        return new ArrayList<>(generationFitnessHistory);
+    }
+
+    private List<Double> generationFitnessHistory; // cell 0: best fitness of generation 1 and so on... (by jump in generations)
     private BestSolutionItem<T> bestItem;
     private boolean isRunning = false;
 
@@ -49,16 +55,27 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         this.acceptedNumberOfGenerations = acceptedNumberOfGenerations;
     }
 
-    public void setCrossOver(Crossover<T, S> crossOver) {
-        this.crossOver = crossOver;
+    public void setCrossover(Crossover<T> crossover) {
+        this.crossover = crossover;
     }
 
-    public void setMutations(List<Mutation<T, S>> mutations) {
+    public void setMutations(List<Mutation<T>> mutations) {
         this.mutations = mutations;
     }
 
+    @Override
     public Selection<T> getSelection() {
         return selection;
+    }
+
+    @Override
+    public Crossover<T> getCrossover() {
+        return crossover;
+    }
+
+    @Override
+    public List<Mutation<T>> getMutations() {
+        return mutations;
     }
 
     public void setSelection(Selection<T> selection) {
@@ -73,9 +90,9 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         return population;
     }
 
-    private Crossover<T, S> crossOver;
+    private Crossover<T> crossover;
     private Selection<T> selection;
-    private List<Mutation<T, S>> mutations;
+    private List<Mutation<T>> mutations;
     private int initialPopulationSize;
     private int acceptedNumberOfGenerations;
     private int jumpInGenerations;
@@ -85,20 +102,26 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         jumpInGenerations = 1;
         population = new HashMap<>();
         childPopulation = new HashMap<>();
+        generationFitnessHistory = new ArrayList<>();
     }
 
     @Override
     public BestSolutionItem<T> StartAlgorithm(Set<TerminateRules> terminateBy) {
         BestSolutionItem<T> currentBestFitness;
         isRunning = true;
+        generationFitnessHistory.clear();
         /* initial*/
         initialPopulation();
         currentBestFitness = evaluateGeneration();
+        generationFitnessHistory.add(currentBestFitness.getFitness());
         /* iterative*/
         while(!isTerminate(terminateBy)){
             createGeneration();
             currentBestFitness = evaluateGeneration();
             currentNumberOfGenerations++;
+            if(currentNumberOfGenerations % jumpInGenerations == 0){
+                generationFitnessHistory.add(currentBestFitness.getFitness());
+            }
         }
 
         isRunning = false;
@@ -123,6 +146,11 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     @Override
     public boolean IsRunningProcess() {
         return isRunning;
+    }
+
+    @Override
+    public int getInitialPopulationSize() {
+        return initialPopulationSize;
     }
 
     private void initialPopulation(){
@@ -150,7 +178,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     protected void createGeneration(){
         Map<T, Double> selected = selection.select(population);
         while(childPopulation.size() <= population.size()){
-            Set<T> children = crossOver.crossOver(selected);
+            Set<T> children = crossover.crossOver(selected);
             children.forEach(child ->{
                 mutations.forEach(mutation -> mutation.mutate(child));
                 childPopulation.put(child, 0.);

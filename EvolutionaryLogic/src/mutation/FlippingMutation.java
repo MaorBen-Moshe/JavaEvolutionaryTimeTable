@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemDataSupplier> {
+public class FlippingMutation implements Mutation<TimeTable> {
     public enum Component {
         S, T, C, H, D
     }

@@ -64,7 +64,7 @@ public class ETTXmlParser {
         int initialPopulation = engine.getETTInitialPopulation().getSize();
         setInitialPopulation(ret, initialPopulation);
         ret.setSelection(createSelection(engine.getETTSelection()));
-        ret.setCrossOver(createCrossover(engine.getETTCrossover(), supplier));
+        ret.setCrossover(createCrossover(engine.getETTCrossover(), supplier));
         ret.setMutations(createMutations(engine.getETTMutations(), supplier));
 
         return ret;
@@ -81,8 +81,8 @@ public class ETTXmlParser {
         }
     }
 
-    private static List<Mutation<TimeTable, TimeTableSystemDataSupplier>> createMutations(ETTMutations ettMutations, TimeTableSystemDataSupplier supplier) throws Exception {
-        List<Mutation<TimeTable, TimeTableSystemDataSupplier>> retMutations = new ArrayList<>();
+    private static List<Mutation<TimeTable>> createMutations(ETTMutations ettMutations, TimeTableSystemDataSupplier supplier) throws Exception {
+        List<Mutation<TimeTable>> retMutations = new ArrayList<>();
         MutationTypes type;
         List<ETTMutation> ettMutationsList = ettMutations.getETTMutation();
 
@@ -150,8 +150,8 @@ public class ETTXmlParser {
         return retVal;
     }
 
-    private static Crossover<TimeTable, TimeTableSystemDataSupplier> createCrossover(ETTCrossover ettCrossover, TimeTableSystemDataSupplier supplier) throws Exception {
-        Crossover<TimeTable, TimeTableSystemDataSupplier> retCrossover = null;
+    private static Crossover<TimeTable> createCrossover(ETTCrossover ettCrossover, TimeTableSystemDataSupplier supplier) throws Exception {
+        Crossover<TimeTable> retCrossover = null;
         CrossoverTypes type = CrossoverTypes.valueOf(ettCrossover.getName());
         int cuttingPoints = ettCrossover.getCuttingPoints();
         try{

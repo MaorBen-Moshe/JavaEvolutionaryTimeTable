@@ -10,13 +10,17 @@ public class CommandResult<T> {
     }
 
     public String getErrorMessage() {
-        return ErrorMessage;
+        return errorMessage;
     }
 
     public void setErrorMessage(String errorMessage) {
-        ErrorMessage = errorMessage;
+        this.errorMessage = errorMessage;
+    }
+
+    public boolean isFailed() {
+        return !errorMessage.replace(" ", "").isEmpty();
     }
 
     private T result;
-    private String ErrorMessage;
+    private String errorMessage;
 }

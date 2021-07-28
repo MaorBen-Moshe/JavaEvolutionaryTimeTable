@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-public class SizerMutation implements Mutation<TimeTable, TimeTableSystemDataSupplier> {
+public class SizerMutation implements Mutation<TimeTable> {
     private final double probability;
     private final int totalTupples;
     private final Random rand;

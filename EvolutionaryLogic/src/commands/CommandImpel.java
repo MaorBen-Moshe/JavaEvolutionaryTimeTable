@@ -1,9 +1,10 @@
 package commands;
 
+import Interfaces.DataSupplier;
 import evolutinary.EvolutionarySystem;
 import models.TimeTable;
 
 public abstract class CommandImpel implements Command{
-    protected EvolutionarySystem<TimeTable> evolutionarySystem;
-    protected boolean isFileLoaded = false;
+    protected static EvolutionarySystem<TimeTable> evolutionarySystem;
+    protected static boolean isFileLoaded = false;
 }

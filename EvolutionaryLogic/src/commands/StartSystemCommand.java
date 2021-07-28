@@ -35,6 +35,7 @@ public class StartSystemCommand extends CommandImpel{
             }
 
             if(rules == null){
+                result.setErrorMessage("Algorithm cannot start without terminate rules");
                 return;
             }
 

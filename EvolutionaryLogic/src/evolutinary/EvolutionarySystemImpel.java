@@ -1,6 +1,5 @@
 package evolutinary;
 
-import Interfaces.DataSupplier;
 import crossover.Crossover;
 import mutation.Mutation;
 import selection.Selection;
@@ -178,7 +177,7 @@ public abstract class EvolutionarySystemImpel<T> implements EvolutionarySystem<T
     protected void createGeneration(){
         Map<T, Double> selected = selection.select(population);
         while(childPopulation.size() <= population.size()){
-            Set<T> children = crossover.crossOver(selected);
+            Set<T> children = crossover.crossover(selected);
             children.forEach(child ->{
                 mutations.forEach(mutation -> mutation.mutate(child));
                 childPopulation.put(child, 0.);

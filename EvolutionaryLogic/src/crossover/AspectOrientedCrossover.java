@@ -6,7 +6,7 @@ import models.TimeTableSystemDataSupplier;
 import java.util.Map;
 import java.util.Set;
 
-public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSystemDataSupplier> {
+public class AspectOrientedCrossover implements Crossover<TimeTable> {
     public enum Orientation{
         Class, Teacher
     }
@@ -21,7 +21,7 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
     }
 
     @Override
-    public Set<TimeTable> crossOver(Map<TimeTable, Double> parents) {
+    public Set<TimeTable> crossover(Map<TimeTable, Double> parents) {
         return null;
     }
 }

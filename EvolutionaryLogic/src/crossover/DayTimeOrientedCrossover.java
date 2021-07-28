@@ -5,7 +5,7 @@ import models.TimeTableSystemDataSupplier;
 
 import java.util.*;
 
-public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableSystemDataSupplier> {
+public class DayTimeOrientedCrossover implements Crossover<TimeTable> {
     private final int cuttingPoints;
     private final Random rand;
     private final TimeTableSystemDataSupplier supplier;
@@ -17,7 +17,7 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableS
     }
 
     @Override
-    public Set<TimeTable> crossOver(Map<TimeTable, Double> parents) {
+    public Set<TimeTable> crossover(Map<TimeTable, Double> parents) {
         TimeTable parent1 = getParent(parents);
         TimeTable parent2 = getParent(parents);
         Set<TimeTable> children = new HashSet<>();

@@ -1,8 +1,12 @@
 package commands;
 
+import DTO.FitnessTerminateRuleDTO;
+import DTO.GenerationsTerminateRuleDTO;
 import DTO.TerminateRuleDTO;
 import DTO.TerminateRulesDTO;
-import evolutinary.EvolutionarySystem;
+import models.FitnessTerminateRule;
+import models.GenerationTerminateRule;
+import models.TerminateRule;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -39,7 +43,7 @@ public class StartSystemCommand extends CommandImpel{
                 return;
             }
 
-            evolutionarySystem.StartAlgorithm(setByTerminate(rules));
+            evolutionarySystem.StartAlgorithm(setByTerminate(rules.getRules()), rules.getJumpInGenerations());
         }
         else{
             result.setErrorMessage("File should be loaded first");
@@ -48,19 +52,21 @@ public class StartSystemCommand extends CommandImpel{
         afterStart.accept(result);
     }
 
-    private Set<EvolutionarySystem.TerminateRules> setByTerminate(TerminateRulesDTO rules){
-        Set<EvolutionarySystem.TerminateRules> toRet = new HashSet<>();
-        Set<TerminateRuleDTO> toRun = rules.getRules();
-        toRun.forEach(rule -> {
-            switch(rule.getRule()){
-                case ByFitness: evolutionarySystem.setAcceptedFitness(rule.getVal()); break;
-                case NumberOfGenerations: evolutionarySystem.setAcceptedNumberOfGenerations(rule.getVal()); break;
+    private Set<TerminateRule> setByTerminate(Set<TerminateRuleDTO> rules){
+        Set<TerminateRule> toRet = new HashSet<>();
+        rules.forEach(rule ->{
+            switch(rule.getType()){
+                case NumberOfGenerations:
+                    GenerationsTerminateRuleDTO currentGen = (GenerationsTerminateRuleDTO) rule;
+                    toRet.add(new GenerationTerminateRule(currentGen.getGenerations()));
+                    break;
+                case ByFitness:
+                    FitnessTerminateRuleDTO currentFit = (FitnessTerminateRuleDTO) rule;
+                    toRet.add(new FitnessTerminateRule(currentFit.getFitness()));
+                    break;
             }
-
-            toRet.add(rule.getRule());
         });
 
-        evolutionarySystem.setJumpInGenerations(rules.getJumpInGenerations());
         return toRet;
     }
 

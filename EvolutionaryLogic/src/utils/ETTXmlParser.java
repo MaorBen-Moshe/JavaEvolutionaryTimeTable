@@ -311,7 +311,7 @@ public class ETTXmlParser {
         return retSubjects;
     }
 
-    private static Rules createRules(ETTRules ettRules) throws Exception {
+    private static Rules createRules(ETTRules ettRules) {
         List<ETTRule> ettRulesList = ettRules.getETTRule();
         int rulesWeight = ettRules.getHardRulesWeight();
         if(!(rulesWeight >= 0 && rulesWeight <= 100)){
@@ -324,11 +324,14 @@ public class ETTXmlParser {
             if(ValidateUtils.enumValid(Rule.eStrength.values(), Rule.eStrength.class, rule.getType()) &&
                ValidateUtils.enumValid(Rules.eRules.values(), Rules.eRules.class, rule.getETTRuleId())){
                 Rule.eStrength strength = Rule.eStrength.valueOf(rule.getType());
-                current = new Rule(Rules.eRules.valueOf(rule.getETTRuleId()), strength);
-                if(current.getRuleType().equals(Rules.eRules.Sequentiality)){
+                Map<String, String> configurations = null;
+                if(rule.getType().equals(Rules.eRules.Sequentiality.toString())){
                     int total = setSequentiality(rule.getETTConfiguration());
-                    current.setTotalHours(total);
+                    configurations = new HashMap<>();
+                    configurations.put("Total hours", String.valueOf(total));
                 }
+
+                current = new Rule(Rules.eRules.valueOf(rule.getETTRuleId()), strength, configurations);
             }
 
             if(rules.contains(current)){

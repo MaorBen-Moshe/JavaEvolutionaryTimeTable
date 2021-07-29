@@ -1,19 +1,21 @@
 package DTO;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
 public class TeacherDTO extends SerialItemDTO{
     public Set<SubjectDTO> getSubjects() {
-        return new HashSet<>(subjects);
+        return unModifiedSubjects;
     }
 
     private final Set<SubjectDTO> subjects;
+    private final Set<SubjectDTO> unModifiedSubjects;
 
     public TeacherDTO(String name, int id, Set<SubjectDTO> subjects) {
         super(name, id);
         this.subjects = subjects;
+        this.unModifiedSubjects = Collections.unmodifiableSet(subjects);
     }
 
     @Override

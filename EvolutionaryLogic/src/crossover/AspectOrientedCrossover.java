@@ -19,12 +19,10 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
     }
     private final int cuttingPoints;
     private final Orientation orientation;
-    private final Random rand;
 
     public AspectOrientedCrossover(int cuttingPoints, Orientation orientation){
         this.cuttingPoints = cuttingPoints;
         this.orientation = orientation;
-        this.rand= new Random();
     }
 
     @Override
@@ -53,7 +51,6 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
 
     private <T extends SerialItem> TimeTable createChild(TimeTable parent1, TimeTable parent2, Map<Integer, T> byAspectMap, TimeTableSystemDataSupplier supplier){
         Map<T, TimeTable> descendantsOfEachT = new HashMap<>();
-        List<Integer> cuttingPoints;
         TimeTable childCreated = new TimeTable();
         byAspectMap.values().forEach(current -> descendantsOfEachT.put(current, new TimeTable()));
 

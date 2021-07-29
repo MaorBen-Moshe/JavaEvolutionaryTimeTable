@@ -28,13 +28,13 @@ public class ModelToDTOConverter {
 
     public RulesDTO createRulesDTO(Rules rules){
         Set<RuleDTO> ret = new HashSet<>();
-        rules.getRules().forEach(rule -> ret.add(new RuleDTO(rule.getRuleType(), rule.getStrength(), rule.getTotalHours())));
+        rules.getRules().forEach(rule -> ret.add(new RuleDTO(rule.getRuleType(), rule.getStrength(), rule.getConfigurations())));
         return new RulesDTO(ret);
     }
 
     public Map<RuleDTO, Double> createRuleMapDTO(Map<Rule, Double> old){
         Map<RuleDTO, Double> ret = new HashMap<>();
-        old.forEach((key, value) -> ret.put(new RuleDTO(key.getRuleType(), key.getStrength(), key.getTotalHours()), value));
+        old.forEach((key, value) -> ret.put(new RuleDTO(key.getRuleType(), key.getStrength(), key.getConfigurations()), value));
         return ret;
     }
 

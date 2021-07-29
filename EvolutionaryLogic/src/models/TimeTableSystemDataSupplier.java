@@ -2,20 +2,21 @@ package models;
 
 import Interfaces.DataSupplier;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TimeTableSystemDataSupplier implements DataSupplier {
     public Map<Integer, Teacher> getTeachers() {
-        return new HashMap<>(teachers);
+        return unModifiedTeachers;
     }
 
     public Map<Integer, Subject> getSubjects() {
-        return new HashMap<>(subjects);
+        return unModifiedSubjects;
     }
 
     public Map<Integer, SchoolClass> getClasses() {
-        return new HashMap<>(classes);
+        return unModifiedClasses;
     }
 
     public int getDays() {
@@ -27,8 +28,11 @@ public class TimeTableSystemDataSupplier implements DataSupplier {
     }
 
     private final Map<Integer, Teacher> teachers;
+    private final Map<Integer, Teacher> unModifiedTeachers;
     private final Map<Integer, Subject> subjects;
+    private final Map<Integer, Subject> unModifiedSubjects;
     private final Map<Integer, SchoolClass> classes;
+    private final Map<Integer, SchoolClass> unModifiedClasses;
     private final int days;
     private final int hours;
 
@@ -41,5 +45,8 @@ public class TimeTableSystemDataSupplier implements DataSupplier {
         this.teachers = new HashMap<>(teachers);
         this.subjects = new HashMap<>(subjects);
         this.classes = new HashMap<>(classes);
+        this.unModifiedTeachers = Collections.unmodifiableMap(this.teachers);
+        this.unModifiedSubjects = Collections.unmodifiableMap(this.subjects);
+        this.unModifiedClasses = Collections.unmodifiableMap(this.classes);
     }
 }

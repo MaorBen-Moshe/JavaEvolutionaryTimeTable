@@ -3,6 +3,9 @@ package DTO;
 import models.Rule;
 import models.Rules;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class RuleDTO {
@@ -14,23 +17,40 @@ public class RuleDTO {
         return type;
     }
 
-
-    public int getTotalHours() throws Exception {
-        if(!type.equals(Rules.eRules.Sequentiality)){
-            throw new Exception("To use this method you must be of type " + Rules.eRules.Sequentiality);
-        }
-
-        return totalHours;
-    }
-
     private final Rule.eStrength strength;
     private final Rules.eRules type;
-    private final int totalHours; // if(ruleType is sequentiality)
 
-    public RuleDTO(Rules.eRules ruleType, Rule.eStrength ruleStrength, int totalHours){
+    public Map<String, String> getConfigurations() {
+        return unModifiedConfigurations;
+    }
+
+    private final Map<String, String> configurations;
+    private Map<String,String> unModifiedConfigurations;
+
+    public RuleDTO(Rules.eRules ruleType, Rule.eStrength ruleStrength, Map<String, String> configurations){
         this.strength = ruleStrength;
         this.type = ruleType;
-        this.totalHours = totalHours;
+        this.configurations = configurations == null ? new HashMap<>() : configurations;
+        if(configurations != null){
+            this.unModifiedConfigurations = Collections.unmodifiableMap(configurations);
+        }
+    }
+
+
+    @Override
+    public String toString() {
+        String ret = "rule: " +
+                "strength=" + strength +
+                ", type=" + type;
+        ret = ret + (configurations.size() != 0 ?  ", configurations= " + configurations : "");
+        return ret;
+    }
+
+    public void addConfiguration(String key, String val){
+        if(!configurations.containsKey(key)){
+            configurations.put(key, val);
+            this.unModifiedConfigurations = Collections.unmodifiableMap(configurations);
+        }
     }
 
     @Override
@@ -38,23 +58,11 @@ public class RuleDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RuleDTO ruleDTO = (RuleDTO) o;
-        return totalHours == ruleDTO.totalHours && strength == ruleDTO.strength && type == ruleDTO.type;
+        return strength == ruleDTO.strength && type == ruleDTO.type && configurations.equals(ruleDTO.configurations);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(strength, type, totalHours);
-    }
-
-    @Override
-    public String toString() {
-        String ret = "rule: " +
-                "strength=" + strength +
-                ", type=" + type;
-        if(type.equals(Rules.eRules.Sequentiality)){
-            ret = ret + ", " + "totalHours= " + totalHours;
-        }
-
-        return ret;
+        return Objects.hash(strength, type, configurations);
     }
 }

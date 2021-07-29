@@ -6,16 +6,18 @@ import java.util.*;
 
 public class TimeTableDTO {
     private final Set<TimeTableItemDTO> items;
+    private final Set<TimeTableItemDTO> unModifiedItems;
     private final Map<RuleDTO, Double> rulesScore;
+    private final Map<RuleDTO, Double> unModifiedRulesScore;
     private final double hardRulesAvg;
     private final double softRulesAvg;
 
     public Set<TimeTableItemDTO> getItems() {
-        return new TreeSet<>(items);
+        return unModifiedItems;
     }
 
     public Map<RuleDTO, Double> getRulesScore() {
-        return new HashMap<>(rulesScore);
+        return unModifiedRulesScore;
     }
 
     public double getHardRulesAvg() {
@@ -30,7 +32,9 @@ public class TimeTableDTO {
         this.hardRulesAvg = hardAvg;
         this.softRulesAvg = softAvg;
         this.items = items;
+        this.unModifiedItems = Collections.unmodifiableSortedSet(new TreeSet<>(this.items));
         this.rulesScore = rulesScore;
+        this.unModifiedRulesScore = Collections.unmodifiableMap(this.rulesScore);
     }
 
     @Override

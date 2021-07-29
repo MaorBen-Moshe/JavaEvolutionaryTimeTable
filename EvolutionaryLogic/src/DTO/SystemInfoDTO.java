@@ -5,22 +5,19 @@ import crossover.Crossover;
 import mutation.Mutation;
 import selection.Selection;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class SystemInfoDTO<T, S extends DataSupplier> {
     public Set<TeacherDTO> getTeachers() {
-        return new HashSet<>(teachers);
+        return unModifiedTeachers;
     }
 
     public Set<SchoolClassDTO> getClasses() {
-        return new HashSet<>(classes);
+        return unModifiedClasses;
     }
 
     public Set<SubjectDTO> getSubjects() {
-        return new HashSet<>(subjects);
+        return unModifiedSubjects;
     }
 
     public int getDays() {
@@ -52,8 +49,11 @@ public class SystemInfoDTO<T, S extends DataSupplier> {
     }
 
     private final Set<TeacherDTO> teachers;
+    private final Set<TeacherDTO> unModifiedTeachers;
     private final Set<SchoolClassDTO> classes;
+    private final Set<SchoolClassDTO> unModifiedClasses;
     private final Set<SubjectDTO> subjects;
+    private final Set<SubjectDTO> unModifiedSubjects;
     private final RulesDTO rules;
     private final int days;
     private final int hours;
@@ -68,8 +68,11 @@ public class SystemInfoDTO<T, S extends DataSupplier> {
         this.days = days;
         this.hours = hours;
         this.teachers = new HashSet<>(teachers);
+        this.unModifiedTeachers = Collections.unmodifiableSet(this.teachers);
         this.classes = new HashSet<>(classes);
+        this.unModifiedClasses = Collections.unmodifiableSet(this.classes);
         this.subjects = new HashSet<>(subjects);
+        this.unModifiedSubjects = Collections.unmodifiableSet(this.subjects);
         this.rules = rules;
 
         this.initialSize = initialSize;

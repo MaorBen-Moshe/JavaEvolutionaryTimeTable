@@ -5,10 +5,7 @@ import commands.*;
 import evolutinary.EvolutionarySystem;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
-import mutation.Mutation;
-
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ConsoleUtils {
     private enum BestDisplay {
@@ -117,14 +114,26 @@ public class ConsoleUtils {
                     switch (current) {
                         case NumberOfGenerations:
                             System.out.println("please enter the number of generations (at least 100):");
+                            int gen = scan.nextInt();
+                            if(gen < 100){
+                                throw new IllegalArgumentException("number of generations should be at least 100");
+                            }
+                            else{
+                                retRules.add(new GenerationsTerminateRuleDTO(gen));
+                            }
                             break;
                         case ByFitness:
                             System.out.println("please enter the max fitness(positive number between 0-100):");
+                            int fit = scan.nextInt();
+                            if(fit >= 0 && fit <= 100){
+                                retRules.add(new FitnessTerminateRuleDTO(fit));
+                            }
+                            else{
+                                throw new IllegalArgumentException("fitness should be an integer between 0-100");
+                            }
                             break;
                     }
 
-                    int val = scan.nextInt();
-                    retRules.add(new TerminateRuleDTO(current, val));
                 } catch (Exception e) {
                     throw new IllegalArgumentException("terminate rule inserted is illegal");
                 }
@@ -241,7 +250,7 @@ public class ConsoleUtils {
         System.out.println("Fitness = " + solution.getFitness());
         TimeTableDTO table = solution.getSolution();
         Set<TimeTableItemDTO> items = solution.getSolution().getItems();
-
+        //Map<Integer, Map<Integer, List<TimeTableItemDTO>>>
 
         printRules(table.getRulesScore(), table.getSoftRulesAvg(), table.getHardRulesAvg());
     }
@@ -260,6 +269,9 @@ public class ConsoleUtils {
             System.out.println("Rule name: " + key.getType().toString());
             System.out.println("Rule strength: " + key.getStrength().toString());
             System.out.println("Rule Score: " + val);
+            if(key.getConfigurations().size() != 0){
+                System.out.println("configurations of rule: " + key.getConfigurations());
+            }
         });
 
         System.out.println("Hard rules average: " + hardAvg);

@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ConsoleUI/ConsoleUI.iml" filepath="$PROJECT_DIR$/ConsoleUI/ConsoleUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/EvolutionaryLogic/EvolutionaryLogic.iml" filepath="$PROJECT_DIR$/EvolutionaryLogic/EvolutionaryLogic.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ModelsDTO/ModelsDTO.iml" filepath="$PROJECT_DIR$/ModelsDTO/ModelsDTO.iml" />
     </modules>
   </component>
 </project>

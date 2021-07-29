@@ -9,7 +9,8 @@ public class Rules{
     }
 
     private final int hardRulesWeight;
-    private final HashSet<Rule> rules;
+    private final Set<Rule> rules;
+    private Set<Rule> unModifiedRules;
 
     public Rules(int hardRulesWeight){
         this.hardRulesWeight = hardRulesWeight >= 0 && hardRulesWeight <= 100 ? hardRulesWeight : 0;
@@ -28,8 +29,8 @@ public class Rules{
         return hardRulesWeight;
     }
 
-    public HashSet<Rule> getRules() {
-        return new HashSet<>(rules);
+    public Set<Rule> getRules() {
+        return unModifiedRules;
     }
 
     @Override
@@ -58,6 +59,8 @@ public class Rules{
     }
 
     public boolean add(Rule rule){
-        return rules.add(rule);
+        boolean ret = rules.add(rule);
+        unModifiedRules = Collections.unmodifiableSet(rules);
+        return ret;
     }
 }

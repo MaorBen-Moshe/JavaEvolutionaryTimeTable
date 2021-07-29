@@ -32,7 +32,7 @@ public class SystemInfoCommand extends CommandImpel{
     private SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier> createAnswer(){
         ModelToDTOConverter converter = new ModelToDTOConverter();
         TimeTableEvolutionarySystemImpel system = (TimeTableEvolutionarySystemImpel) evolutionarySystem;
-        return new SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>(system.getDays(),
+        return new SystemInfoDTO<>(system.getDays(),
                 system.getHours(),
                 converter.createTeachersFromMap(system.getTeachers()),
                 converter.createClassesFromMap(system.getClasses()),

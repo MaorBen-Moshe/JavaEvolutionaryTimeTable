@@ -12,18 +12,21 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
 
     public void setTeachers(Set<Teacher> teachers) {
         this.teachers = createMapFromSet(teachers);
+        this.unModifiedTeachers = Collections.unmodifiableMap(this.teachers);
     }
 
     public void setSubjects(Set<Subject> subjects) {
         this.subjects = createMapFromSet(subjects);
+        this.unModifiedSubjects = Collections.unmodifiableMap(this.subjects);
     }
 
     public Map<Integer, Subject> getSubjects() {
-        return new HashMap<>(subjects);
+        return unModifiedSubjects;
     }
 
     public void setClasses(Set<SchoolClass> classes) {
         this.classes = createMapFromSet(classes);
+        this.unModifiedClasses = Collections.unmodifiableMap(this.classes);
     }
 
     public int getDays() {
@@ -52,16 +55,19 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
 
     //configuration of time table
     public Map<Integer, Teacher> getTeachers() {
-        return new HashMap<>(teachers);
+        return unModifiedTeachers;
     }
 
     public Map<Integer, SchoolClass> getClasses() {
-        return new HashMap<>(classes);
+        return unModifiedClasses;
     }
 
     private Map<Integer, Teacher> teachers;
+    private Map<Integer, Teacher> unModifiedTeachers;
     private Map<Integer, Subject> subjects;
+    private Map<Integer, Subject> unModifiedSubjects;
     private Map<Integer, SchoolClass> classes;
+    private Map<Integer, SchoolClass> unModifiedClasses;
     private Rules rules;
     private int days;
     private int hours;
@@ -85,7 +91,6 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
             timeTable.add(createItem());
         }
 
-        //Collections.sort(timeTable);
         return timeTable;
     }
 

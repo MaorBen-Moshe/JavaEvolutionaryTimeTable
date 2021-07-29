@@ -11,8 +11,8 @@ public class SerialItemDTO {
         return name;
     }
 
-    private int id;
-    private String name;
+    private final int id;
+    private final String name;
 
     public SerialItemDTO(String name, int id){
         this.id = id;

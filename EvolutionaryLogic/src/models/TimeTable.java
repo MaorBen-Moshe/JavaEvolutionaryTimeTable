@@ -4,11 +4,13 @@ import java.util.function.Predicate;
 
 public class TimeTable {
     public Set<TimeTableItem> getSortedItems() {
-        return new TreeSet<>(sortedItems);
+        return unModifiedSortedItems;
     }
 
     private final Set<TimeTableItem> sortedItems;
+    private Set<TimeTableItem> unModifiedSortedItems;
     private final Map<Rule, Double> rulesScore;
+    private Map<Rule, Double> unModifiedRulesScore;
 
     public double getHardRulesAvg() {
         return hardRulesAvg;
@@ -35,11 +37,21 @@ public class TimeTable {
     }
 
     public boolean add(TimeTableItem item){
-        return sortedItems.add(item);
+        boolean ret = sortedItems.add(item);
+        if(ret){
+            this.unModifiedSortedItems = Collections.unmodifiableSortedSet(new TreeSet<>(sortedItems));
+        }
+
+        return ret;
     }
 
     public boolean remove(TimeTableItem item){
-        return sortedItems.remove(item);
+        boolean ret = sortedItems.remove(item);
+        if(ret){
+            this.unModifiedSortedItems = Collections.unmodifiableSortedSet(new TreeSet<>(sortedItems));
+        }
+
+        return ret;
     }
 
     public int size() {return sortedItems.size(); }
@@ -75,12 +87,13 @@ public class TimeTable {
         else{
             rulesScore.put(rule, score);
         }
+
+        unModifiedRulesScore = Collections.unmodifiableMap(rulesScore);
     }
 
     public Map<Rule, Double> getRulesScore(){
-        return new HashMap<>(rulesScore);
+        return unModifiedRulesScore;
     }
-
 
     @Override
     public boolean equals(Object o) {

@@ -3,22 +3,21 @@ package evolutinary;
 import Interfaces.DataSupplier;
 import crossover.Crossover;
 import models.BestSolutionItem;
+import models.TerminateRule;
 import mutation.Mutation;
 import selection.Selection;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface EvolutionarySystem<T, S extends DataSupplier> {
+
     enum TerminateRules {
-        NumberOfGenerations, ByFitness
-    };
+        ByFitness, NumberOfGenerations
+    }
 
-    BestSolutionItem<T, S> StartAlgorithm(Set<TerminateRules> terminateBy);
-
-    BestSolutionItem<T, S> getBestSolution();
-
-    double getFitness(T item) throws ClassNotFoundException;
+    BestSolutionItem<T, S> StartAlgorithm(Set<TerminateRule> terminateBy, int jumpInGenerations);
 
     boolean IsRunningProcess();
 
@@ -30,19 +29,11 @@ public interface EvolutionarySystem<T, S extends DataSupplier> {
 
     List<Mutation<T, S>> getMutations();
 
-    List<Double> getGenerationFitnessHistory();
+    Map<Integer, Double> getGenerationFitnessHistory();
 
     S getSystemInfo();
 
-    void setAcceptedFitness(double acceptedFitness);
-
-    void setAcceptedNumberOfGenerations(int acceptedNumberOfGenerations);
+    BestSolutionItem<T, S> getBestSolution();
 
     int getCurrentNumberOfGenerations();
-
-    int getAcceptedNumberOfGenerations();
-
-    void setJumpInGenerations(int jumpInGenerations);
-
-    int getJumpInGenerations();
 }

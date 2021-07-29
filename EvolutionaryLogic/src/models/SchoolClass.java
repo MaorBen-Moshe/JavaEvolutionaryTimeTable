@@ -1,14 +1,16 @@
 package models;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class SchoolClass extends SerialItem {
     private final Map<Subject, Integer> subjectsNeeded; // subject and the hours the class needs in a week
+    private final Map<Subject, Integer> unModifiedSubjectsNeeded;
 
     public Map<Subject, Integer> getSubjectsNeeded() {
-        return new HashMap<>(subjectsNeeded);
+        return unModifiedSubjectsNeeded;
     }
 
     public int getTotalNumberOfHours() {
@@ -20,6 +22,7 @@ public class SchoolClass extends SerialItem {
     public SchoolClass(String name, int id, Map<Subject, Integer> subjects) {
         super(name, id);
         subjectsNeeded = new HashMap<>(subjects);
+        unModifiedSubjectsNeeded = Collections.unmodifiableMap(subjectsNeeded);
         totalNumberOfHours = subjectsNeeded.values().stream().mapToInt(integer -> integer).sum();
     }
 

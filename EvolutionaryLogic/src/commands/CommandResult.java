@@ -15,12 +15,14 @@ public class CommandResult<T> {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+        failed = true;
     }
 
     public boolean isFailed() {
-        return !errorMessage.replace(" ", "").isEmpty();
+        return failed;
     }
 
     private T result;
     private String errorMessage;
+    private boolean failed = false;
 }

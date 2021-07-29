@@ -1,7 +1,5 @@
 package commands;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -17,13 +15,12 @@ public class ProcessCommand extends CommandImpel{
         CommandResult<Map<Integer, Double>> result = new CommandResult<>();
         if(isFileLoaded){
             if(evolutionarySystem.IsRunningProcess()){
-                result.setErrorMessage("Process is still running, number of generations remain: " +
-                        (evolutionarySystem.getAcceptedNumberOfGenerations() - evolutionarySystem.getCurrentNumberOfGenerations()));
+                result.setErrorMessage("Process is still running, current number of generation: " + evolutionarySystem.getCurrentNumberOfGenerations());
             }
             else{
-                List<Double> process = evolutionarySystem.getGenerationFitnessHistory();
+                Map<Integer, Double> process = evolutionarySystem.getGenerationFitnessHistory();
                 if(process.size() > 0){
-                    result.setResult(createMap(process));
+                    result.setResult(process);
                 }
                 else{
                     result.setErrorMessage("Algorithm should start first at least one time");
@@ -35,18 +32,6 @@ public class ProcessCommand extends CommandImpel{
         }
 
         action.accept(result);
-    }
-
-    private Map<Integer, Double> createMap(List<Double> process) {
-        int jump = evolutionarySystem.getJumpInGenerations();
-        Map<Integer, Double> ret = new HashMap<>();
-        int currentGeneration = 0;
-        for(double current : process){
-            ret.put(currentGeneration, current);
-            currentGeneration += jump;
-        }
-
-        return ret;
     }
 
     @Override

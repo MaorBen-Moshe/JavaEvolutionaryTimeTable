@@ -2,6 +2,8 @@ package evolutinary;
 
 import Interfaces.DataSupplier;
 import crossover.Crossover;
+import models.GenerationTerminateRule;
+import models.TerminateRule;
 import mutation.Mutation;
 import selection.Selection;
 import models.BestSolutionItem;
@@ -14,24 +16,13 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     private final Map<T, Double> childPopulation;
 
     @Override
-    public List<Double> getGenerationFitnessHistory() {
-        return new ArrayList<>(generationFitnessHistory);
+    public Map<Integer, Double> getGenerationFitnessHistory() {
+        return new HashMap<>(generationFitnessHistory);
     }
 
-    private final List<Double> generationFitnessHistory; // cell 0: best fitness of generation 1 and so on... (by jump in generations)
+    private final Map<Integer, Double> generationFitnessHistory; // cell 0: best fitness of generation 1 and so on... (by jump in generations)
     private BestSolutionItem<T, S> bestItem;
     private boolean isRunning = false;
-
-    public int getJumpInGenerations() {
-        return jumpInGenerations;
-    }
-
-    public void setJumpInGenerations(int jumpInGenerations) {
-        if(jumpInGenerations <= 0){
-            throw new IllegalArgumentException("Jump in generations must be positive number");
-        }
-        this.jumpInGenerations = jumpInGenerations;
-    }
 
     public int getCurrentNumberOfGenerations() {
         return currentNumberOfGenerations;
@@ -39,33 +30,13 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
 
     private int currentNumberOfGenerations;
 
-    public void setAcceptedFitness(double acceptedFitness) {
-        if(acceptedFitness < 0 || acceptedFitness > 100){
-            throw new IllegalArgumentException("Fitness must be a positive number between 0-100");
-        }
-
-        this.acceptedFitness = acceptedFitness;
-    }
-
-    public int getAcceptedNumberOfGenerations() {
-        return acceptedNumberOfGenerations;
-    }
-
-
-    public void setAcceptedNumberOfGenerations(int acceptedNumberOfGenerations) {
-        if(acceptedNumberOfGenerations < 100){
-            throw new IllegalArgumentException("accepted number of generations must be at least 100");
-        }
-
-        this.acceptedNumberOfGenerations = acceptedNumberOfGenerations;
-    }
-
     public void setCrossover(Crossover<T, S> crossover) {
         this.crossover = crossover;
     }
 
     public void setMutations(List<Mutation<T, S>> mutations) {
         this.mutations = mutations;
+        this.unModifiedMutations = Collections.unmodifiableList(this.mutations);
     }
 
     @Override
@@ -80,7 +51,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
 
     @Override
     public List<Mutation<T, S>> getMutations() {
-        return mutations;
+        return unModifiedMutations;
     }
 
     public void setSelection(Selection<T> selection) {
@@ -91,41 +62,35 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         this.initialPopulationSize = initialPopulationSize;
     }
 
-    public Map<T, Double> getPopulation() {
-        return population;
-    }
-
     private Crossover<T, S> crossover;
     private Selection<T> selection;
     private List<Mutation<T, S>> mutations;
+    private List<Mutation<T, S>> unModifiedMutations;
     private int initialPopulationSize;
-    private int acceptedNumberOfGenerations;
-    private int jumpInGenerations;
-    private double acceptedFitness;
 
     protected EvolutionarySystemImpel(){
-        jumpInGenerations = 1;
         population = new HashMap<>();
         childPopulation = new HashMap<>();
-        generationFitnessHistory = new ArrayList<>();
+        generationFitnessHistory = new HashMap<>();
     }
 
     @Override
-    public BestSolutionItem<T, S> StartAlgorithm(Set<TerminateRules> terminateBy) {
+    public BestSolutionItem<T, S> StartAlgorithm(Set<TerminateRule> terminateBy, int jumpInGenerations) {
+        jumpInGenerations = jumpInGenerations <= 0 ? 1 : jumpInGenerations;
         BestSolutionItem<T, S> currentBestFitness;
         isRunning = true;
         generationFitnessHistory.clear();
         /* initial*/
         initialPopulation();
         currentBestFitness = evaluateGeneration();
-        generationFitnessHistory.add(currentBestFitness.getFitness());
+        generationFitnessHistory.put(0, currentBestFitness.getFitness());
         /* iterative*/
         while(!isTerminate(terminateBy)){
             createGeneration();
             currentBestFitness = evaluateGeneration();
             currentNumberOfGenerations++;
             if(currentNumberOfGenerations % jumpInGenerations == 0){
-                generationFitnessHistory.add(currentBestFitness.getFitness());
+                generationFitnessHistory.put(currentNumberOfGenerations, currentBestFitness.getFitness());
             }
         }
 
@@ -137,15 +102,6 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     @Override
     public BestSolutionItem<T, S> getBestSolution() {
         return bestItem;
-    }
-
-    @Override
-    public double getFitness(T item) throws ClassNotFoundException {
-        if(population.containsKey(item)){
-            return population.get(item);
-        }
-
-        throw new ClassNotFoundException(item + " is not found in the population");
     }
 
     @Override
@@ -199,12 +155,13 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
 
     protected abstract T createOptionalSolution();
 
-    private boolean isTerminate(Set<TerminateRules> terminateBy) {
+    private boolean isTerminate(Set<TerminateRule> terminateBy) {
         boolean answer = false;
-        for (TerminateRules terminate : terminateBy) {
-            switch (terminate){
-                case NumberOfGenerations: answer = currentNumberOfGenerations >= acceptedNumberOfGenerations;  break;
-                case ByFitness: answer = bestItem.getFitness() >= acceptedFitness; break;
+        for (TerminateRule terminate : terminateBy) {
+            switch (terminate.getType()){
+                case NumberOfGenerations:
+                    answer = terminate.isTerminate(currentNumberOfGenerations);  break;
+                case ByFitness: answer =  terminate.isTerminate(bestItem.getFitness()); break;
                 default: answer = false; break;
             }
 

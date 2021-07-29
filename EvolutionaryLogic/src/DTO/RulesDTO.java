@@ -1,18 +1,21 @@
 package DTO;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 public class RulesDTO {
     private final Set<RuleDTO> rules;
+    private final Set<RuleDTO> unModifiedRules;
 
     public Set<RuleDTO> getRules() {
-        return new HashSet<>(rules);
+        return unModifiedRules;
     }
 
     public RulesDTO(Set<RuleDTO> rules) {
         this.rules = new HashSet<>(rules);
+        this. unModifiedRules = Collections.unmodifiableSet(this.rules);
     }
 
     @Override

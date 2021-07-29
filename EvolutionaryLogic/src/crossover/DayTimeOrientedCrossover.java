@@ -6,10 +6,8 @@ import java.util.*;
 
 public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableSystemDataSupplier> {
     private final int cuttingPoints;
-    private final Random rand;
 
     public DayTimeOrientedCrossover(int cuttingPoints){
-        rand = new Random();
         this.cuttingPoints = cuttingPoints;
     }
 

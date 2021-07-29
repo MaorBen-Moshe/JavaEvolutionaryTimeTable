@@ -1,24 +1,25 @@
 package DTO;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class SchoolClassDTO extends SerialItemDTO{
-    public int getTotalNumberOfHours() {
-        return totalNumberOfHours;
-    }
-
-    public Map<SubjectDTO, Integer> getSubjectsNeeded() {
-        return new HashMap<>(subjectsNeeded);
-    }
 
     private final int totalNumberOfHours;
+
+    public Map<SubjectDTO, Integer> getSubjectsNeeded() {
+        return unModifiedSubjectsNeeded;
+    }
+
     private final Map<SubjectDTO, Integer> subjectsNeeded;
+    private final Map<SubjectDTO, Integer> unModifiedSubjectsNeeded;
 
     public SchoolClassDTO(String name, int id, Map<SubjectDTO, Integer> subjects) {
         super(name, id);
         this.subjectsNeeded = subjects;
+        unModifiedSubjectsNeeded = Collections.unmodifiableMap(this.subjectsNeeded);
         totalNumberOfHours = subjectsNeeded.values().stream().mapToInt(integer -> integer).sum();
     }
 

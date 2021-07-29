@@ -4,14 +4,16 @@ import java.util.*;
 
 public class Teacher extends SerialItem {
     public Set<Subject> getSubjects() {
-        return new HashSet<>(subjects);
+        return unModifiedSubjects;
     }
 
     private final Set<Subject> subjects;
+    private final Set<Subject> unModifiedSubjects;
 
     public Teacher(String name, int id, Set<Subject> subjects) {
         super(name, id);
         this.subjects = new HashSet<>(subjects);
+        this.unModifiedSubjects = Collections.unmodifiableSet(this.subjects);
     }
 
     @Override

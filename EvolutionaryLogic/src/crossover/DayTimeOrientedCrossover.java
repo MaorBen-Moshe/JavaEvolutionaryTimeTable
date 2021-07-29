@@ -21,10 +21,14 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable> {
             throw new IllegalArgumentException("DayTimeOrientedCrossover expect only 2 parents");
         }
 
-        TimeTable parent1 = getParent(parents);
-        TimeTable parent2 = getParent(parents);
+        TimeTable parent1 = CrossoverUtils.getParent(parents);
+        TimeTable parent2 = CrossoverUtils.getParent(parents);
+        while(parent2.equals(parent1)){
+            parent2 = CrossoverUtils.getParent(parents);
+        }
+
         Set<TimeTable> children = new HashSet<>();
-        List<Integer> cuttingPoints = getCuttingPoints(parent1, parent2);
+        List<Integer> cuttingPoints = CrossoverUtils.getCuttingPoints(parent1, parent2, this.cuttingPoints);
         children.add(createChild(parent1, parent2, cuttingPoints));
         children.add(createChild(parent1, parent2, cuttingPoints));
         return children;
@@ -63,35 +67,5 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable> {
         }
 
         return child;
-    }
-
-    private List<Integer> getCuttingPoints(TimeTable parent1, TimeTable parent2){
-        List<Integer> cuttingPoints = new ArrayList<>();
-        int maxCuttingOption = Math.max(parent1.size(), parent2.size());
-        while(cuttingPoints.size() < this.cuttingPoints){
-            int current = rand.nextInt(maxCuttingOption);
-            if(!cuttingPoints.contains(current)){
-                cuttingPoints.add(current);
-            }
-        }
-
-        cuttingPoints.sort(Comparator.naturalOrder());
-        return cuttingPoints;
-    }
-
-    private TimeTable getParent(Map<TimeTable, Double> parents){
-        final int randNumber = rand.nextInt(parents.size());
-        TimeTable ret = null;
-        int i = 0;
-        for(TimeTable timeTable : parents.keySet()){
-            if(i == randNumber){
-                ret = timeTable;
-                break;
-            }
-
-            i++;
-        }
-
-        return ret;
     }
 }

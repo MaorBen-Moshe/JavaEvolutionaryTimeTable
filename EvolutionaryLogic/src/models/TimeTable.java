@@ -1,5 +1,6 @@
 package models;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class TimeTable {
     public Set<TimeTableItem> getSortedItems() {
@@ -50,6 +51,18 @@ public class TimeTable {
                 ret = true;
                 break;
             }
+        }
+
+        return ret;
+    }
+
+    public boolean contains(int day, int hour, Predicate<TimeTableItem> predicate){
+        boolean ret = false;
+        for (TimeTableItem item : sortedItems){
+           ret = item.getDay() == day && item.getHour() == hour && predicate.test(item);
+           if(ret){
+               break;
+           }
         }
 
         return ret;

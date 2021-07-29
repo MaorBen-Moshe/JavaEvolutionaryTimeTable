@@ -1,27 +1,152 @@
 package crossover;
 
-import models.TimeTable;
-import models.TimeTableSystemDataSupplier;
+import models.*;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class AspectOrientedCrossover implements Crossover<TimeTable> {
     public enum Orientation{
         Class, Teacher
     }
     private final int cuttingPoints;
-    private Orientation orientation;
+    private final Orientation orientation;
     private final TimeTableSystemDataSupplier supplier;
+    private final Random rand;
 
     public AspectOrientedCrossover(int cuttingPoints, Orientation orientation, TimeTableSystemDataSupplier supplier){
         this.cuttingPoints = cuttingPoints;
         this.orientation = orientation;
         this.supplier = supplier;
+        this.rand= new Random();
     }
 
     @Override
     public Set<TimeTable> crossover(Map<TimeTable, Double> parents) {
-        return null;
+        if(parents.size() != 2) {
+            throw new IllegalArgumentException("AspectOrientedCrossover expect only 2 parents");
+        }
+
+        Set<TimeTable> children = new HashSet<>();
+        Map<Integer, ? extends SerialItem> items = null;
+        switch (orientation){
+            case Teacher: items = supplier.getTeachers(); break;
+            case Class: items = supplier.getClasses(); break;
+        }
+
+        TimeTable parent1 = CrossoverUtils.getParent(parents);
+        TimeTable parent2 = CrossoverUtils.getParent(parents);
+        while(parent2.equals(parent1)){
+            parent2 = CrossoverUtils.getParent(parents);
+        }
+
+        children.add(createChild(parent1, parent2, items));
+        children.add(createChild(parent1, parent2, items));
+        return children;
+    }
+
+    private <T extends SerialItem> TimeTable createChild(TimeTable parent1, TimeTable parent2, Map<Integer, T> byAspectMap){
+        Map<T, TimeTable> descendantsOfEachT = new HashMap<>();
+        List<Integer> cuttingPoints;
+        TimeTable childCreated = new TimeTable();
+        byAspectMap.values().forEach(current -> descendantsOfEachT.put(current, new TimeTable()));
+
+        byAspectMap.forEach((key, val) -> {
+            List<Integer> cutting = CrossoverUtils.getCuttingPoints(parent1, parent2, this.cuttingPoints);
+            TimeTable current = null;
+            switch (orientation){
+                case Teacher: current = createTeacherChildHelper(parent1, parent2, cutting, key); break;
+                case Class: current = createClassChildHelper(parent1, parent2, cutting, key); break;
+            }
+
+            descendantsOfEachT.replace(val, current);
+        });
+
+        descendantsOfEachT.forEach((key, val) -> val.getSortedItems().forEach(item -> {
+            boolean notContains = !checkContainsByAspect(childCreated,
+                                                         item.getDay(),
+                                                         item.getHour(),
+                                                         key.getId());
+            if(notContains){
+                childCreated.add(item);
+            }
+        }));
+
+        return childCreated;
+    }
+
+    private TimeTable createTeacherChildHelper(TimeTable parent1, TimeTable parent2, List<Integer> cuttingPoints, int currentAspectId){
+        TimeTable currentParent;
+        TimeTable child = new TimeTable();
+        boolean isParent1 = true;
+        int count = 0;
+        int currentCuttingPointPlace = 0; // the cell in the list of cutting points;
+
+        for(int d = 0; d < supplier.getDays(); d++){
+            for(int h = 0; h < supplier.getHours(); h++){
+                for(int c = 1; c <= supplier.getClasses().size(); c++){
+                    for(int s = 1; s <= supplier.getSubjects().size(); s++){
+                        if(count > cuttingPoints.get(currentCuttingPointPlace)){
+                            currentCuttingPointPlace++;
+                            isParent1 = !isParent1;
+                        }
+
+                        currentParent = isParent1 ? parent1 : parent2;
+                        if(currentParent.contains(d, h, c, currentAspectId, s)){
+                            Teacher teacher = supplier.getTeachers().get(currentAspectId);
+                            SchoolClass klass = supplier.getClasses().get(c);
+                            Subject subject = supplier.getSubjects().get(s);
+                            child.add(new TimeTableItem(d, h, klass, teacher, subject));
+                        }
+
+                        count++;
+                    }
+                }
+            }
+        }
+
+        return child;
+    }
+
+    private TimeTable createClassChildHelper(TimeTable parent1, TimeTable parent2, List<Integer> cuttingPoints, int currentAspectId){
+        TimeTable currentParent;
+        TimeTable child = new TimeTable();
+        boolean isParent1 = true;
+        int count = 0;
+        int currentCuttingPointPlace = 0; // the cell in the list of cutting points;
+
+        for(int d = 0; d < supplier.getDays(); d++){
+            for(int h = 0; h < supplier.getHours(); h++){
+                for(int t = 1; t <= supplier.getTeachers().size(); t++){
+                    for(int s = 1; s <= supplier.getSubjects().size(); s++){
+                        if(count > cuttingPoints.get(currentCuttingPointPlace)){
+                            currentCuttingPointPlace++;
+                            isParent1 = !isParent1;
+                        }
+
+                        currentParent = isParent1 ? parent1 : parent2;
+                        if(currentParent.contains(d, h, currentAspectId, t, s)){
+                            Teacher teacher = supplier.getTeachers().get(t);
+                            SchoolClass klass = supplier.getClasses().get(currentAspectId);
+                            Subject subject = supplier.getSubjects().get(s);
+                            child.add(new TimeTableItem(d, h, klass, teacher, subject));
+                        }
+
+                        count++;
+                    }
+                }
+            }
+        }
+
+        return child;
+    }
+
+    private boolean checkContainsByAspect(TimeTable check, int day, int hour, int id){
+        Predicate<TimeTableItem> predicate = testItem ->
+                orientation.equals(Orientation.Teacher) ? testItem.getTeacher().getId() == id :
+                                                          testItem.getSchoolClass().getId() == id;
+
+
+        return check.contains(day, hour, predicate);
     }
 }

@@ -68,6 +68,14 @@ public class TimeTableItem implements Comparable<TimeTableItem> {
         return day == that.day && hour == that.hour && schoolClass.equals(that.schoolClass) && teacher.equals(that.teacher) && subject.equals(that.subject);
     }
 
+    public boolean equalsById(int day, int hour, int classId, int teacherId, int subjectId){
+        return day == this.day &&
+                hour == this.hour &&
+                this.schoolClass.getId() == classId &&
+                this.teacher.getId() == teacherId &&
+                this.subject.getId() == subjectId;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(day, hour, schoolClass, teacher, subject);

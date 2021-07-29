@@ -43,6 +43,17 @@ public class TimeTable {
 
     public int size() {return sortedItems.size(); }
 
+    public boolean contains(int day, int hour, int classId, int teacherId, int subjectId){
+        boolean ret = false;
+        for(TimeTableItem item : sortedItems){
+            if(item.equalsById(day, hour, classId, teacherId, subjectId)){
+                ret = true;
+                break;
+            }
+        }
+
+        return ret;
+    }
 
     public void addRuleScore(Rule rule, double score){
         if(rulesScore.containsKey(rule)){

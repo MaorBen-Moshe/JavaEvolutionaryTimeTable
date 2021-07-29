@@ -34,4 +34,10 @@ public class SchoolClassDTO extends SerialItemDTO{
     public int hashCode() {
         return Objects.hash(totalNumberOfHours, subjectsNeeded);
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + " totalNumberOfHours=" + totalNumberOfHours +
+                ", subjectsNeeded=" + subjectsNeeded;
+    }
 }

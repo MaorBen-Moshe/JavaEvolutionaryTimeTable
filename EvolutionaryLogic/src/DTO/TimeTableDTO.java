@@ -1,5 +1,7 @@
 package DTO;
 
+import models.TimeTable;
+
 import java.util.*;
 
 public class TimeTableDTO {

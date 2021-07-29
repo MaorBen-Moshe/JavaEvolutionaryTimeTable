@@ -1,8 +1,10 @@
 package models;
 
+import Interfaces.DataSupplier;
+
 import java.util.Objects;
 
-public class BestSolutionItem<T> {
+public class BestSolutionItem<T, S extends DataSupplier> {
     public double getFitness() {
         return fitness;
     }
@@ -19,6 +21,10 @@ public class BestSolutionItem<T> {
         return solution;
     }
 
+    public S getSupplier() {
+        return supplier;
+    }
+
     private void setSolution(T solution) {
         this.solution = solution;
     }
@@ -26,21 +32,28 @@ public class BestSolutionItem<T> {
     private double fitness;
     private T solution;
 
-    public BestSolutionItem(T table, double fitness){
+    private void setSupplier(S supplier) {
+        this.supplier = supplier;
+    }
+
+    private S supplier;
+
+    public BestSolutionItem(T table, double fitness, S supplier){
         setSolution(table);
         setFitness(fitness);
+        setSupplier(supplier);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BestSolutionItem<?> that = (BestSolutionItem<?>) o;
-        return fitness == that.fitness && solution.equals(that.solution);
+        BestSolutionItem<?, ?> that = (BestSolutionItem<?, ?>) o;
+        return Double.compare(that.fitness, fitness) == 0 && solution.equals(that.solution) && supplier.equals(that.supplier);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fitness, solution);
+        return Objects.hash(fitness, solution, supplier);
     }
 }

@@ -33,7 +33,7 @@ public class BestSolutionCommand extends CommandImpel{
 
     private BestSolutionDTO createAnswer(){
         ModelToDTOConverter converter = new ModelToDTOConverter();
-        BestSolutionItem<TimeTable> solution = evolutionarySystem.getBestSolution();
+        BestSolutionItem<TimeTable, TimeTableSystemDataSupplier> solution = evolutionarySystem.getBestSolution();
         TimeTable table = solution.getSolution();
         Set<TimeTableItemDTO> set = new TreeSet<>();
         table.getSortedItems().forEach(item -> set.add(new TimeTableItemDTO(item.getDay(),
@@ -44,7 +44,7 @@ public class BestSolutionCommand extends CommandImpel{
 
         TimeTableDTO newTable = new TimeTableDTO(set, converter.createRuleMapDTO(table.getRulesScore()),
                                                  table.getHardRulesAvg(), table.getSoftRulesAvg());
-        return new BestSolutionDTO(newTable, solution.getFitness());
+        return new BestSolutionDTO(newTable, solution.getFitness(), evolutionarySystem.getSystemInfo());
     }
 
     @Override

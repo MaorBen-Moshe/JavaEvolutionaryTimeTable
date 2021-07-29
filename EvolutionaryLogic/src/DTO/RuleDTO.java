@@ -45,4 +45,16 @@ public class RuleDTO {
     public int hashCode() {
         return Objects.hash(strength, type, totalHours);
     }
+
+    @Override
+    public String toString() {
+        String ret = "rule: " +
+                "strength=" + strength +
+                ", type=" + type;
+        if(type.equals(Rules.eRules.Sequentiality)){
+            ret = ret + ", " + "totalHours= " + totalHours;
+        }
+
+        return ret;
+    }
 }

@@ -1,10 +1,11 @@
 package evolutinary;
 
+import Interfaces.DataSupplier;
 import models.*;
 
 import java.util.*;
 
-public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<TimeTable> {
+public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<TimeTable, TimeTableSystemDataSupplier> {
     public void setRules(Rules rules) {
         this.rules = rules;
     }
@@ -70,6 +71,10 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
         random = new Random();
     }
 
+    @Override
+    public TimeTableSystemDataSupplier getSystemInfo() {
+        return new TimeTableSystemDataSupplier(days, hours, new HashMap<>(teachers), new HashMap<>(subjects), new HashMap<>(classes));
+    }
 
     protected TimeTable createOptionalSolution(){
         int maxNumber = days * hours * teachers.size() * subjects.size() * classes.size();

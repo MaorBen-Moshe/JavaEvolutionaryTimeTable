@@ -30,7 +30,7 @@ import java.util.*;
 public class ETTXmlParser {
 
     // parse region
-    public static EvolutionarySystem<TimeTable> parse(String filePath) throws Exception {
+    public static EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> parse(String filePath) throws Exception {
         File file = new File(filePath);
         InputStream inputStream = new FileInputStream(file);
         ETTDescriptor descriptor = deserializeFrom(inputStream);
@@ -43,7 +43,7 @@ public class ETTXmlParser {
         return (ETTDescriptor) unMarshaller.unmarshal(in);
     }
 
-    private static EvolutionarySystem<TimeTable> createTimeTableImpel(ETTTimeTable timeTable, ETTEvolutionEngine engine) throws Exception {
+    private static EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> createTimeTableImpel(ETTTimeTable timeTable, ETTEvolutionEngine engine) throws Exception {
         TimeTableEvolutionarySystemImpel ret = new TimeTableEvolutionarySystemImpel();
         // each method validate first if the details are ok by itself or using ValidationUtils class
         // create the time table evolutionary part
@@ -53,19 +53,12 @@ public class ETTXmlParser {
         ret.setTeachers(new HashSet<>(createTeachers(timeTable.getETTTeachers(), ret.getSubjects().values())));
         ret.setClasses(new HashSet<>(createClasses(timeTable.getETTClasses(), ret.getSubjects().values(), ret.getHours() * ret.getDays())));
 
-        // create supplier
-        TimeTableSystemDataSupplier supplier = new TimeTableSystemDataSupplier(ret.getDays(),
-                                                                ret.getHours(),
-                                                                ret.getTeachers(),
-                                                                ret.getSubjects(),
-                                                                ret.getClasses());
-
         // create the engine part
         int initialPopulation = engine.getETTInitialPopulation().getSize();
         setInitialPopulation(ret, initialPopulation);
         ret.setSelection(createSelection(engine.getETTSelection()));
-        ret.setCrossover(createCrossover(engine.getETTCrossover(), supplier));
-        ret.setMutations(createMutations(engine.getETTMutations(), supplier));
+        ret.setCrossover(createCrossover(engine.getETTCrossover()));
+        ret.setMutations(createMutations(engine.getETTMutations()));
 
         return ret;
     }
@@ -81,8 +74,8 @@ public class ETTXmlParser {
         }
     }
 
-    private static List<Mutation<TimeTable>> createMutations(ETTMutations ettMutations, TimeTableSystemDataSupplier supplier) throws Exception {
-        List<Mutation<TimeTable>> retMutations = new ArrayList<>();
+    private static List<Mutation<TimeTable, TimeTableSystemDataSupplier>> createMutations(ETTMutations ettMutations) throws Exception {
+        List<Mutation<TimeTable, TimeTableSystemDataSupplier>> retMutations = new ArrayList<>();
         MutationTypes type;
         List<ETTMutation> ettMutationsList = ettMutations.getETTMutation();
 
@@ -96,12 +89,11 @@ public class ETTXmlParser {
                         case Flipping:
                             retMutations.add(new FlippingMutation(probability,
                                                                   getFlippingMaxTupples(mutation.getConfiguration()),
-                                                                  getFlippingComponent(mutation.getConfiguration()),
-                                                                  supplier));
+                                                                  getFlippingComponent(mutation.getConfiguration())));
                             break;
                         case Sizer:
                             int totalTupples = Integer.parseInt(mutation.getConfiguration().split("=")[1]);
-                            retMutations.add(new SizerMutation(probability, totalTupples, supplier));
+                            retMutations.add(new SizerMutation(probability, totalTupples));
                     }
                 }
             }
@@ -150,8 +142,8 @@ public class ETTXmlParser {
         return retVal;
     }
 
-    private static Crossover<TimeTable> createCrossover(ETTCrossover ettCrossover, TimeTableSystemDataSupplier supplier) throws Exception {
-        Crossover<TimeTable> retCrossover = null;
+    private static Crossover<TimeTable, TimeTableSystemDataSupplier> createCrossover(ETTCrossover ettCrossover) throws Exception {
+        Crossover<TimeTable, TimeTableSystemDataSupplier> retCrossover = null;
         CrossoverTypes type = CrossoverTypes.valueOf(ettCrossover.getName());
         int cuttingPoints = ettCrossover.getCuttingPoints();
         try{
@@ -159,10 +151,10 @@ public class ETTXmlParser {
                 switch (type){
                     case AspectOriented:
                         AspectOrientedCrossover.Orientation orientation = AspectOrientedCrossover.Orientation.valueOf(ettCrossover.getConfiguration().replace(" ", "").split("=")[1]);
-                        retCrossover = new AspectOrientedCrossover(cuttingPoints, orientation, supplier);
+                        retCrossover = new AspectOrientedCrossover(cuttingPoints, orientation);
                         break;
                     case DayTimeOriented:
-                        retCrossover = new DayTimeOrientedCrossover(cuttingPoints, supplier);
+                        retCrossover = new DayTimeOrientedCrossover(cuttingPoints);
                         break;
                 }
             }

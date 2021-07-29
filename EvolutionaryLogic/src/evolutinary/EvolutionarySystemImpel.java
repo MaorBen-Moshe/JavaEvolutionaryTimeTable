@@ -1,5 +1,6 @@
 package evolutinary;
 
+import Interfaces.DataSupplier;
 import crossover.Crossover;
 import mutation.Mutation;
 import selection.Selection;
@@ -8,7 +9,7 @@ import models.BestSolutionItem;
 import java.util.*;
 
 // T is a population item
-public abstract class EvolutionarySystemImpel<T> implements EvolutionarySystem<T> {
+public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> implements EvolutionarySystem<T, S> {
     private Map<T, Double> population;
     private final Map<T, Double> childPopulation;
 
@@ -17,8 +18,8 @@ public abstract class EvolutionarySystemImpel<T> implements EvolutionarySystem<T
         return new ArrayList<>(generationFitnessHistory);
     }
 
-    private List<Double> generationFitnessHistory; // cell 0: best fitness of generation 1 and so on... (by jump in generations)
-    private BestSolutionItem<T> bestItem;
+    private final List<Double> generationFitnessHistory; // cell 0: best fitness of generation 1 and so on... (by jump in generations)
+    private BestSolutionItem<T, S> bestItem;
     private boolean isRunning = false;
 
     public int getJumpInGenerations() {
@@ -46,6 +47,11 @@ public abstract class EvolutionarySystemImpel<T> implements EvolutionarySystem<T
         this.acceptedFitness = acceptedFitness;
     }
 
+    public int getAcceptedNumberOfGenerations() {
+        return acceptedNumberOfGenerations;
+    }
+
+
     public void setAcceptedNumberOfGenerations(int acceptedNumberOfGenerations) {
         if(acceptedNumberOfGenerations < 100){
             throw new IllegalArgumentException("accepted number of generations must be at least 100");
@@ -54,11 +60,11 @@ public abstract class EvolutionarySystemImpel<T> implements EvolutionarySystem<T
         this.acceptedNumberOfGenerations = acceptedNumberOfGenerations;
     }
 
-    public void setCrossover(Crossover<T> crossover) {
+    public void setCrossover(Crossover<T, S> crossover) {
         this.crossover = crossover;
     }
 
-    public void setMutations(List<Mutation<T>> mutations) {
+    public void setMutations(List<Mutation<T, S>> mutations) {
         this.mutations = mutations;
     }
 
@@ -68,12 +74,12 @@ public abstract class EvolutionarySystemImpel<T> implements EvolutionarySystem<T
     }
 
     @Override
-    public Crossover<T> getCrossover() {
+    public Crossover<T, S> getCrossover() {
         return crossover;
     }
 
     @Override
-    public List<Mutation<T>> getMutations() {
+    public List<Mutation<T, S>> getMutations() {
         return mutations;
     }
 
@@ -89,9 +95,9 @@ public abstract class EvolutionarySystemImpel<T> implements EvolutionarySystem<T
         return population;
     }
 
-    private Crossover<T> crossover;
+    private Crossover<T, S> crossover;
     private Selection<T> selection;
-    private List<Mutation<T>> mutations;
+    private List<Mutation<T, S>> mutations;
     private int initialPopulationSize;
     private int acceptedNumberOfGenerations;
     private int jumpInGenerations;
@@ -105,8 +111,8 @@ public abstract class EvolutionarySystemImpel<T> implements EvolutionarySystem<T
     }
 
     @Override
-    public BestSolutionItem<T> StartAlgorithm(Set<TerminateRules> terminateBy) {
-        BestSolutionItem<T> currentBestFitness;
+    public BestSolutionItem<T, S> StartAlgorithm(Set<TerminateRules> terminateBy) {
+        BestSolutionItem<T, S> currentBestFitness;
         isRunning = true;
         generationFitnessHistory.clear();
         /* initial*/
@@ -129,7 +135,7 @@ public abstract class EvolutionarySystemImpel<T> implements EvolutionarySystem<T
     }
 
     @Override
-    public BestSolutionItem<T> getBestSolution() {
+    public BestSolutionItem<T, S> getBestSolution() {
         return bestItem;
     }
 
@@ -159,8 +165,8 @@ public abstract class EvolutionarySystemImpel<T> implements EvolutionarySystem<T
         }
     }
 
-    private BestSolutionItem<T> evaluateGeneration() {
-        BestSolutionItem<T> retVal = null;
+    private BestSolutionItem<T, S> evaluateGeneration() {
+        BestSolutionItem<T, S> retVal = null;
         population.keySet().forEach(item -> population.replace(item, population.get(item), evaluate(item)));
         Optional<Map.Entry<T, Double>> optional = population.entrySet()
                                                             .stream()
@@ -168,18 +174,19 @@ public abstract class EvolutionarySystemImpel<T> implements EvolutionarySystem<T
 
         Map.Entry<T, Double> temp = optional.orElse(null);
         if(temp != null){
-            retVal = new BestSolutionItem<>(temp.getKey(), temp.getValue());
+            retVal = new BestSolutionItem<>(temp.getKey(), temp.getValue(), getSystemInfo());
         }
 
         return retVal;
     }
 
     protected void createGeneration(){
+        S supplier = getSystemInfo();
         Map<T, Double> selected = selection.select(population);
         while(childPopulation.size() < population.size()){
-            Set<T> children = crossover.crossover(selected);
+            Set<T> children = crossover.crossover(selected, supplier);
             children.forEach(child ->{
-                mutations.forEach(mutation -> mutation.mutate(child));
+                mutations.forEach(mutation -> mutation.mutate(child, supplier));
                 childPopulation.put(child, 0.);
             });
         }

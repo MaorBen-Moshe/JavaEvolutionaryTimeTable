@@ -4,20 +4,21 @@ import DTO.ModelToDTOConverter;
 import DTO.SystemInfoDTO;
 import evolutinary.TimeTableEvolutionarySystemImpel;
 import models.TimeTable;
+import models.TimeTableSystemDataSupplier;
 
 import java.util.function.Consumer;
 
 public class SystemInfoCommand extends CommandImpel{
 
-    private Consumer<CommandResult<SystemInfoDTO<TimeTable>>> action;
+    private Consumer<CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>>> action;
 
-    public SystemInfoCommand(Consumer<CommandResult<SystemInfoDTO<TimeTable>>> o) {
+    public SystemInfoCommand(Consumer<CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>>> o) {
         this.action = o;
     }
 
     @Override
     public void execute() {
-        CommandResult<SystemInfoDTO<TimeTable>> result = new CommandResult<>();
+        CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>> result = new CommandResult<>();
         if(isFileLoaded){
             result.setResult(createAnswer());
         }
@@ -28,10 +29,10 @@ public class SystemInfoCommand extends CommandImpel{
         action.accept(result);
     }
 
-    private SystemInfoDTO<TimeTable> createAnswer(){
+    private SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier> createAnswer(){
         ModelToDTOConverter converter = new ModelToDTOConverter();
         TimeTableEvolutionarySystemImpel system = (TimeTableEvolutionarySystemImpel) evolutionarySystem;
-        return new SystemInfoDTO<TimeTable>(system.getDays(),
+        return new SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>(system.getDays(),
                 system.getHours(),
                 converter.createTeachersFromMap(system.getTeachers()),
                 converter.createClassesFromMap(system.getClasses()),

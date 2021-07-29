@@ -29,4 +29,9 @@ public class TeacherDTO extends SerialItemDTO{
     public int hashCode() {
         return Objects.hash(super.hashCode(), subjects);
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "subjects=" + subjects;
+    }
 }

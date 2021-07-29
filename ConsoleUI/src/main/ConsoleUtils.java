@@ -1,17 +1,14 @@
 package main;
 
-import DTO.BestSolutionDTO;
-import DTO.SystemInfoDTO;
-import DTO.TerminateRuleDTO;
-import DTO.TerminateRulesDTO;
+import DTO.*;
 import commands.*;
 import evolutinary.EvolutionarySystem;
 import models.TimeTable;
+import models.TimeTableSystemDataSupplier;
+import mutation.Mutation;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ConsoleUtils {
     private enum BestDisplay {
@@ -146,13 +143,41 @@ public class ConsoleUtils {
         return new TerminateRulesDTO(retRules, jump);
     }
 
-    private static void displaySystemInfo(CommandResult<SystemInfoDTO<TimeTable>> result){
+    private static void displaySystemInfo(CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>> result){
         if(result.isFailed()){
             System.out.println(result.getErrorMessage());
             return;
         }
 
+        SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier> info = result.getResult();
+        System.out.println("Time table info: ");
+        System.out.println("=================");
+        System.out.println("Days in time table: " + info.getDays());
+        System.out.println("Hours per day in time table: " + info.getHours());
+        System.out.println("Subjects: ");
+        System.out.println("=================");
+        printSerialItems(info.getSubjects());
+        System.out.println("Teachers: ");
+        System.out.println("=================");
+        printSerialItems(info.getTeachers());
+        System.out.println("School classes: ");
+        System.out.println("=================");
+        printSerialItems(info.getClasses());
+        System.out.println("=====================================================");
 
+        System.out.println("Engine info: ");
+        System.out.println("=================");
+        System.out.println("Population size: " + info.getInitialSize());
+        System.out.println("Selection technique: " + info.getSelection());
+        System.out.println("Crossover technique: " + info.getCrossover());
+        System.out.println("Mutations: ");
+        info.getMutations().forEach(System.out::println);
+    }
+
+    private static <T extends SerialItemDTO> void printSerialItems(Set<T> items){
+        List<T> listItems = new ArrayList<>(items);
+        listItems.sort(Comparator.comparing(T::getId));
+        listItems.forEach(item -> System.out.println(item.toString()));
     }
 
     private static void displayBestSolution(CommandResult<BestSolutionDTO> result){
@@ -200,23 +225,59 @@ public class ConsoleUtils {
     }
 
     private static void rawDisplay(BestSolutionDTO solution) {
+        TimeTableDTO timeTable = solution.getSolution();
+        System.out.println("Fitness = " + solution.getFitness());
+        timeTable.getItems().forEach(item -> System.out.println("< " + (item.getDay() + 1) + ", "
+                           + (item.getHour() + 1) + ", "
+                           + item.getSchoolClass().getName() + ", "
+                           + item.getTeacher().getName() + ", "
+                           + item.getSubject().getName() + ">"));
 
+        printRules(timeTable.getRulesScore(), timeTable.getSoftRulesAvg(), timeTable.getHardRulesAvg());
     }
 
     private static void classDisplay(BestSolutionDTO solution) {
+        TimeTableSystemDataSupplier info = solution.getSupplier();
+        System.out.println("Fitness = " + solution.getFitness());
+        TimeTableDTO table = solution.getSolution();
+        Set<TimeTableItemDTO> items = solution.getSolution().getItems();
 
+
+        printRules(table.getRulesScore(), table.getSoftRulesAvg(), table.getHardRulesAvg());
     }
 
     private static void teacherDisplay(BestSolutionDTO solution) {
+        TimeTableSystemDataSupplier info = solution.getSupplier();
+        System.out.println("Fitness = " + solution.getFitness());
+        TimeTableDTO table = solution.getSolution();
 
+
+        printRules(table.getRulesScore(), table.getSoftRulesAvg(), table.getHardRulesAvg());
     }
 
-    private static void displayProcess(CommandResult<List<Double>> result){
+    private static void printRules(Map<RuleDTO, Double> rules, double softAvg, double hardAvg){
+        rules.forEach((key, val) -> {
+            System.out.println("Rule name: " + key.getType().toString());
+            System.out.println("Rule strength: " + key.getStrength().toString());
+            System.out.println("Rule Score: " + val);
+        });
+
+        System.out.println("Hard rules average: " + hardAvg);
+        System.out.println("Soft rules average: " + softAvg);
+    }
+
+    private static void displayProcess(CommandResult<Map<Integer, Double>> result){
         if(result.isFailed()){
             System.out.println(result.getErrorMessage());
             return;
         }
 
-
+        Map<Integer, Double> generation = result.getResult();
+        double lastFitness = -1;
+        for(Map.Entry<Integer, Double> keyVal : generation.entrySet()){
+            String improvement = lastFitness != -1 ? "improvement: " + (keyVal.getValue() - lastFitness) : "";
+            System.out.println("Generation number: " + keyVal.getKey() + " with fitness: " + keyVal.getValue() + improvement);
+            lastFitness = keyVal.getValue();
+        }
     }
 }

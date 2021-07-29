@@ -4,19 +4,17 @@ import models.*;
 
 import java.util.*;
 
-public class DayTimeOrientedCrossover implements Crossover<TimeTable> {
+public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableSystemDataSupplier> {
     private final int cuttingPoints;
     private final Random rand;
-    private final TimeTableSystemDataSupplier supplier;
 
-    public DayTimeOrientedCrossover(int cuttingPoints, TimeTableSystemDataSupplier supplier){
+    public DayTimeOrientedCrossover(int cuttingPoints){
         rand = new Random();
         this.cuttingPoints = cuttingPoints;
-        this.supplier = supplier;
     }
 
     @Override
-    public Set<TimeTable> crossover(Map<TimeTable, Double> parents) {
+    public Set<TimeTable> crossover(Map<TimeTable, Double> parents, TimeTableSystemDataSupplier supplier) {
         if(parents.size() != 2){
             throw new IllegalArgumentException("DayTimeOrientedCrossover expect only 2 parents");
         }
@@ -29,12 +27,12 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable> {
 
         Set<TimeTable> children = new HashSet<>();
         List<Integer> cuttingPoints = CrossoverUtils.getCuttingPoints(parent1, parent2, this.cuttingPoints);
-        children.add(createChild(parent1, parent2, cuttingPoints));
-        children.add(createChild(parent1, parent2, cuttingPoints));
+        children.add(createChild(parent1, parent2, cuttingPoints, supplier));
+        children.add(createChild(parent1, parent2, cuttingPoints, supplier));
         return children;
     }
 
-    private TimeTable createChild(TimeTable parent1, TimeTable parent2, List<Integer> cuttingPoints){
+    private TimeTable createChild(TimeTable parent1, TimeTable parent2, List<Integer> cuttingPoints, TimeTableSystemDataSupplier supplier){
         TimeTable currentParent;
         TimeTable child = new TimeTable();
         boolean isParent1 = true;
@@ -67,5 +65,12 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable> {
         }
 
         return child;
+    }
+
+    @Override
+    public String toString() {
+        return "DayTimeOrientedCrossover{" +
+                "cuttingPoints=" + cuttingPoints +
+                '}';
     }
 }

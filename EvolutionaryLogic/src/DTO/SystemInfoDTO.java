@@ -1,5 +1,6 @@
 package DTO;
 
+import Interfaces.DataSupplier;
 import crossover.Crossover;
 import mutation.Mutation;
 import selection.Selection;
@@ -9,7 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class SystemInfoDTO<T> {
+public class SystemInfoDTO<T, S extends DataSupplier> {
     public Set<TeacherDTO> getTeachers() {
         return new HashSet<>(teachers);
     }
@@ -34,12 +35,20 @@ public class SystemInfoDTO<T> {
         return selection;
     }
 
-    public Crossover<T> getCrossover() {
+    public Crossover<T, S> getCrossover() {
         return crossover;
     }
 
-    public List<Mutation<T>> getMutations() {
+    public List<Mutation<T, S>> getMutations() {
         return new ArrayList<>(mutations);
+    }
+
+    public RulesDTO getRules() {
+        return rules;
+    }
+
+    public int getInitialSize() {
+        return initialSize;
     }
 
     private final Set<TeacherDTO> teachers;
@@ -51,11 +60,11 @@ public class SystemInfoDTO<T> {
 
     private final int initialSize;
     private final Selection<T> selection;
-    private final Crossover<T> crossover;
-    private final List<Mutation<T>> mutations;
+    private final Crossover<T, S> crossover;
+    private final List<Mutation<T, S>> mutations;
 
     public SystemInfoDTO(int days, int hours, Set<TeacherDTO> teachers, Set<SchoolClassDTO> classes, Set<SubjectDTO> subjects,
-                         RulesDTO rules, int initialSize, Selection<T> selection, Crossover<T> crossover, List<Mutation<T>> mutations){
+                         RulesDTO rules, int initialSize, Selection<T> selection, Crossover<T, S> crossover, List<Mutation<T, S>> mutations){
         this.days = days;
         this.hours = hours;
         this.teachers = new HashSet<>(teachers);

@@ -9,14 +9,14 @@ import selection.Selection;
 import java.util.List;
 import java.util.Set;
 
-public interface EvolutionarySystem<T> {
+public interface EvolutionarySystem<T, S extends DataSupplier> {
     enum TerminateRules {
         NumberOfGenerations, ByFitness
     };
 
-    BestSolutionItem<T> StartAlgorithm(Set<TerminateRules> terminateBy);
+    BestSolutionItem<T, S> StartAlgorithm(Set<TerminateRules> terminateBy);
 
-    BestSolutionItem<T> getBestSolution();
+    BestSolutionItem<T, S> getBestSolution();
 
     double getFitness(T item) throws ClassNotFoundException;
 
@@ -26,17 +26,21 @@ public interface EvolutionarySystem<T> {
 
     Selection<T> getSelection();
 
-    Crossover<T> getCrossover();
+    Crossover<T, S> getCrossover();
 
-    List<Mutation<T>> getMutations();
+    List<Mutation<T, S>> getMutations();
 
     List<Double> getGenerationFitnessHistory();
+
+    S getSystemInfo();
 
     void setAcceptedFitness(double acceptedFitness);
 
     void setAcceptedNumberOfGenerations(int acceptedNumberOfGenerations);
 
     int getCurrentNumberOfGenerations();
+
+    int getAcceptedNumberOfGenerations();
 
     void setJumpInGenerations(int jumpInGenerations);
 

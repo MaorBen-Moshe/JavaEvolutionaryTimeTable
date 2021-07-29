@@ -1,6 +1,7 @@
 package DTO;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class RulesDTO {
@@ -12,5 +13,23 @@ public class RulesDTO {
 
     public RulesDTO(Set<RuleDTO> rules) {
         this.rules = new HashSet<>(rules);
+    }
+
+    @Override
+    public String toString() {
+        return "rules=" + rules;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RulesDTO rulesDTO = (RulesDTO) o;
+        return rules.equals(rulesDTO.rules);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rules);
     }
 }

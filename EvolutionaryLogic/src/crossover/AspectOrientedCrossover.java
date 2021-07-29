@@ -5,24 +5,30 @@ import models.*;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class AspectOrientedCrossover implements Crossover<TimeTable> {
+public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSystemDataSupplier> {
+    @Override
+    public String toString() {
+        return "AspectOrientedCrossover{" +
+                "cuttingPoints=" + cuttingPoints +
+                ", orientation=" + orientation +
+                '}';
+    }
+
     public enum Orientation{
         Class, Teacher
     }
     private final int cuttingPoints;
     private final Orientation orientation;
-    private final TimeTableSystemDataSupplier supplier;
     private final Random rand;
 
-    public AspectOrientedCrossover(int cuttingPoints, Orientation orientation, TimeTableSystemDataSupplier supplier){
+    public AspectOrientedCrossover(int cuttingPoints, Orientation orientation){
         this.cuttingPoints = cuttingPoints;
         this.orientation = orientation;
-        this.supplier = supplier;
         this.rand= new Random();
     }
 
     @Override
-    public Set<TimeTable> crossover(Map<TimeTable, Double> parents) {
+    public Set<TimeTable> crossover(Map<TimeTable, Double> parents, TimeTableSystemDataSupplier supplier) {
         if(parents.size() != 2) {
             throw new IllegalArgumentException("AspectOrientedCrossover expect only 2 parents");
         }
@@ -40,12 +46,12 @@ public class AspectOrientedCrossover implements Crossover<TimeTable> {
             parent2 = CrossoverUtils.getParent(parents);
         }
 
-        children.add(createChild(parent1, parent2, items));
-        children.add(createChild(parent1, parent2, items));
+        children.add(createChild(parent1, parent2, items, supplier));
+        children.add(createChild(parent1, parent2, items, supplier));
         return children;
     }
 
-    private <T extends SerialItem> TimeTable createChild(TimeTable parent1, TimeTable parent2, Map<Integer, T> byAspectMap){
+    private <T extends SerialItem> TimeTable createChild(TimeTable parent1, TimeTable parent2, Map<Integer, T> byAspectMap, TimeTableSystemDataSupplier supplier){
         Map<T, TimeTable> descendantsOfEachT = new HashMap<>();
         List<Integer> cuttingPoints;
         TimeTable childCreated = new TimeTable();
@@ -55,8 +61,8 @@ public class AspectOrientedCrossover implements Crossover<TimeTable> {
             List<Integer> cutting = CrossoverUtils.getCuttingPoints(parent1, parent2, this.cuttingPoints);
             TimeTable current = null;
             switch (orientation){
-                case Teacher: current = createTeacherChildHelper(parent1, parent2, cutting, key); break;
-                case Class: current = createClassChildHelper(parent1, parent2, cutting, key); break;
+                case Teacher: current = createTeacherChildHelper(parent1, parent2, cutting, key, supplier); break;
+                case Class: current = createClassChildHelper(parent1, parent2, cutting, key, supplier); break;
             }
 
             descendantsOfEachT.replace(val, current);
@@ -75,7 +81,7 @@ public class AspectOrientedCrossover implements Crossover<TimeTable> {
         return childCreated;
     }
 
-    private TimeTable createTeacherChildHelper(TimeTable parent1, TimeTable parent2, List<Integer> cuttingPoints, int currentAspectId){
+    private TimeTable createTeacherChildHelper(TimeTable parent1, TimeTable parent2, List<Integer> cuttingPoints, int currentAspectId, TimeTableSystemDataSupplier supplier){
         TimeTable currentParent;
         TimeTable child = new TimeTable();
         boolean isParent1 = true;
@@ -108,7 +114,7 @@ public class AspectOrientedCrossover implements Crossover<TimeTable> {
         return child;
     }
 
-    private TimeTable createClassChildHelper(TimeTable parent1, TimeTable parent2, List<Integer> cuttingPoints, int currentAspectId){
+    private TimeTable createClassChildHelper(TimeTable parent1, TimeTable parent2, List<Integer> cuttingPoints, int currentAspectId, TimeTableSystemDataSupplier supplier){
         TimeTable currentParent;
         TimeTable child = new TimeTable();
         boolean isParent1 = true;

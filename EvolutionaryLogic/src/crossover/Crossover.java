@@ -5,6 +5,6 @@ import Interfaces.DataSupplier;
 import java.util.Map;
 import java.util.Set;
 
-public interface Crossover<T> {
-    Set<T> crossover(Map<T, Double> parents);
+public interface Crossover<T, S extends DataSupplier> {
+    Set<T> crossover(Map<T, Double> parents, S supplier);
 }

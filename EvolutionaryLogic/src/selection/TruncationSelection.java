@@ -27,4 +27,11 @@ public class TruncationSelection implements Selection<TimeTable> {
                          .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     }
+
+    @Override
+    public String toString() {
+        return "TruncationSelection{" +
+                "topPercent=" + topPercent +
+                '}';
+    }
 }

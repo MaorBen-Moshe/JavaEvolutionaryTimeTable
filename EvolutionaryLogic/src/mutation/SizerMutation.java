@@ -7,21 +7,19 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-public class SizerMutation implements Mutation<TimeTable> {
+public class SizerMutation implements Mutation<TimeTable, TimeTableSystemDataSupplier> {
     private final double probability;
     private final int totalTupples;
     private final Random rand;
-    private final TimeTableSystemDataSupplier supplier;
 
-    public SizerMutation(double probability, int totalTupples, TimeTableSystemDataSupplier supplier){
+    public SizerMutation(double probability, int totalTupples){
         this.totalTupples = totalTupples;
         this.probability = probability;
         rand = new Random();
-        this.supplier = supplier;
     }
 
     @Override
-    public void mutate(TimeTable child) {
+    public void mutate(TimeTable child, TimeTableSystemDataSupplier supplier) {
         double probToMutate = rand.nextDouble();
         if(probability == 0 || probability < probToMutate){
             return;
@@ -54,14 +52,14 @@ public class SizerMutation implements Mutation<TimeTable> {
             int maxItemsToAdd = Math.min(supplier.getHours() * supplier.getDays(), tupplesToChange);
             int i = 0;
             while(i < maxItemsToAdd){
-                if(child.add(createItem())){
+                if(child.add(createItem(supplier))){
                     i++;
                 }
             }
         }
     }
 
-    private TimeTableItem createItem(){
+    private TimeTableItem createItem(TimeTableSystemDataSupplier supplier){
         int daySelected, hourSelected;
         Teacher teacherSelected;
         Subject subjectSelected;
@@ -78,5 +76,13 @@ public class SizerMutation implements Mutation<TimeTable> {
     private <T extends SerialItem> T getRandItem(Map<Integer, T> collection){
         int randInt = rand.nextInt(collection.size());
         return collection.get(randInt);
+    }
+
+    @Override
+    public String toString() {
+        return "SizerMutation{" +
+                "probability=" + probability +
+                ", totalTupples=" + totalTupples +
+                '}';
     }
 }

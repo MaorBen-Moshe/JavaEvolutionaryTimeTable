@@ -7,7 +7,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-public class FlippingMutation implements Mutation<TimeTable> {
+public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemDataSupplier> {
+
     public enum Component {
         S, T, C, H, D
     }
@@ -16,18 +17,16 @@ public class FlippingMutation implements Mutation<TimeTable> {
     private final int maxTupples;
     private final Component component;
     private final Random rand;
-    private TimeTableSystemDataSupplier supplier;
 
-    public FlippingMutation(double probability, int maxTupples, Component component, TimeTableSystemDataSupplier supplier){
+    public FlippingMutation(double probability, int maxTupples, Component component){
         this.maxTupples = maxTupples;
         this.component = component;
         this.probability = probability;
         rand = new Random();
-        this.supplier = supplier;
     }
 
     @Override
-    public void mutate(TimeTable child) {
+    public void mutate(TimeTable child, TimeTableSystemDataSupplier supplier) {
         double probToMutate = rand.nextDouble();
         if(probability == 0 || probability < probToMutate){
             return;
@@ -46,7 +45,7 @@ public class FlippingMutation implements Mutation<TimeTable> {
                 numberOfChosen++;
             }
 
-            if(numberOfChosen >= maxTupples){
+            if(numberOfChosen >= itemsToGenerateNumber){
                 break;
             }
 
@@ -78,6 +77,15 @@ public class FlippingMutation implements Mutation<TimeTable> {
                     break;
             }
         });
+    }
+
+    @Override
+    public String toString() {
+        return "FlippingMutation{" +
+                "probability=" + probability +
+                ", maxTupples=" + maxTupples +
+                ", component=" + component +
+                '}';
     }
 
     private <T extends SerialItem> T getItem(Map<Integer, T> collection){

@@ -1,5 +1,7 @@
 package mutation;
 
-public interface Mutation<T> {
-    void mutate(T child);
+import Interfaces.DataSupplier;
+
+public interface Mutation<T, S extends DataSupplier> {
+    void mutate(T child, S supplier);
 }

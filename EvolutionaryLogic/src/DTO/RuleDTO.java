@@ -40,9 +40,9 @@ public class RuleDTO {
     @Override
     public String toString() {
         String ret = "rule: " +
-                "strength=" + strength +
-                ", type=" + type;
-        ret = ret + (configurations.size() != 0 ?  ", configurations= " + configurations : "");
+                "strength = " + strength +
+                ", type = " + type;
+        ret = ret + (configurations.size() != 0 ?  (", configurations: " + configurations) : "");
         return ret;
     }
 

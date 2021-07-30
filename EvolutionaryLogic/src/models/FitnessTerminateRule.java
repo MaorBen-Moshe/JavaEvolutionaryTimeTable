@@ -3,9 +3,9 @@ package models;
 import evolutinary.EvolutionarySystem;
 
 public class FitnessTerminateRule extends TerminateRule {
-    private final int fitness;
+    private final double fitness;
 
-    public FitnessTerminateRule(int fitness){
+    public FitnessTerminateRule(double fitness){
         super(EvolutionarySystem.TerminateRules.ByFitness);
         this.fitness = fitness;
     }

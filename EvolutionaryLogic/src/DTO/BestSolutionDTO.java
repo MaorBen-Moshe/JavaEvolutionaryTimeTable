@@ -1,11 +1,10 @@
 package DTO;
 
 import models.BestSolutionItem;
-import models.TimeTableSystemDataSupplier;
 
-public class BestSolutionDTO extends BestSolutionItem<TimeTableDTO, TimeTableSystemDataSupplier> {
+public class BestSolutionDTO extends BestSolutionItem<TimeTableDTO, TimeTableSystemDataSupplierDTO> {
 
-    public BestSolutionDTO(TimeTableDTO table, double fitness, TimeTableSystemDataSupplier supplier){
+    public BestSolutionDTO(TimeTableDTO table, double fitness, TimeTableSystemDataSupplierDTO supplier){
         super(table, fitness, supplier);
     }
 

@@ -110,12 +110,7 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
 
     private <T extends SerialItem> T getRandItem(Map<Integer, T> collection){
         int randInt = random.nextInt(collection.size());
-        return collection.get(randInt);
-    }
-
-    @Override
-    protected void createGeneration() {
-
+        return collection.get(randInt + 1);
     }
 
     @Override

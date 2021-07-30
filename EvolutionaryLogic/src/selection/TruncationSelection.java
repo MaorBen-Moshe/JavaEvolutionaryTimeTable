@@ -4,6 +4,7 @@ import models.TimeTable;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TruncationSelection implements Selection<TimeTable> {
@@ -30,8 +31,21 @@ public class TruncationSelection implements Selection<TimeTable> {
 
     @Override
     public String toString() {
-        return "TruncationSelection{" +
+        return "Truncation Selection { " +
                 "topPercent=" + topPercent +
-                '}';
+                " }";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TruncationSelection that = (TruncationSelection) o;
+        return topPercent == that.topPercent;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(topPercent);
     }
 }

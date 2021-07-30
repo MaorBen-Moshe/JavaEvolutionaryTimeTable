@@ -13,10 +13,6 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableS
 
     @Override
     public Set<TimeTable> crossover(Map<TimeTable, Double> parents, TimeTableSystemDataSupplier supplier) {
-        if(parents.size() != 2){
-            throw new IllegalArgumentException("DayTimeOrientedCrossover expect only 2 parents");
-        }
-
         TimeTable parent1 = CrossoverUtils.getParent(parents);
         TimeTable parent2 = CrossoverUtils.getParent(parents);
         while(parent2.equals(parent1)){
@@ -42,7 +38,8 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableS
                 for(int c = 1; c <= supplier.getClasses().size(); c++){
                     for(int t = 1; t <= supplier.getTeachers().size(); t++){
                         for(int s = 1; s <= supplier.getSubjects().size(); s++){
-                            if(count > cuttingPoints.get(currentCuttingPointPlace)){
+                            if(currentCuttingPointPlace < cuttingPoints.size() &&
+                                    count > cuttingPoints.get(currentCuttingPointPlace)){
                                 currentCuttingPointPlace++;
                                 isParent1 = !isParent1;
                             }
@@ -67,8 +64,21 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableS
 
     @Override
     public String toString() {
-        return "DayTimeOrientedCrossover{" +
+        return "DayTimeOrientedCrossover { " +
                 "cuttingPoints=" + cuttingPoints +
-                '}';
+                " }";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DayTimeOrientedCrossover that = (DayTimeOrientedCrossover) o;
+        return cuttingPoints == that.cuttingPoints;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cuttingPoints);
     }
 }

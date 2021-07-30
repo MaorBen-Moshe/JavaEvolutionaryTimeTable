@@ -35,7 +35,7 @@ public abstract class SerialItem {
 
     @Override
     public String toString() {
-        return "id=" + id +
-                ", name='" + name;
+        return "id = " + id +
+                ", name = " + name;
     }
 }

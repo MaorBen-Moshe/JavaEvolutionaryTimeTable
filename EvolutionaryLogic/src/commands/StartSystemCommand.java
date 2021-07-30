@@ -3,9 +3,10 @@ package commands;
 import DTO.FitnessTerminateRuleDTO;
 import DTO.GenerationsTerminateRuleDTO;
 import DTO.TerminateRuleDTO;
-import DTO.TerminateRulesDTO;
+import DTO.StartSystemInfoDTO;
 import models.FitnessTerminateRule;
 import models.GenerationTerminateRule;
+import models.JumpInGenerationsResult;
 import models.TerminateRule;
 
 import java.util.HashSet;
@@ -14,22 +15,25 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class StartSystemCommand extends CommandImpel{
-    private final Supplier<TerminateRulesDTO> whenRunningAlready;
-    private final Supplier<TerminateRulesDTO> whenNotRunning;
+    private final Supplier<StartSystemInfoDTO> whenRunningAlready;
+    private final Supplier<StartSystemInfoDTO> whenNotRunning;
+    private final Consumer<JumpInGenerationsResult> jumpInGenerationsListener;
     private final Consumer<CommandResult<?>> afterStart;
 
-    public StartSystemCommand(Supplier<TerminateRulesDTO> whenRunningAlready,
-                              Supplier<TerminateRulesDTO> whenNotRunning,
+    public StartSystemCommand(Supplier<StartSystemInfoDTO> whenRunningAlready,
+                              Supplier<StartSystemInfoDTO> whenNotRunning,
+                              Consumer<JumpInGenerationsResult> jumpInGenerationsListener,
                               Consumer<CommandResult<?>> after) {
         this.whenNotRunning = whenNotRunning;
         this.whenRunningAlready = whenRunningAlready;
         this.afterStart = after;
+        this.jumpInGenerationsListener = jumpInGenerationsListener;
     }
 
     @Override
     public void execute() {
         CommandResult<?> result = new CommandResult<>();
-        TerminateRulesDTO rules;
+        StartSystemInfoDTO rules;
         if(isFileLoaded){
             if(evolutionarySystem.IsRunningProcess()){
                 rules = whenRunningAlready.get();
@@ -43,7 +47,7 @@ public class StartSystemCommand extends CommandImpel{
                 return;
             }
 
-            evolutionarySystem.StartAlgorithm(setByTerminate(rules.getRules()), rules.getJumpInGenerations());
+            evolutionarySystem.StartAlgorithm(setByTerminate(rules.getRules()), rules.getJumpInGenerations(), jumpInGenerationsListener);
         }
         else{
             result.setErrorMessage("File should be loaded first");

@@ -5,6 +5,7 @@ import commands.*;
 import evolutinary.EvolutionarySystem;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
+
 import java.util.*;
 
 public class ConsoleUtils {
@@ -47,11 +48,16 @@ public class ConsoleUtils {
               }
 
               return null;
-          }, ConsoleUtils::getTerminate, (result) -> {
+          }, ConsoleUtils::getTerminate,
+                  (result) -> System.out.println("Generation: " +
+                                                  result.getNumberOfGeneration() +
+                                                    ", Fitness: " + result.getFitness() + " .")
+                  , (result) -> {
               if(result.isFailed()){
                   System.out.println(result.getErrorMessage());
                   return;
               }
+
               System.out.println("Process finished!");
           }),
           new BestSolutionCommand(ConsoleUtils::displayBestSolution),
@@ -95,9 +101,9 @@ public class ConsoleUtils {
         System.out.println("please choose an option. (1 - " + (commands.length + 1) + ")");
     }
 
-    private static TerminateRulesDTO getTerminate(){
+    private static StartSystemInfoDTO getTerminate(){
         Set<TerminateRuleDTO> retRules = new HashSet<>();
-        int jump = 0;
+        int jump;
         System.out.println("please enter the way you want the algorithm would terminate (write all the numbers of rules you want with coma between each one):");
         EvolutionarySystem.TerminateRules[] rules = EvolutionarySystem.TerminateRules.values();
         for (int i = 1; i <= rules.length; i++) {
@@ -124,7 +130,7 @@ public class ConsoleUtils {
                             break;
                         case ByFitness:
                             System.out.println("please enter the max fitness(positive number between 0-100):");
-                            int fit = scan.nextInt();
+                            double fit = scan.nextDouble();
                             if(fit >= 0 && fit <= 100){
                                 retRules.add(new FitnessTerminateRuleDTO(fit));
                             }
@@ -138,18 +144,19 @@ public class ConsoleUtils {
                     throw new IllegalArgumentException("terminate rule inserted is illegal");
                 }
 
-                try {
-                    System.out.println("please enter a number which you see the algorithm process generation with jump of each generation:");
-                    jump = scan.nextInt();
-                } catch (Exception e) {
-                    throw new IllegalArgumentException("jump in generations number must be positive");
-                }
             }
         } else {
             throw new IllegalArgumentException("terminate rules inserted is illegal");
         }
 
-        return new TerminateRulesDTO(retRules, jump);
+        try {
+            System.out.println("please enter a number which you will see the algorithm process generation with jump of each generation:");
+            jump = scan.nextInt();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("jump in generations number must be positive");
+        }
+
+        return new StartSystemInfoDTO(retRules, jump);
     }
 
     private static void displaySystemInfo(CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>> result){
@@ -246,22 +253,63 @@ public class ConsoleUtils {
     }
 
     private static void classDisplay(BestSolutionDTO solution) {
-        TimeTableSystemDataSupplier info = solution.getSupplier();
+        TimeTableSystemDataSupplierDTO info = solution.getSupplier();
         System.out.println("Fitness = " + solution.getFitness());
         TimeTableDTO table = solution.getSolution();
-        Set<TimeTableItemDTO> items = solution.getSolution().getItems();
-        //Map<Integer, Map<Integer, List<TimeTableItemDTO>>>
+        info.getClasses().forEach((key, val) -> {
+            System.out.println("Class: " + val.getName() + ", id: " + val.getId());
+            System.out.println("================");
+            Map<Integer, Map<Integer, List<TimeTableItemDTO>>> dayHourTable = initializeTableView(info);
+            table.getItems().forEach(item -> {
+                if(item.getSchoolClass().equals(val)){
+                    dayHourTable.get(item.getDay()).get(item.getHour()).add(item);
+                }
+            });
+
+            printMap(dayHourTable);
+            System.out.println("======================================");
+        });
 
         printRules(table.getRulesScore(), table.getSoftRulesAvg(), table.getHardRulesAvg());
     }
 
     private static void teacherDisplay(BestSolutionDTO solution) {
-        TimeTableSystemDataSupplier info = solution.getSupplier();
+        System.out.println("Teachers display");
+        System.out.println("======================================");
+        TimeTableSystemDataSupplierDTO info = solution.getSupplier();
         System.out.println("Fitness = " + solution.getFitness());
         TimeTableDTO table = solution.getSolution();
+        info.getTeachers().forEach((key, val) -> {
+            System.out.println("Teacher: " + val.getName() + ", id: " + val.getId());
+            System.out.println("================");
+            Map<Integer, Map<Integer, List<TimeTableItemDTO>>> dayHourTable = initializeTableView(info);
+            table.getItems().forEach(item -> {
+                if(item.getTeacher().equals(val)){
+                    dayHourTable.get(item.getDay()).get(item.getHour()).add(item);
+                }
+            });
 
+            printMap(dayHourTable);
+            System.out.println("======================================");
+        });
 
         printRules(table.getRulesScore(), table.getSoftRulesAvg(), table.getHardRulesAvg());
+    }
+
+    private static Map<Integer, Map<Integer, List<TimeTableItemDTO>>> initializeTableView(TimeTableSystemDataSupplierDTO supplier){
+        Map<Integer, Map<Integer, List<TimeTableItemDTO>>> dayHourTable = new HashMap<>();
+        for(int i = 0; i < supplier.getDays(); i++){
+            dayHourTable.put(i, new HashMap<>());
+            for(int j = 0; j < supplier.getHours(); j++){
+                dayHourTable.get(i).put(j, new ArrayList<>());
+            }
+        }
+
+        return dayHourTable;
+    }
+
+    private static void printMap(Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map){
+
     }
 
     private static void printRules(Map<RuleDTO, Double> rules, double softAvg, double hardAvg){

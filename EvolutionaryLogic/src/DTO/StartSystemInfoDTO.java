@@ -3,7 +3,7 @@ package DTO;
 import java.util.Collections;
 import java.util.Set;
 
-public class TerminateRulesDTO {
+public class StartSystemInfoDTO {
     public int getJumpInGenerations() {
         return jumpInGenerations;
     }
@@ -17,7 +17,7 @@ public class TerminateRulesDTO {
 
     private final int jumpInGenerations;
 
-    public TerminateRulesDTO(Set<TerminateRuleDTO> rules, int jumpInGenerations) {
+    public StartSystemInfoDTO(Set<TerminateRuleDTO> rules, int jumpInGenerations) {
         this.rules = rules;
         this.unModifiedRules = Collections.unmodifiableSet(this.rules);
         this.jumpInGenerations = jumpInGenerations;

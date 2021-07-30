@@ -15,7 +15,7 @@ public class RulesDTO {
 
     public RulesDTO(Set<RuleDTO> rules) {
         this.rules = new HashSet<>(rules);
-        this. unModifiedRules = Collections.unmodifiableSet(this.rules);
+        this.unModifiedRules = Collections.unmodifiableSet(this.rules);
     }
 
     @Override

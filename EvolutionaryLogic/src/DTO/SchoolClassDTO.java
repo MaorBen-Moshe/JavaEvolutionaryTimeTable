@@ -38,7 +38,19 @@ public class SchoolClassDTO extends SerialItemDTO{
 
     @Override
     public String toString() {
-        return super.toString() + " totalNumberOfHours=" + totalNumberOfHours +
-                ", subjectsNeeded=" + subjectsNeeded;
+        return super.toString() +
+                ", subjectsNeeded:{ " + subjectToString() +
+                "}, total number of hours = " + totalNumberOfHours;
+    }
+
+    private String subjectToString(){
+        StringBuilder builder = new StringBuilder();
+        subjectsNeeded.forEach((key, val) -> {
+            builder.append("[subject = ").append(key).append(", hours = ").append(val).append("]");
+            builder.append(", ");
+        });
+
+        builder.replace(builder.length() - 2, builder.length(), "");
+        return builder.toString();
     }
 }

@@ -3,12 +3,14 @@ package evolutinary;
 import Interfaces.DataSupplier;
 import crossover.Crossover;
 import models.GenerationTerminateRule;
+import models.JumpInGenerationsResult;
 import models.TerminateRule;
 import mutation.Mutation;
 import selection.Selection;
 import models.BestSolutionItem;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 // T is a population item
 public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> implements EvolutionarySystem<T, S> {
@@ -75,27 +77,31 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     }
 
     @Override
-    public BestSolutionItem<T, S> StartAlgorithm(Set<TerminateRule> terminateBy, int jumpInGenerations) {
+    public BestSolutionItem<T, S> StartAlgorithm(Set<TerminateRule> terminateBy, int jumpInGenerations, Consumer<JumpInGenerationsResult> listener) {
         jumpInGenerations = jumpInGenerations <= 0 ? 1 : jumpInGenerations;
-        BestSolutionItem<T, S> currentBestFitness;
         isRunning = true;
         generationFitnessHistory.clear();
-        /* initial*/
-        initialPopulation();
-        currentBestFitness = evaluateGeneration();
-        generationFitnessHistory.put(0, currentBestFitness.getFitness());
-        /* iterative*/
-        while(!isTerminate(terminateBy)){
-            createGeneration();
-            currentBestFitness = evaluateGeneration();
-            currentNumberOfGenerations++;
-            if(currentNumberOfGenerations % jumpInGenerations == 0){
-                generationFitnessHistory.put(currentNumberOfGenerations, currentBestFitness.getFitness());
+        try{
+            /* initial*/
+            initialPopulation();
+            bestItem = evaluateGeneration();
+            generationFitnessHistory.put(0, bestItem.getFitness());
+            /* iterative*/
+            while(!isTerminate(terminateBy)){
+                createGeneration();
+                bestItem = evaluateGeneration();
+                currentNumberOfGenerations++;
+                if(currentNumberOfGenerations % jumpInGenerations == 0){
+                    generationFitnessHistory.put(currentNumberOfGenerations, bestItem.getFitness());
+                    listener.accept(new JumpInGenerationsResult(bestItem.getFitness(), currentNumberOfGenerations));
+                }
             }
+        } catch (Exception e){
+            isRunning = false;
+            throw e;
         }
 
         isRunning = false;
-        bestItem = currentBestFitness;
         return bestItem;
     }
 
@@ -117,7 +123,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     private void initialPopulation(){
         for(int i =0; i < initialPopulationSize; i++){
             T option = createOptionalSolution();
-            population.put(option, evaluate(option));
+            population.put(option, 0.);
         }
     }
 

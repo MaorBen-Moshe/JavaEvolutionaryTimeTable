@@ -33,6 +33,6 @@ public class Teacher extends SerialItem {
     @Override
     public String toString() {
         return  super.toString() + ", " +
-                "subjects=" + subjects;
+                "subjects =" + subjects;
     }
 }

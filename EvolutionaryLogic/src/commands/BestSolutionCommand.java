@@ -44,7 +44,8 @@ public class BestSolutionCommand extends CommandImpel{
 
         TimeTableDTO newTable = new TimeTableDTO(set, converter.createRuleMapDTO(table.getRulesScore()),
                                                  table.getHardRulesAvg(), table.getSoftRulesAvg());
-        return new BestSolutionDTO(newTable, solution.getFitness(), evolutionarySystem.getSystemInfo());
+        TimeTableSystemDataSupplierDTO supplier = new ModelToDTOConverter().createDataSupplierDTO(evolutionarySystem.getSystemInfo());
+        return new BestSolutionDTO(newTable, solution.getFitness(), supplier);
     }
 
     @Override

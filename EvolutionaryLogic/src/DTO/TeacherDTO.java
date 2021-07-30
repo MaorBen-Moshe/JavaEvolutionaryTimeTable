@@ -34,6 +34,6 @@ public class TeacherDTO extends SerialItemDTO{
 
     @Override
     public String toString() {
-        return super.toString() + "subjects=" + subjects;
+        return super.toString() + "[subjects=" + subjects + ']';
     }
 }

@@ -1,4 +1,4 @@
-package models;
+package DTO;
 
 import Interfaces.DataSupplier;
 
@@ -7,16 +7,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class TimeTableSystemDataSupplier implements DataSupplier {
-    public Map<Integer, Teacher> getTeachers() {
+public class TimeTableSystemDataSupplierDTO implements DataSupplier {
+    public Map<Integer, TeacherDTO> getTeachers() {
         return unModifiedTeachers;
     }
 
-    public Map<Integer, Subject> getSubjects() {
+    public Map<Integer, SubjectDTO> getSubjects() {
         return unModifiedSubjects;
     }
 
-    public Map<Integer, SchoolClass> getClasses() {
+    public Map<Integer, SchoolClassDTO> getClasses() {
         return unModifiedClasses;
     }
 
@@ -28,19 +28,19 @@ public class TimeTableSystemDataSupplier implements DataSupplier {
         return hours;
     }
 
-    private final Map<Integer, Teacher> teachers;
-    private final Map<Integer, Teacher> unModifiedTeachers;
-    private final Map<Integer, Subject> subjects;
-    private final Map<Integer, Subject> unModifiedSubjects;
-    private final Map<Integer, SchoolClass> classes;
-    private final Map<Integer, SchoolClass> unModifiedClasses;
+    private final Map<Integer, TeacherDTO> teachers;
+    private final Map<Integer, TeacherDTO> unModifiedTeachers;
+    private final Map<Integer, SubjectDTO> subjects;
+    private final Map<Integer, SubjectDTO> unModifiedSubjects;
+    private final Map<Integer, SchoolClassDTO> classes;
+    private final Map<Integer, SchoolClassDTO> unModifiedClasses;
     private final int days;
     private final int hours;
 
-    public TimeTableSystemDataSupplier(int days,
+    public TimeTableSystemDataSupplierDTO(int days,
                                        int hours,
-                                       Map<Integer, Teacher> teachers,
-                                       Map<Integer, Subject> subjects, Map<Integer, SchoolClass> classes){
+                                       Map<Integer, TeacherDTO> teachers,
+                                       Map<Integer, SubjectDTO> subjects, Map<Integer, SchoolClassDTO> classes){
         this.days = days;
         this.hours = hours;
         this.teachers = new HashMap<>(teachers);
@@ -55,8 +55,8 @@ public class TimeTableSystemDataSupplier implements DataSupplier {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TimeTableSystemDataSupplier supplier = (TimeTableSystemDataSupplier) o;
-        return days == supplier.days && hours == supplier.hours && teachers.equals(supplier.teachers) && subjects.equals(supplier.subjects) && classes.equals(supplier.classes);
+        TimeTableSystemDataSupplierDTO that = (TimeTableSystemDataSupplierDTO) o;
+        return days == that.days && hours == that.hours && teachers.equals(that.teachers) && subjects.equals(that.subjects) && classes.equals(that.classes);
     }
 
     @Override

@@ -14,6 +14,19 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AspectOrientedCrossover that = (AspectOrientedCrossover) o;
+        return cuttingPoints == that.cuttingPoints && orientation == that.orientation;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cuttingPoints, orientation);
+    }
+
     public enum Orientation{
         Class, Teacher
     }
@@ -27,10 +40,6 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
 
     @Override
     public Set<TimeTable> crossover(Map<TimeTable, Double> parents, TimeTableSystemDataSupplier supplier) {
-        if(parents.size() != 2) {
-            throw new IllegalArgumentException("AspectOrientedCrossover expect only 2 parents");
-        }
-
         Set<TimeTable> children = new HashSet<>();
         Map<Integer, ? extends SerialItem> items = null;
         switch (orientation){
@@ -89,7 +98,8 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
             for(int h = 0; h < supplier.getHours(); h++){
                 for(int c = 1; c <= supplier.getClasses().size(); c++){
                     for(int s = 1; s <= supplier.getSubjects().size(); s++){
-                        if(count > cuttingPoints.get(currentCuttingPointPlace)){
+                        if(currentCuttingPointPlace < cuttingPoints.size() &&
+                                count > cuttingPoints.get(currentCuttingPointPlace)){
                             currentCuttingPointPlace++;
                             isParent1 = !isParent1;
                         }

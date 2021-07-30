@@ -2,12 +2,22 @@ package mutation;
 
 import models.*;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemDataSupplier> {
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FlippingMutation that = (FlippingMutation) o;
+        return Double.compare(that.probability, probability) == 0 && maxTupples == that.maxTupples && component == that.component;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(probability, maxTupples, component);
+    }
 
     public enum Component {
         S, T, C, H, D
@@ -53,7 +63,7 @@ public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemData
         }
 
         itemsChosen.forEach(chosen -> {
-            int randSize = 0;
+            int randSize;
             switch(component){
                 case C:
                     Map<Integer, SchoolClass> classes = supplier.getClasses();
@@ -81,11 +91,11 @@ public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemData
 
     @Override
     public String toString() {
-        return "FlippingMutation{" +
+        return "FlippingMutation { " +
                 "probability=" + probability +
                 ", maxTupples=" + maxTupples +
                 ", component=" + component +
-                '}';
+                " }";
     }
 
     private <T extends SerialItem> T getItem(Map<Integer, T> collection){

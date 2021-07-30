@@ -2,10 +2,7 @@ package mutation;
 
 import models.*;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class SizerMutation implements Mutation<TimeTable, TimeTableSystemDataSupplier> {
     private final double probability;
@@ -80,9 +77,22 @@ public class SizerMutation implements Mutation<TimeTable, TimeTableSystemDataSup
 
     @Override
     public String toString() {
-        return "SizerMutation{" +
+        return "SizerMutation { " +
                 "probability=" + probability +
                 ", totalTupples=" + totalTupples +
-                '}';
+                " }";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SizerMutation that = (SizerMutation) o;
+        return Double.compare(that.probability, probability) == 0 && totalTupples == that.totalTupples;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(probability, totalTupples);
     }
 }

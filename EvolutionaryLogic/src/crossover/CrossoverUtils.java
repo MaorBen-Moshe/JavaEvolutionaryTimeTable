@@ -1,18 +1,13 @@
 package crossover;
 
 import models.TimeTable;
+import utils.RandomUtils;
 
 import java.util.*;
 
 public class CrossoverUtils {
-    static Random rand;
-
-    static {
-        rand = new Random();
-    }
-
     static TimeTable getParent(Map<TimeTable, Double> parents){
-        final int randomNumber = rand.nextInt(parents.size());
+        final int randomNumber = RandomUtils.nextIntInRange(0, parents.size());
         TimeTable retVal = null;
         int i = 0;
         for(TimeTable timeTable : parents.keySet()){
@@ -31,7 +26,7 @@ public class CrossoverUtils {
         List<Integer> cuttingPoints = new ArrayList<>();
         int maxCuttingOption = Math.max(parent1.size(), parent2.size());
         while(cuttingPoints.size() < cuttingPointsCount){
-            int current = rand.nextInt(maxCuttingOption);
+            int current = RandomUtils.nextIntInRange(0, maxCuttingOption);
             if(!cuttingPoints.contains(current)){
                 cuttingPoints.add(current);
             }

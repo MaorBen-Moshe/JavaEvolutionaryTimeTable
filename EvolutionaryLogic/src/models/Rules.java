@@ -17,14 +17,6 @@ public class Rules{
         rules = new HashSet<>();
     }
 
-    public Rule.eStrength getRuleStrength(String ruleId){
-        Rule rule = rules.stream()
-                    .filter(current -> current.toString().equals(ruleId))
-                    .findFirst().orElseThrow(() -> new IllegalArgumentException("Rule " + ruleId + " not found"));
-
-        return rule.getStrength();
-    }
-
     public int getHardRulesWeight(){
         return hardRulesWeight;
     }

@@ -1,6 +1,8 @@
 package mutation;
 
 import models.*;
+import utils.ItemCreationUtil;
+import utils.RandomUtils;
 
 import java.util.*;
 
@@ -26,18 +28,16 @@ public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemData
     private final double probability;
     private final int maxTupples;
     private final Component component;
-    private final Random rand;
 
     public FlippingMutation(double probability, int maxTupples, Component component){
         this.maxTupples = maxTupples;
         this.component = component;
         this.probability = probability;
-        rand = new Random();
     }
 
     @Override
     public void mutate(TimeTable child, TimeTableSystemDataSupplier supplier) {
-        double probToMutate = rand.nextDouble();
+        double probToMutate = RandomUtils.nextDouble();
         if(probability == 0 || probability < probToMutate){
             return;
         }
@@ -46,10 +46,10 @@ public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemData
         int i = 1;
 
         int numberOfChosen = 0;
-        int itemsToGenerateNumber = rand.nextInt(maxTupples);
+        int itemsToGenerateNumber = RandomUtils.nextIntInRange(0, maxTupples);
         Set<TimeTableItem> itemsChosen = new HashSet<>();
         for(TimeTableItem item : child.getSortedItems()){
-            random = rand.nextInt(child.size() + 1);
+            random = RandomUtils.nextIntInRange(0, child.size() + 1);
             if(random % (i + 1) == 0){
                 itemsChosen.add(item);
                 numberOfChosen++;
@@ -67,23 +67,23 @@ public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemData
             switch(component){
                 case C:
                     Map<Integer, SchoolClass> classes = supplier.getClasses();
-                    chosen.setSchoolClass(getItem(classes));
+                    chosen.setSchoolClass(ItemCreationUtil.getRandItem(classes));
                     break;
                 case D:
-                    randSize = rand.nextInt(supplier.getDays()) - 1;
+                    randSize = RandomUtils.nextIntInRange(0, supplier.getDays());
                     chosen.setDay(randSize);
                     break;
                 case H:
-                    randSize = rand.nextInt(supplier.getHours()) - 1;
+                    randSize = RandomUtils.nextIntInRange(0, supplier.getHours());
                     chosen.setHour(randSize);
                     break;
                 case S:
                     Map<Integer, Subject> subjects = supplier.getSubjects();
-                    chosen.setSubject(getItem(subjects));
+                    chosen.setSubject(ItemCreationUtil.getRandItem(subjects));
                     break;
                 case T:
                     Map<Integer, Teacher> teachers = supplier.getTeachers();
-                    chosen.setTeacher(getItem(teachers));
+                    chosen.setTeacher(ItemCreationUtil.getRandItem(teachers));
                     break;
             }
         });
@@ -96,10 +96,5 @@ public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemData
                 ", maxTupples=" + maxTupples +
                 ", component=" + component +
                 " }";
-    }
-
-    private <T extends SerialItem> T getItem(Map<Integer, T> collection){
-        int randSize = rand.nextInt(collection.size());
-        return collection.get(randSize);
     }
 }

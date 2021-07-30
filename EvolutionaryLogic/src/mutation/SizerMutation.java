@@ -1,37 +1,37 @@
 package mutation;
 
 import models.*;
+import utils.ItemCreationUtil;
+import utils.RandomUtils;
 
 import java.util.*;
 
 public class SizerMutation implements Mutation<TimeTable, TimeTableSystemDataSupplier> {
     private final double probability;
     private final int totalTupples;
-    private final Random rand;
 
     public SizerMutation(double probability, int totalTupples){
         this.totalTupples = totalTupples;
         this.probability = probability;
-        rand = new Random();
     }
 
     @Override
     public void mutate(TimeTable child, TimeTableSystemDataSupplier supplier) {
-        double probToMutate = rand.nextDouble();
+        double probToMutate = RandomUtils.nextDouble();
         if(probability == 0 || probability < probToMutate){
             return;
         }
 
         if(totalTupples < 0){
             int tupplesToChange = totalTupples * -1;
-            tupplesToChange = rand.nextInt(tupplesToChange);
+            tupplesToChange = RandomUtils.nextIntInRange(0, tupplesToChange);
             int minItemsToRemove = Math.max(tupplesToChange, supplier.getDays());
             int randomNumber;
             int i = 1;
             int numberOfRemoved = 0;
-            Set<TimeTableItem> temp = new HashSet<>(child.getSortedItems());
+            List<TimeTableItem> temp = new ArrayList<>(child.getSortedItems());
             for(TimeTableItem item : temp){
-                randomNumber = rand.nextInt(child.size() + 1);
+                randomNumber = RandomUtils.nextIntInRange(0, child.size() + 1);
                 if(randomNumber % (i + 1) == 0){
                     child.remove(item);
                     numberOfRemoved++;
@@ -45,34 +45,12 @@ public class SizerMutation implements Mutation<TimeTable, TimeTableSystemDataSup
             }
         }
         else if(totalTupples > 0){
-            int tupplesToChange = rand.nextInt(totalTupples);
+            int tupplesToChange = RandomUtils.nextIntInRange(0, totalTupples);
             int maxItemsToAdd = Math.min(supplier.getHours() * supplier.getDays(), tupplesToChange);
-            int i = 0;
-            while(i < maxItemsToAdd){
-                if(child.add(createItem(supplier))){
-                    i++;
-                }
+            for(int i = 0; i < maxItemsToAdd; i++){
+                child.add(ItemCreationUtil.createItem(supplier));
             }
         }
-    }
-
-    private TimeTableItem createItem(TimeTableSystemDataSupplier supplier){
-        int daySelected, hourSelected;
-        Teacher teacherSelected;
-        Subject subjectSelected;
-        SchoolClass classSelected;
-
-        daySelected = rand.nextInt(supplier.getDays());
-        hourSelected = rand.nextInt(supplier.getHours());
-        teacherSelected = getRandItem(supplier.getTeachers());
-        subjectSelected = getRandItem(supplier.getSubjects());
-        classSelected = getRandItem(supplier.getClasses());
-        return new TimeTableItem(daySelected, hourSelected, classSelected, teacherSelected, subjectSelected);
-    }
-
-    private <T extends SerialItem> T getRandItem(Map<Integer, T> collection){
-        int randInt = rand.nextInt(collection.size());
-        return collection.get(randInt);
     }
 
     @Override

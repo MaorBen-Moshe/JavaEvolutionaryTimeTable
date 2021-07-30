@@ -129,7 +129,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
 
     private BestSolutionItem<T, S> evaluateGeneration() {
         BestSolutionItem<T, S> retVal = null;
-        population.keySet().forEach(item -> population.replace(item, population.get(item), evaluate(item)));
+        population.keySet().forEach(item -> population.replace(item, evaluate(item)));
         Optional<Map.Entry<T, Double>> optional = population.entrySet()
                                                             .stream()
                                                             .max(Comparator.comparingDouble(Map.Entry::getValue));

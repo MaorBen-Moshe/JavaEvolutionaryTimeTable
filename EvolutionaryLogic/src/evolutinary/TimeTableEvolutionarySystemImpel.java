@@ -2,6 +2,8 @@ package evolutinary;
 
 import Interfaces.DataSupplier;
 import models.*;
+import utils.ItemCreationUtil;
+import utils.RandomUtils;
 
 import java.util.*;
 
@@ -71,10 +73,8 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
     private Rules rules;
     private int days;
     private int hours;
-    private final Random random;
 
     public TimeTableEvolutionarySystemImpel(){
-        random = new Random();
     }
 
     @Override
@@ -86,7 +86,7 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
         int maxNumber = days * hours * teachers.size() * subjects.size() * classes.size();
         int minNumber = classes.values().stream().mapToInt(SchoolClass::getTotalNumberOfHours).sum();
         TimeTable timeTable = new TimeTable();
-        int currentTableSize = random.ints(minNumber, maxNumber).findFirst().orElse(0);
+        int currentTableSize = RandomUtils.nextIntInRange(minNumber, maxNumber);
         for(int i = 0; i < currentTableSize; i++){
             timeTable.add(createItem());
         }
@@ -100,17 +100,12 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
         Subject subjectSelected;
         SchoolClass classSelected;
 
-        daySelected = random.nextInt(days);
-        hourSelected = random.nextInt(hours);
-        teacherSelected = getRandItem(teachers);
-        subjectSelected = getRandItem(subjects);
-        classSelected = getRandItem(classes);
+        daySelected = RandomUtils.nextIntInRange(0, days);
+        hourSelected = RandomUtils.nextIntInRange(0, hours);
+        teacherSelected = ItemCreationUtil.getRandItem(teachers);
+        subjectSelected = ItemCreationUtil.getRandItem(subjects);
+        classSelected = ItemCreationUtil.getRandItem(classes);
         return new TimeTableItem(daySelected, hourSelected, classSelected, teacherSelected, subjectSelected);
-    }
-
-    private <T extends SerialItem> T getRandItem(Map<Integer, T> collection){
-        int randInt = random.nextInt(collection.size());
-        return collection.get(randInt + 1);
     }
 
     @Override

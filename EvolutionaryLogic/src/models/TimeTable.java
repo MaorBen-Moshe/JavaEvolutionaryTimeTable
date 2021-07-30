@@ -3,12 +3,13 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class TimeTable {
-    public Set<TimeTableItem> getSortedItems() {
+    public List<TimeTableItem> getSortedItems() {
+        unModifiedSortedItems.sort(TimeTableItem::compareTo);
         return unModifiedSortedItems;
     }
 
-    private final Set<TimeTableItem> sortedItems;
-    private Set<TimeTableItem> unModifiedSortedItems;
+    private final List<TimeTableItem> sortedItems;
+    private List<TimeTableItem> unModifiedSortedItems;
     private final Map<Rule, Double> rulesScore;
     private Map<Rule, Double> unModifiedRulesScore;
 
@@ -32,23 +33,19 @@ public class TimeTable {
     private double softRulesAvg;
 
     public TimeTable() {
-        sortedItems = new TreeSet<>();
+        sortedItems = new ArrayList<>();
         rulesScore = new HashMap<>();
     }
 
-    public boolean add(TimeTableItem item){
-        boolean ret = sortedItems.add(item);
-        if(ret){
-            this.unModifiedSortedItems = Collections.unmodifiableSortedSet(new TreeSet<>(sortedItems));
-        }
-
-        return ret;
+    public void add(TimeTableItem item){
+        sortedItems.add(item);
+        this.unModifiedSortedItems = Collections.unmodifiableList(new ArrayList<>(sortedItems));
     }
 
     public boolean remove(TimeTableItem item){
         boolean ret = sortedItems.remove(item);
         if(ret){
-            this.unModifiedSortedItems = Collections.unmodifiableSortedSet(new TreeSet<>(sortedItems));
+            this.unModifiedSortedItems = Collections.unmodifiableList(new ArrayList<>(sortedItems));
         }
 
         return ret;

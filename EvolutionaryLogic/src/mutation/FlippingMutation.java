@@ -8,19 +8,6 @@ import java.util.*;
 
 public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemDataSupplier> {
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FlippingMutation that = (FlippingMutation) o;
-        return Double.compare(that.probability, probability) == 0 && maxTupples == that.maxTupples && component == that.component;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(probability, maxTupples, component);
-    }
-
     public enum Component {
         S, T, C, H, D
     }
@@ -96,5 +83,18 @@ public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemData
                 ", maxTupples=" + maxTupples +
                 ", component=" + component +
                 " }";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FlippingMutation that = (FlippingMutation) o;
+        return Double.compare(that.probability, probability) == 0 && maxTupples == that.maxTupples && component == that.component;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(probability, maxTupples, component);
     }
 }

@@ -9,13 +9,13 @@ public class RulesDTO {
     private final Set<RuleDTO> rules;
     private final Set<RuleDTO> unModifiedRules;
 
-    public Set<RuleDTO> getRules() {
-        return unModifiedRules;
-    }
-
     public RulesDTO(Set<RuleDTO> rules) {
         this.rules = new HashSet<>(rules);
         this.unModifiedRules = Collections.unmodifiableSet(this.rules);
+    }
+
+    public Set<RuleDTO> getRules() {
+        return unModifiedRules;
     }
 
     @Override

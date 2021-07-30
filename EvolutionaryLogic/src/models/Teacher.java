@@ -3,10 +3,6 @@ package models;
 import java.util.*;
 
 public class Teacher extends SerialItem implements Comparable<Teacher> {
-    public Set<Subject> getSubjects() {
-        return unModifiedSubjects;
-    }
-
     private final Set<Subject> subjects;
     private final Set<Subject> unModifiedSubjects;
 
@@ -14,6 +10,10 @@ public class Teacher extends SerialItem implements Comparable<Teacher> {
         super(name, id);
         this.subjects = new HashSet<>(subjects);
         this.unModifiedSubjects = Collections.unmodifiableSet(this.subjects);
+    }
+
+    public Set<Subject> getSubjects() {
+        return unModifiedSubjects;
     }
 
     @Override

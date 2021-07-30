@@ -5,10 +5,6 @@ import evolutinary.EvolutionarySystem;
 import java.util.Objects;
 
 public abstract class TerminateRule {
-    public EvolutionarySystem.TerminateRules getType() {
-        return type;
-    }
-
     private final EvolutionarySystem.TerminateRules type;
 
     public TerminateRule(EvolutionarySystem.TerminateRules type){
@@ -16,6 +12,10 @@ public abstract class TerminateRule {
     }
 
     public abstract boolean isTerminate(Object... args);
+
+    public EvolutionarySystem.TerminateRules getType() {
+        return type;
+    }
 
     @Override
     public boolean equals(Object o) {

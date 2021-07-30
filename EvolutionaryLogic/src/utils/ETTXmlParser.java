@@ -1,6 +1,5 @@
 package utils;
 
-import Interfaces.DataSupplier;
 import crossover.AspectOrientedCrossover;
 import crossover.CrossoverTypes;
 import crossover.DayTimeOrientedCrossover;

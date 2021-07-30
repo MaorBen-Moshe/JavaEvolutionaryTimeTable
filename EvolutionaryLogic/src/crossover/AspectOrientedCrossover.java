@@ -6,27 +6,6 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSystemDataSupplier> {
-    @Override
-    public String toString() {
-        return "AspectOrientedCrossover{" +
-                "cuttingPoints=" + cuttingPoints +
-                ", orientation=" + orientation +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AspectOrientedCrossover that = (AspectOrientedCrossover) o;
-        return cuttingPoints == that.cuttingPoints && orientation == that.orientation;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(cuttingPoints, orientation);
-    }
-
     public enum Orientation{
         Class, Teacher
     }
@@ -56,6 +35,27 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
         children.add(createChild(parent1, parent2, items, supplier));
         children.add(createChild(parent1, parent2, items, supplier));
         return children;
+    }
+
+    @Override
+    public String toString() {
+        return "AspectOrientedCrossover{" +
+                "cuttingPoints=" + cuttingPoints +
+                ", orientation=" + orientation +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AspectOrientedCrossover that = (AspectOrientedCrossover) o;
+        return cuttingPoints == that.cuttingPoints && orientation == that.orientation;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cuttingPoints, orientation);
     }
 
     private <T extends SerialItem> TimeTable createChild(TimeTable parent1, TimeTable parent2, Map<Integer, T> byAspectMap, TimeTableSystemDataSupplier supplier){

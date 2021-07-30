@@ -26,6 +26,26 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableS
         return children;
     }
 
+    @Override
+    public String toString() {
+        return "DayTimeOrientedCrossover { " +
+                "cuttingPoints=" + cuttingPoints +
+                " }";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DayTimeOrientedCrossover that = (DayTimeOrientedCrossover) o;
+        return cuttingPoints == that.cuttingPoints;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cuttingPoints);
+    }
+
     private TimeTable createChild(TimeTable parent1, TimeTable parent2, List<Integer> cuttingPoints, TimeTableSystemDataSupplier supplier){
         TimeTable currentParent;
         TimeTable child = new TimeTable();
@@ -60,25 +80,5 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableS
         }
 
         return child;
-    }
-
-    @Override
-    public String toString() {
-        return "DayTimeOrientedCrossover { " +
-                "cuttingPoints=" + cuttingPoints +
-                " }";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DayTimeOrientedCrossover that = (DayTimeOrientedCrossover) o;
-        return cuttingPoints == that.cuttingPoints;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(cuttingPoints);
     }
 }

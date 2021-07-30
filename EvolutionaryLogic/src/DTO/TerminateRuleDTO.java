@@ -5,14 +5,14 @@ import evolutinary.EvolutionarySystem;
 import java.util.Objects;
 
 public abstract class TerminateRuleDTO {
-    public EvolutionarySystem.TerminateRules getType() {
-        return type;
-    }
-
     private final EvolutionarySystem.TerminateRules type;
 
     public TerminateRuleDTO(EvolutionarySystem.TerminateRules type){
         this.type = type;
+    }
+
+    public EvolutionarySystem.TerminateRules getType() {
+        return type;
     }
 
     @Override

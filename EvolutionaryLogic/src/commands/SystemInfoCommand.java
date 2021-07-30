@@ -29,6 +29,11 @@ public class SystemInfoCommand extends CommandImpel{
         action.accept(result);
     }
 
+    @Override
+    public String getCommandName() {
+        return "System Information";
+    }
+
     private SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier> createAnswer(){
         ModelToDTOConverter converter = new ModelToDTOConverter();
         TimeTableEvolutionarySystemImpel system = (TimeTableEvolutionarySystemImpel) evolutionarySystem;
@@ -42,10 +47,5 @@ public class SystemInfoCommand extends CommandImpel{
                 system.getSelection(),
                 system.getCrossover(),
                 system.getMutations());
-    }
-
-    @Override
-    public String getCommandName() {
-        return "System Information";
     }
 }

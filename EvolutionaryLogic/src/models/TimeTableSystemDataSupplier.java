@@ -8,26 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public class TimeTableSystemDataSupplier implements DataSupplier {
-    public Map<Integer, Teacher> getTeachers() {
-        return unModifiedTeachers;
-    }
-
-    public Map<Integer, Subject> getSubjects() {
-        return unModifiedSubjects;
-    }
-
-    public Map<Integer, SchoolClass> getClasses() {
-        return unModifiedClasses;
-    }
-
-    public int getDays() {
-        return days;
-    }
-
-    public int getHours() {
-        return hours;
-    }
-
     private final Map<Integer, Teacher> teachers;
     private final Map<Integer, Teacher> unModifiedTeachers;
     private final Map<Integer, Subject> subjects;
@@ -49,6 +29,26 @@ public class TimeTableSystemDataSupplier implements DataSupplier {
         this.unModifiedTeachers = Collections.unmodifiableMap(this.teachers);
         this.unModifiedSubjects = Collections.unmodifiableMap(this.subjects);
         this.unModifiedClasses = Collections.unmodifiableMap(this.classes);
+    }
+
+    public Map<Integer, Teacher> getTeachers() {
+        return unModifiedTeachers;
+    }
+
+    public Map<Integer, Subject> getSubjects() {
+        return unModifiedSubjects;
+    }
+
+    public Map<Integer, SchoolClass> getClasses() {
+        return unModifiedClasses;
+    }
+
+    public int getDays() {
+        return days;
+    }
+
+    public int getHours() {
+        return hours;
     }
 
     @Override

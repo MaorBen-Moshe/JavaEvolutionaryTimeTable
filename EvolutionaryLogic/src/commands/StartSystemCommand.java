@@ -56,6 +56,11 @@ public class StartSystemCommand extends CommandImpel{
         afterStart.accept(result);
     }
 
+    @Override
+    public String getCommandName() {
+        return "Start evolutionary system";
+    }
+
     private Set<TerminateRule> setByTerminate(Set<TerminateRuleDTO> rules){
         Set<TerminateRule> toRet = new HashSet<>();
         rules.forEach(rule ->{
@@ -72,10 +77,5 @@ public class StartSystemCommand extends CommandImpel{
         });
 
         return toRet;
-    }
-
-    @Override
-    public String getCommandName() {
-        return "Start evolutionary system";
     }
 }

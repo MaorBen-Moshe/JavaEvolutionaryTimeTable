@@ -6,7 +6,7 @@ import utils.RandomUtils;
 import java.util.*;
 
 public class CrossoverUtils {
-    static TimeTable getParent(Map<TimeTable, Double> parents){
+    public static TimeTable getParent(Map<TimeTable, Double> parents){
         final int randomNumber = RandomUtils.nextIntInRange(0, parents.size());
         TimeTable retVal = null;
         int i = 0;
@@ -22,7 +22,7 @@ public class CrossoverUtils {
         return retVal;
     }
 
-    static List<Integer> getCuttingPoints(TimeTable parent1, TimeTable parent2, int cuttingPointsCount){
+    public static List<Integer> getCuttingPoints(TimeTable parent1, TimeTable parent2, int cuttingPointsCount){
         List<Integer> cuttingPoints = new ArrayList<>();
         int maxCuttingOption = Math.max(parent1.size(), parent2.size());
         while(cuttingPoints.size() < cuttingPointsCount){

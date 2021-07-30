@@ -11,17 +11,10 @@ public class Rule {
         Soft, Hard
     }
 
-    public eStrength getStrength() {
-        return strength;
-    }
-
-    private final eStrength strength;
-
-    public Rules.eRules getRuleType() {
-        return ruleType;
-    }
-
     private final Rules.eRules ruleType;
+    private final eStrength strength;
+    private final Map<String, String> configurations;
+    private Map<String, String> unModifiedConfigurations;
 
     public Rule(Rules.eRules rule, eStrength strength,  Map<String, String> configurations){
         ruleType = rule;
@@ -30,14 +23,17 @@ public class Rule {
         unModifiedConfigurations = Collections.unmodifiableMap(this.configurations);
     }
 
+    public Rules.eRules getRuleType() {
+        return ruleType;
+    }
+
+    public eStrength getStrength() {
+        return strength;
+    }
 
     public Map<String, String> getConfigurations() {
         return unModifiedConfigurations;
     }
-
-    private final Map<String, String> configurations;
-    private Map<String, String> unModifiedConfigurations;
-
 
     @Override
     public String toString() {

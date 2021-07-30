@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="Evolutionary - Logic:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Evolutionary___Logic_jar</output-path>
-    <root id="archive" name="Evolutionary - Logic.jar">
-      <element id="module-output" name="EvolutionaryLogic" />
-    </root>
-  </artifact>
-</component>

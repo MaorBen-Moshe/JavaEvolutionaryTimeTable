@@ -10,6 +10,7 @@ public class ProcessCommand extends CommandImpel{
     public ProcessCommand(Consumer<CommandResult<Map<Integer, Double>>> o) {
         this.action = o;
     }
+
     @Override
     public void execute() {
         CommandResult<Map<Integer, Double>> result = new CommandResult<>();

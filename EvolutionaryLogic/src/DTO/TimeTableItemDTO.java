@@ -3,6 +3,20 @@ package DTO;
 import java.util.Objects;
 
 public class TimeTableItemDTO implements Comparable<TimeTableItemDTO> {
+    private final int day;
+    private final int hour;
+    private final SchoolClassDTO schoolClass;
+    private final SubjectDTO subject;
+    private final TeacherDTO teacher;
+
+    public TimeTableItemDTO(int day, int hour, SchoolClassDTO klass, SubjectDTO subject, TeacherDTO teacher){
+        this.day = day;
+        this.hour = hour;
+        this.schoolClass = klass;
+        this.subject = subject;
+        this.teacher = teacher;
+    }
+
     public int getDay() {
         return day;
     }
@@ -21,20 +35,6 @@ public class TimeTableItemDTO implements Comparable<TimeTableItemDTO> {
 
     public TeacherDTO getTeacher() {
         return teacher;
-    }
-
-    private final int day;
-    private final int hour;
-    private final SchoolClassDTO schoolClass;
-    private final SubjectDTO subject;
-    private final TeacherDTO teacher;
-
-    public TimeTableItemDTO(int day, int hour, SchoolClassDTO klass, SubjectDTO subject, TeacherDTO teacher){
-        this.day = day;
-        this.hour = hour;
-        this.schoolClass = klass;
-        this.subject = subject;
-        this.teacher = teacher;
     }
 
     @Override

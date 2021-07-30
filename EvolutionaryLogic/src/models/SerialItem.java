@@ -3,21 +3,20 @@ package models;
 import java.util.Objects;
 
 public abstract class SerialItem{
+    private final int id;
+    private final String name;
+
+    public SerialItem(String name, int id) {
+        this.name = name;
+        this.id = id;
+    }
+
     public int getId() {
         return id;
     }
 
     public String getName() {
         return name;
-    }
-
-    private final int id;
-    private final String name;
-
-
-    public SerialItem(String name, int id) {
-        this.name = name;
-        this.id = id;
     }
 
     @Override

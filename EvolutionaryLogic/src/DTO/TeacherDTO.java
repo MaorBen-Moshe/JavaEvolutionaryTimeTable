@@ -5,10 +5,6 @@ import java.util.Objects;
 import java.util.Set;
 
 public class TeacherDTO extends SerialItemDTO implements Comparable<TeacherDTO>{
-    public Set<SubjectDTO> getSubjects() {
-        return unModifiedSubjects;
-    }
-
     private final Set<SubjectDTO> subjects;
     private final Set<SubjectDTO> unModifiedSubjects;
 
@@ -16,6 +12,10 @@ public class TeacherDTO extends SerialItemDTO implements Comparable<TeacherDTO>{
         super(name, id);
         this.subjects = subjects;
         this.unModifiedSubjects = Collections.unmodifiableSet(subjects);
+    }
+
+    public Set<SubjectDTO> getSubjects() {
+        return unModifiedSubjects;
     }
 
     @Override

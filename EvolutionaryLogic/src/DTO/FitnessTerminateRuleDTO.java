@@ -1,20 +1,18 @@
 package DTO;
 
-
 import evolutinary.EvolutionarySystem;
-
 import java.util.Objects;
 
 public class FitnessTerminateRuleDTO extends TerminateRuleDTO{
-    public double getFitness() {
-        return fitness;
-    }
-
     private final double fitness;
 
     public FitnessTerminateRuleDTO(double fitness){
         super(EvolutionarySystem.TerminateRules.ByFitness);
         this.fitness = fitness;
+    }
+
+    public double getFitness() {
+        return fitness;
     }
 
     @Override

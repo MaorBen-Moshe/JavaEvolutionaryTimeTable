@@ -3,14 +3,19 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class TimeTable {
-    public Set<TimeTableItem> getSortedItems() {
-        return unModifiedSortedItems;
-    }
-
     private final Set<TimeTableItem> sortedItems;
     private Set<TimeTableItem> unModifiedSortedItems;
     private final Map<Rule, Double> rulesScore;
     private Map<Rule, Double> unModifiedRulesScore;
+    private double hardRulesAvg;
+    private double softRulesAvg;
+
+    public TimeTable() {
+        sortedItems = new TreeSet<>();
+        rulesScore = new HashMap<>();
+    }
+
+    public Set<TimeTableItem> getSortedItems() { return unModifiedSortedItems; }
 
     public double getHardRulesAvg() {
         return hardRulesAvg;
@@ -26,14 +31,6 @@ public class TimeTable {
 
     public void setSoftRulesAvg(double softRulesAvg) {
         this.softRulesAvg = softRulesAvg;
-    }
-
-    private double hardRulesAvg;
-    private double softRulesAvg;
-
-    public TimeTable() {
-        sortedItems = new TreeSet<>();
-        rulesScore = new HashMap<>();
     }
 
     public boolean add(TimeTableItem item){

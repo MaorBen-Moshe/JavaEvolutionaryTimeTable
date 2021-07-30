@@ -5,20 +5,20 @@ import models.SerialItem;
 import java.util.Objects;
 
 public class SerialItemDTO {
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     private final int id;
     private final String name;
 
     public SerialItemDTO(String name, int id){
         this.id = id;
         this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override

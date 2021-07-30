@@ -1,6 +1,11 @@
 package commands;
 
 public class CommandResult<T> {
+    private T result;
+    private String errorMessage;
+    private boolean failed = false;
+
+
     public T getResult() {
         return result;
     }
@@ -21,8 +26,4 @@ public class CommandResult<T> {
     public boolean isFailed() {
         return failed;
     }
-
-    private T result;
-    private String errorMessage;
-    private boolean failed = false;
 }

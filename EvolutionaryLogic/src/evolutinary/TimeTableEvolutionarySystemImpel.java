@@ -1,6 +1,5 @@
 package evolutinary;
 
-import Interfaces.DataSupplier;
 import models.*;
 import utils.ItemCreationUtil;
 import utils.RandomUtils;
@@ -8,6 +7,19 @@ import utils.RandomUtils;
 import java.util.*;
 
 public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<TimeTable, TimeTableSystemDataSupplier> {
+    private Map<Integer, Teacher> teachers;
+    private Map<Integer, Teacher> unModifiedTeachers;
+    private Map<Integer, Subject> subjects;
+    private Map<Integer, Subject> unModifiedSubjects;
+    private Map<Integer, SchoolClass> classes;
+    private Map<Integer, SchoolClass> unModifiedClasses;
+    private Rules rules;
+    private int days;
+    private int hours;
+
+    public TimeTableEvolutionarySystemImpel(){
+    }
+
     public void setRules(Rules rules) {
         this.rules = rules;
     }
@@ -55,26 +67,12 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
         return rules;
     }
 
-    //configuration of time table
     public Map<Integer, Teacher> getTeachers() {
         return unModifiedTeachers;
     }
 
     public Map<Integer, SchoolClass> getClasses() {
         return unModifiedClasses;
-    }
-
-    private Map<Integer, Teacher> teachers;
-    private Map<Integer, Teacher> unModifiedTeachers;
-    private Map<Integer, Subject> subjects;
-    private Map<Integer, Subject> unModifiedSubjects;
-    private Map<Integer, SchoolClass> classes;
-    private Map<Integer, SchoolClass> unModifiedClasses;
-    private Rules rules;
-    private int days;
-    private int hours;
-
-    public TimeTableEvolutionarySystemImpel(){
     }
 
     @Override
@@ -92,20 +90,6 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
         }
 
         return timeTable;
-    }
-
-    private TimeTableItem createItem(){
-        int daySelected, hourSelected;
-        Teacher teacherSelected;
-        Subject subjectSelected;
-        SchoolClass classSelected;
-
-        daySelected = RandomUtils.nextIntInRange(0, days);
-        hourSelected = RandomUtils.nextIntInRange(0, hours);
-        teacherSelected = ItemCreationUtil.getRandItem(teachers);
-        subjectSelected = ItemCreationUtil.getRandItem(subjects);
-        classSelected = ItemCreationUtil.getRandItem(classes);
-        return new TimeTableItem(daySelected, hourSelected, classSelected, teacherSelected, subjectSelected);
     }
 
     @Override
@@ -140,6 +124,20 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
         optional.setSoftRulesAvg(soft);
         int hardWeight = rules.getHardRulesWeight();
         return ((hardWeight * hard) + ((100 - hardWeight) * soft)) / 100;
+    }
+
+    private TimeTableItem createItem(){
+        int daySelected, hourSelected;
+        Teacher teacherSelected;
+        Subject subjectSelected;
+        SchoolClass classSelected;
+
+        daySelected = RandomUtils.nextIntInRange(0, days);
+        hourSelected = RandomUtils.nextIntInRange(0, hours);
+        teacherSelected = ItemCreationUtil.getRandItem(teachers);
+        subjectSelected = ItemCreationUtil.getRandItem(subjects);
+        classSelected = ItemCreationUtil.getRandItem(classes);
+        return new TimeTableItem(daySelected, hourSelected, classSelected, teacherSelected, subjectSelected);
     }
 
     private double getAvg(List<Double> list){

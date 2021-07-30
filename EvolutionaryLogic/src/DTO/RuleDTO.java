@@ -9,23 +9,11 @@ import java.util.Map;
 import java.util.Objects;
 
 public class RuleDTO {
-    public Rule.eStrength getStrength() {
-        return strength;
-    }
-
-    public Rules.eRules getType() {
-        return type;
-    }
-
     private final Rule.eStrength strength;
     private final Rules.eRules type;
-
-    public Map<String, String> getConfigurations() {
-        return unModifiedConfigurations;
-    }
-
     private final Map<String, String> configurations;
     private Map<String,String> unModifiedConfigurations;
+
 
     public RuleDTO(Rules.eRules ruleType, Rule.eStrength ruleStrength, Map<String, String> configurations){
         this.strength = ruleStrength;
@@ -36,6 +24,24 @@ public class RuleDTO {
         }
     }
 
+    public Rule.eStrength getStrength() {
+        return strength;
+    }
+
+    public Rules.eRules getType() {
+        return type;
+    }
+
+    public Map<String, String> getConfigurations() {
+        return unModifiedConfigurations;
+    }
+
+    public void addConfiguration(String key, String val){
+        if(!configurations.containsKey(key)){
+            configurations.put(key, val);
+            this.unModifiedConfigurations = Collections.unmodifiableMap(configurations);
+        }
+    }
 
     @Override
     public String toString() {
@@ -44,13 +50,6 @@ public class RuleDTO {
                 ", type = " + type;
         ret = ret + (configurations.size() != 0 ?  (", configurations: " + configurations) : "");
         return ret;
-    }
-
-    public void addConfiguration(String key, String val){
-        if(!configurations.containsKey(key)){
-            configurations.put(key, val);
-            this.unModifiedConfigurations = Collections.unmodifiableMap(configurations);
-        }
     }
 
     @Override

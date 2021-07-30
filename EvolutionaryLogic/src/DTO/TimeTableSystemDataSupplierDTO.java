@@ -1,33 +1,12 @@
 package DTO;
 
 import Interfaces.DataSupplier;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class TimeTableSystemDataSupplierDTO implements DataSupplier {
-    public Map<Integer, TeacherDTO> getTeachers() {
-        return unModifiedTeachers;
-    }
-
-    public Map<Integer, SubjectDTO> getSubjects() {
-        return unModifiedSubjects;
-    }
-
-    public Map<Integer, SchoolClassDTO> getClasses() {
-        return unModifiedClasses;
-    }
-
-    public int getDays() {
-        return days;
-    }
-
-    public int getHours() {
-        return hours;
-    }
-
     private final Map<Integer, TeacherDTO> teachers;
     private final Map<Integer, TeacherDTO> unModifiedTeachers;
     private final Map<Integer, SubjectDTO> subjects;
@@ -49,6 +28,26 @@ public class TimeTableSystemDataSupplierDTO implements DataSupplier {
         this.unModifiedTeachers = Collections.unmodifiableMap(this.teachers);
         this.unModifiedSubjects = Collections.unmodifiableMap(this.subjects);
         this.unModifiedClasses = Collections.unmodifiableMap(this.classes);
+    }
+
+    public Map<Integer, TeacherDTO> getTeachers() {
+        return unModifiedTeachers;
+    }
+
+    public Map<Integer, SubjectDTO> getSubjects() {
+        return unModifiedSubjects;
+    }
+
+    public Map<Integer, SchoolClassDTO> getClasses() {
+        return unModifiedClasses;
+    }
+
+    public int getDays() {
+        return days;
+    }
+
+    public int getHours() {
+        return hours;
     }
 
     @Override

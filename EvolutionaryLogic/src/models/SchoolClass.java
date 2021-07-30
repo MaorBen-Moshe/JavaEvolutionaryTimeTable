@@ -8,15 +8,6 @@ import java.util.Objects;
 public class SchoolClass extends SerialItem implements Comparable<SchoolClass> {
     private final Map<Subject, Integer> subjectsNeeded; // subject and the hours the class needs in a week
     private final Map<Subject, Integer> unModifiedSubjectsNeeded;
-
-    public Map<Subject, Integer> getSubjectsNeeded() {
-        return unModifiedSubjectsNeeded;
-    }
-
-    public int getTotalNumberOfHours() {
-        return totalNumberOfHours;
-    }
-
     private final int totalNumberOfHours;
 
     public SchoolClass(String name, int id, Map<Subject, Integer> subjects) {
@@ -24,6 +15,14 @@ public class SchoolClass extends SerialItem implements Comparable<SchoolClass> {
         subjectsNeeded = new HashMap<>(subjects);
         unModifiedSubjectsNeeded = Collections.unmodifiableMap(subjectsNeeded);
         totalNumberOfHours = subjectsNeeded.values().stream().mapToInt(integer -> integer).sum();
+    }
+
+    public Map<Subject, Integer> getSubjectsNeeded() {
+        return unModifiedSubjectsNeeded;
+    }
+
+    public int getTotalNumberOfHours() {
+        return totalNumberOfHours;
     }
 
     @Override
@@ -45,6 +44,16 @@ public class SchoolClass extends SerialItem implements Comparable<SchoolClass> {
         return  super.toString() + ", subjectsNeeded:{ " + subjectToString() + "}, total hours = " + totalNumberOfHours;
     }
 
+    @Override
+    public int compareTo(SchoolClass o) {
+        int ret = super.compareTo(o);
+        if(ret == 0){
+            ret = subjectsNeeded.equals(o.subjectsNeeded) ? 0 : 1;
+        }
+
+        return ret;
+    }
+
     private String subjectToString(){
         StringBuilder builder = new StringBuilder();
         subjectsNeeded.forEach((key, val) -> {
@@ -54,15 +63,5 @@ public class SchoolClass extends SerialItem implements Comparable<SchoolClass> {
 
         builder.replace(builder.length() - 2, builder.length(), "");
         return builder.toString();
-    }
-
-    @Override
-    public int compareTo(SchoolClass o) {
-        int ret = super.compareTo(o);
-        if(ret == 0){
-            ret = subjectsNeeded.equals(o.subjectsNeeded) ? 0 : 1;
-        }
-
-        return ret;
     }
 }

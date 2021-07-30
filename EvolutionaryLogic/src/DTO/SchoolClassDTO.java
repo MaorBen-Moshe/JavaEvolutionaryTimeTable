@@ -5,13 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class SchoolClassDTO extends SerialItemDTO implements Comparable<SchoolClassDTO>{
-
     private final int totalNumberOfHours;
-
-    public Map<SubjectDTO, Integer> getSubjectsNeeded() {
-        return unModifiedSubjectsNeeded;
-    }
-
     private final Map<SubjectDTO, Integer> subjectsNeeded;
     private final Map<SubjectDTO, Integer> unModifiedSubjectsNeeded;
 
@@ -20,6 +14,10 @@ public class SchoolClassDTO extends SerialItemDTO implements Comparable<SchoolCl
         this.subjectsNeeded = subjects;
         unModifiedSubjectsNeeded = Collections.unmodifiableMap(this.subjectsNeeded);
         totalNumberOfHours = subjectsNeeded.values().stream().mapToInt(integer -> integer).sum();
+    }
+
+    public Map<SubjectDTO, Integer> getSubjectsNeeded() {
+        return unModifiedSubjectsNeeded;
     }
 
     @Override
@@ -42,6 +40,16 @@ public class SchoolClassDTO extends SerialItemDTO implements Comparable<SchoolCl
                 "}, total number of hours = " + totalNumberOfHours;
     }
 
+    @Override
+    public int compareTo(SchoolClassDTO o) {
+        int ret = super.compareTo(o);
+        if(ret == 0){
+            ret = subjectsNeeded.equals(o.subjectsNeeded) ? 0 : 1;
+        }
+
+        return ret;
+    }
+
     private String subjectToString(){
         StringBuilder builder = new StringBuilder();
         subjectsNeeded.forEach((key, val) -> {
@@ -51,15 +59,5 @@ public class SchoolClassDTO extends SerialItemDTO implements Comparable<SchoolCl
 
         builder.replace(builder.length() - 2, builder.length(), "");
         return builder.toString();
-    }
-
-    @Override
-    public int compareTo(SchoolClassDTO o) {
-        int ret = super.compareTo(o);
-        if(ret == 0){
-            ret = subjectsNeeded.equals(o.subjectsNeeded) ? 0 : 1;
-        }
-
-        return ret;
     }
 }

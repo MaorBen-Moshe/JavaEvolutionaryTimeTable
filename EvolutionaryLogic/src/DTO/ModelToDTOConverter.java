@@ -62,4 +62,30 @@ public class ModelToDTOConverter {
     public SubjectDTO createSubjectDTO(Subject old){
         return new SubjectDTO(old.getName(), old.getId());
     }
+
+    public TimeTableSystemDataSupplierDTO createDataSupplierDTO(TimeTableSystemDataSupplier old){
+        return new TimeTableSystemDataSupplierDTO(old.getDays(), old.getHours(), createTeacherMap(old.getTeachers()),
+                                                  createSubjectsMap(old.getSubjects()), createClassMap(old.getClasses()));
+    }
+
+    private Map<Integer, TeacherDTO> createTeacherMap(Map<Integer, Teacher> old){
+        Map<Integer, TeacherDTO> ret = new HashMap<>();
+        old.forEach((key, val) -> ret.put(key, new TeacherDTO(val.getName(), val.getId(), createSubjects(val.getSubjects()))));
+
+        return ret;
+    }
+
+    private Map<Integer, SubjectDTO> createSubjectsMap(Map<Integer, Subject> old){
+        Map<Integer, SubjectDTO> ret = new HashMap<>();
+        old.forEach((key, val) -> ret.put(key, new SubjectDTO(val.getName(), val.getId())));
+
+        return ret;
+    }
+
+    private Map<Integer, SchoolClassDTO> createClassMap(Map<Integer, SchoolClass> old){
+        Map<Integer, SchoolClassDTO> ret = new HashMap<>();
+        old.forEach((key, val) -> ret.put(key, new SchoolClassDTO(val.getName(), val.getId(), createRequirementsDTO(val.getSubjectsNeeded()))));
+
+        return ret;
+    }
 }

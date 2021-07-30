@@ -2,7 +2,7 @@ package models;
 
 import java.util.*;
 
-public class Teacher extends SerialItem {
+public class Teacher extends SerialItem implements Comparable<Teacher> {
     public Set<Subject> getSubjects() {
         return unModifiedSubjects;
     }
@@ -34,5 +34,15 @@ public class Teacher extends SerialItem {
     public String toString() {
         return  super.toString() + ", " +
                 "subjects =" + subjects;
+    }
+
+    @Override
+    public int compareTo(Teacher o){
+        int ret = super.compareTo(o);
+        if(ret == 0){
+            ret = subjects.equals(o.subjects) ? 0 : 1;
+        }
+
+        return ret;
     }
 }

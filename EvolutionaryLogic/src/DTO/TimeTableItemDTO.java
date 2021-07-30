@@ -39,12 +39,21 @@ public class TimeTableItemDTO implements Comparable<TimeTableItemDTO> {
 
     @Override
     public int compareTo(TimeTableItemDTO o) {
-        int daysCompare = Integer.compare(day, o.day);
-        if(daysCompare != 0){
-            return daysCompare;
+        int ret = Integer.compare(day, o.day);
+        if(ret == 0){
+            ret = Integer.compare(hour, o.hour);
+            if(ret == 0){
+                ret = schoolClass.compareTo(o.schoolClass);
+                if(ret == 0){
+                    ret = teacher.compareTo(o.teacher);
+                    if(ret == 0){
+                        ret = subject.compareTo(o.subject);
+                    }
+                }
+            }
         }
 
-        return Integer.compare(hour, o.hour);
+        return ret;
     }
 
     @Override

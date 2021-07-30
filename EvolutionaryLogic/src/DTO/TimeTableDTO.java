@@ -1,7 +1,5 @@
 package DTO;
 
-import models.TimeTable;
-
 import java.util.*;
 
 public class TimeTableDTO {
@@ -31,7 +29,7 @@ public class TimeTableDTO {
     public TimeTableDTO(Set<TimeTableItemDTO> items, Map<RuleDTO, Double> rulesScore, double hardAvg, double softAvg){
         this.hardRulesAvg = hardAvg;
         this.softRulesAvg = softAvg;
-        this.items = items;
+        this.items = new TreeSet<>(items);
         this.unModifiedItems = Collections.unmodifiableSortedSet(new TreeSet<>(this.items));
         this.rulesScore = rulesScore;
         this.unModifiedRulesScore = Collections.unmodifiableMap(this.rulesScore);

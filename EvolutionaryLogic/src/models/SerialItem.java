@@ -2,7 +2,7 @@ package models;
 
 import java.util.Objects;
 
-public abstract class SerialItem {
+public abstract class SerialItem{
     public int getId() {
         return id;
     }
@@ -37,5 +37,14 @@ public abstract class SerialItem {
     public String toString() {
         return "id = " + id +
                 ", name = " + name;
+    }
+
+    protected int compareTo(SerialItem o) {
+        int ret = Integer.compare(id, o.id);
+        if(ret == 0){
+            ret = name.compareTo(o.name);
+        }
+
+        return ret;
     }
 }

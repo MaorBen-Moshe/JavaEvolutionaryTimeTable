@@ -1,5 +1,7 @@
 package DTO;
 
+import models.SerialItem;
+
 import java.util.Objects;
 
 public class SerialItemDTO {
@@ -36,5 +38,14 @@ public class SerialItemDTO {
     public String toString() {
         return "id=" + id +
                 ", name='" + name + '\'';
+    }
+
+    protected int compareTo(SerialItemDTO o) {
+        int ret = Integer.compare(id, o.id);
+        if(ret == 0){
+            ret = name.compareTo(o.name);
+        }
+
+        return ret;
     }
 }

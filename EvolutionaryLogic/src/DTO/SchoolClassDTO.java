@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
-public class SchoolClassDTO extends SerialItemDTO{
+public class SchoolClassDTO extends SerialItemDTO implements Comparable<SchoolClassDTO>{
 
     private final int totalNumberOfHours;
 
@@ -51,5 +51,15 @@ public class SchoolClassDTO extends SerialItemDTO{
 
         builder.replace(builder.length() - 2, builder.length(), "");
         return builder.toString();
+    }
+
+    @Override
+    public int compareTo(SchoolClassDTO o) {
+        int ret = super.compareTo(o);
+        if(ret == 0){
+            ret = subjectsNeeded.equals(o.subjectsNeeded) ? 0 : 1;
+        }
+
+        return ret;
     }
 }

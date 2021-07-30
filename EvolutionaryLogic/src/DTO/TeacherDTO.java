@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
-public class TeacherDTO extends SerialItemDTO{
+public class TeacherDTO extends SerialItemDTO implements Comparable<TeacherDTO>{
     public Set<SubjectDTO> getSubjects() {
         return unModifiedSubjects;
     }
@@ -35,5 +35,15 @@ public class TeacherDTO extends SerialItemDTO{
     @Override
     public String toString() {
         return super.toString() + "[subjects=" + subjects + ']';
+    }
+
+    @Override
+    public int compareTo(TeacherDTO o) {
+        int ret = super.compareTo(o);
+        if(ret == 0){
+            ret = subjects.equals(o.subjects) ? 0 : 1;
+        }
+
+        return ret;
     }
 }

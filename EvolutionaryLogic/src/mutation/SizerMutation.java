@@ -29,7 +29,7 @@ public class SizerMutation implements Mutation<TimeTable, TimeTableSystemDataSup
             int randomNumber;
             int i = 1;
             int numberOfRemoved = 0;
-            List<TimeTableItem> temp = new ArrayList<>(child.getSortedItems());
+            Set<TimeTableItem> temp = new TreeSet<>(child.getSortedItems());
             for(TimeTableItem item : temp){
                 randomNumber = RandomUtils.nextIntInRange(0, child.size() + 1);
                 if(randomNumber % (i + 1) == 0){

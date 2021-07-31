@@ -164,7 +164,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
                 .stream()
                 .max(Comparator.comparingDouble(Map.Entry::getValue));
 
-        Map.Entry<T, Double> temp = optional.orElse(null);
+        Map.Entry<T, Double> temp = optional.orElseThrow(() -> new NullPointerException("Failed to get current best item in generation: " + currentNumberOfGenerations));
         if(temp != null){
             retVal = new BestSolutionItem<>(temp.getKey(), temp.getValue(), getSystemInfo());
         }

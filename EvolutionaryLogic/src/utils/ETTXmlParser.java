@@ -30,6 +30,7 @@ public class ETTXmlParser {
 
     // parse region
     public static EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> parse(String filePath) throws Exception {
+        filePath = filePath.trim();
         File file = new File(filePath);
         InputStream inputStream = new FileInputStream(file);
         ETTDescriptor descriptor = deserializeFrom(inputStream);

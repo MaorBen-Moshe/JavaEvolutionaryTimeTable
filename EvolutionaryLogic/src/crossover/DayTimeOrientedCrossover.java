@@ -22,9 +22,9 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableS
         Set<TimeTable> children = new HashSet<>();
         TimeTable child1 = createChild(parent1, parent2, supplier);
         TimeTable child2 = createChild(parent1, parent2, supplier);
-        while(child2.equals(child1)){
+        /*while(child2.equals(child1)){
             child2 = createChild(parent1, parent2, supplier);
-        }
+        }*/
 
         children.add(child1);
         children.add(child2);

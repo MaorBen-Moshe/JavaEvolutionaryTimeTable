@@ -21,6 +21,6 @@ public class GenerationTerminateRule extends TerminateRule {
             throw new IllegalArgumentException("Generations terminate rule accept only a positive number of generations");
         }
 
-        return currentNumberOfGenerations > numberOfGenerations;
+        return currentNumberOfGenerations >= numberOfGenerations;
     }
 }

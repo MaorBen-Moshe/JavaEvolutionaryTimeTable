@@ -249,7 +249,7 @@ public class ConsoleUtils {
     private static void rawDisplay(BestSolutionDTO solution) {
         TimeTableDTO timeTable = solution.getSolution();
         System.out.println("Fitness = " + solution.getFitness());
-        timeTable.getItems().forEach(item -> System.out.println("< " + item.getDay() + ", "
+        timeTable.getItems().forEach(item -> System.out.println("<" + item.getDay() + ", "
                            + item.getHour() + ", "
                            + item.getSchoolClass().getName() + ", "
                            + item.getTeacher().getName() + ", "
@@ -315,36 +315,60 @@ public class ConsoleUtils {
     }
 
     private static void printMap(Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map , BestDisplay mode) {
-        getMaxOfListAndPrintHours(map);
+        final String daysHours = "days\\hours";
+        int max = getMaxOfListAndPrintHours(map, daysHours);
         map.forEach((days, hours) -> {
-            System.out.print(days + ":  ");
-            hours.forEach((hour, items) -> items.forEach(item -> {
-                switch (mode){
-                    case Teacher:
-                        System.out.print("  <" + item.getSchoolClass().getId() +", " +item.getSubject().getId()  + ">  ");
-                        break;
-                    case Class:
-                        System.out.print("  <" + item.getTeacher().getId() +", " +item.getSubject().getId()  + ">  ");
-                        break;
-                }
-            }));
+            int numOfSpaces = (daysHours.length() - String.valueOf(days).length() -1);
+            System.out.print(days + ":" + String.format("%" + numOfSpaces + "s", " "));
+            hours.forEach((hour, items) -> {
+                        int spacesToAdd = (max - items.size()) * 10;
+                        items.forEach(item -> {
+                            switch (mode) {
+                                case Teacher:
+                                    System.out.print("  <" + item.getSchoolClass().getId() + ", " + item.getSubject().getId() + ">  ");
+                                    break;
+                                case Class:
+                                    System.out.print("  <" + item.getTeacher().getId() + ", " + item.getSubject().getId() + ">  ");
+                                    break;
+                            }
+
+                        });
+
+                    String format = spacesToAdd == 0 ? "%s" : ("%" + spacesToAdd + "s");
+                    System.out.printf(format, " ");
+                    System.out.print("|");
+                });
 
             System.out.print(System.getProperty("line.separator"));
         });
     }
 
-    private static void getMaxOfListAndPrintHours(Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map){
-        Map<Integer, List<TimeTableItemDTO>> maxHour = map.entrySet().stream().max((key, val) -> val.getValue().size()).get().getValue();
-        int max = maxHour.entrySet().stream().max((key, val) -> val.getValue().size()).get().getValue().size();
-        int hours = map.values().size();
-        System.out.print("days\\hours ");
-        IntStream.range(1, hours).forEach(i -> {
-            Stream.generate(() -> " ").limit(max/2).forEach(System.out::print);
+    private static int getMaxOfListAndPrintHours(Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map, String daysToPrint){
+        int max = getMax(map);
+        int hours = map.values().stream().findFirst().get().size();
+        System.out.print(daysToPrint);
+        IntStream.range(1, hours + 1).forEach(i -> {
+            int numOfSpaces = 10*(max/2) + daysToPrint.length();
+            System.out.printf("%" + numOfSpaces + "s", " ");
             System.out.print(i);
-            Stream.generate(() -> " ").limit(max/2).forEach(System.out::print);
+            System.out.printf("%" + numOfSpaces + "s", " ");
         });
 
         System.out.print(System.getProperty("line.separator"));
+        return max;
+    }
+
+    private static int getMax(Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map){
+        int max = 0;
+        for(Map.Entry<Integer, Map<Integer, List<TimeTableItemDTO>>> daysEntry : map.entrySet()){
+            for(Map.Entry<Integer, List<TimeTableItemDTO>> hoursEntry : daysEntry.getValue().entrySet()){
+                if(hoursEntry.getValue().size() > max){
+                    max = hoursEntry.getValue().size();
+                }
+            }
+        }
+
+        return max;
     }
 
     private static void printRules(Map<RuleDTO, Double> rules, double softAvg, double hardAvg){
@@ -370,7 +394,7 @@ public class ConsoleUtils {
         Map<Integer, Double> generation = result.getResult();
         double lastFitness = -1;
         for(Map.Entry<Integer, Double> keyVal : generation.entrySet()){
-            String improvement = lastFitness != -1 ? "improvement: " + (keyVal.getValue() - lastFitness) : "";
+            String improvement = lastFitness != -1 ? ", improvement: " + String.format ("%.1f", (keyVal.getValue() - lastFitness)) : "";
             System.out.println("Generation number: " + keyVal.getKey() + " with fitness: " + keyVal.getValue() + improvement);
             lastFitness = keyVal.getValue();
         }

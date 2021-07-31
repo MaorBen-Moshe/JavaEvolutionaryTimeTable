@@ -17,11 +17,11 @@ public class BestSolutionCommand extends CommandImpel{
     public void execute() {
         CommandResult<BestSolutionDTO> result = new CommandResult<>();
         if(isFileLoaded){
-          if(evolutionarySystem.IsRunningProcess()){
+          if(evolutionarySystem.getBestSolution() != null){
               result.setResult(createAnswer());
           }
           else{
-              result.setErrorMessage("There is not a running process");
+              result.setErrorMessage("You should start the algorithm first at least one time.");
           }
         }
         else{

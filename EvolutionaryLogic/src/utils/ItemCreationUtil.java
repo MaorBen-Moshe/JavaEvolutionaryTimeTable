@@ -12,8 +12,8 @@ public class ItemCreationUtil {
         Subject subjectSelected;
         SchoolClass classSelected;
 
-        daySelected = RandomUtils.nextIntInRange(0, supplier.getDays());
-        hourSelected = RandomUtils.nextIntInRange(0, supplier.getHours());
+        daySelected = RandomUtils.nextIntInRange(1, supplier.getDays());
+        hourSelected = RandomUtils.nextIntInRange(1, supplier.getHours());
         teacherSelected = getRandItem(supplier.getTeachers());
         subjectSelected = getRandItem(supplier.getSubjects());
         classSelected = getRandItem(supplier.getClasses());

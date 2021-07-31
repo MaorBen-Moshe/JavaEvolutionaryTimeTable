@@ -15,7 +15,7 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableS
     public Set<TimeTable> crossover(Map<TimeTable, Double> parents, TimeTableSystemDataSupplier supplier) {
         TimeTable parent1 = CrossoverUtils.getParent(parents);
         TimeTable parent2 = CrossoverUtils.getParent(parents);
-        while(parent2.equals(parent1)){
+        while(parent2 == null || parent2.equals(parent1)){
             parent2 = CrossoverUtils.getParent(parents);
         }
 
@@ -53,8 +53,8 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableS
         int count = 0;
         int currentCuttingPointPlace = 0; // the cell in the list of cutting points;
 
-        for(int d = 0; d < supplier.getDays(); d++){
-            for(int h = 0; h < supplier.getHours(); h++){
+        for(int d = 1; d <= supplier.getDays(); d++){
+            for(int h = 1; h <= supplier.getHours(); h++){
                 for(int c = 1; c <= supplier.getClasses().size(); c++){
                     for(int t = 1; t <= supplier.getTeachers().size(); t++){
                         for(int s = 1; s <= supplier.getSubjects().size(); s++){

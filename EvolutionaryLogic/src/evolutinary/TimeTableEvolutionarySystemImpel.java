@@ -132,8 +132,8 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
         Subject subjectSelected;
         SchoolClass classSelected;
 
-        daySelected = RandomUtils.nextIntInRange(0, days);
-        hourSelected = RandomUtils.nextIntInRange(0, hours);
+        daySelected = RandomUtils.nextIntInRange(1, days);
+        hourSelected = RandomUtils.nextIntInRange(1, hours);
         teacherSelected = ItemCreationUtil.getRandItem(teachers);
         subjectSelected = ItemCreationUtil.getRandItem(subjects);
         classSelected = ItemCreationUtil.getRandItem(classes);
@@ -164,7 +164,7 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
         // initialize each teacher an map of days an optional hours of working
         for (SchoolClass klass : classes.values()) {
             classesDaysAndHours.put(klass, new HashMap<>());
-            for(int i = 0; i < days; i++){
+            for(int i = 1; i <= days; i++){
                 classesDaysAndHours.get(klass).put(i, new HashSet<>(hours));
             }
         }
@@ -177,6 +177,9 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
             if(!added){
                 // class already study at this time
                 falseClasses.add(item.getSchoolClass());
+                if(falseClasses.size() == classes.size()){
+                    break;
+                }
             }
         }
 
@@ -196,6 +199,10 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
 
             if(!classesMap.get(klass).containsKey(subject)){
                 falseClasses.add(klass);
+                if(falseClasses.size() == classes.size()){
+                    break;
+                }
+
                 continue;
             }
 
@@ -207,6 +214,9 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
             for (Map.Entry<Subject, Integer> entry : current.getValue().entrySet()) {
                 if(entry.getValue() != 0){
                     falseClasses.add(current.getKey());
+                    if(falseClasses.size() == classes.size()){
+                        break;
+                    }
                 }
             }
         }
@@ -229,6 +239,9 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
             subject = item.getSubject();
             if(!teacher.getSubjects().contains(subject)){
                 falseTeachers.add(teacher);
+                if(falseTeachers.size() == teachers.size()){
+                    break;
+                }
             }
         }
 
@@ -237,12 +250,12 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
     }
 
     private double evalHuman(TimeTable optional){
-        double ret = 0;
+        double ret = 100;
         Map<Teacher, Map<Integer, Set<Integer>>> teachersDaysAndHours = new HashMap<>(teachers.size());
         // initialize each teacher an map of days an optional hours of working
         for (Teacher teacher : teachers.values()) {
             teachersDaysAndHours.put(teacher, new HashMap<>());
-            for(int i = 0; i < days; i++){
+            for(int i = 1; i <= days; i++){
                 teachersDaysAndHours.get(teacher).put(i, new HashSet<>(hours));
             }
         }
@@ -255,6 +268,9 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
             if(!added){
                 // teacher is teaching in different places at the same time
                 falseTeachers.add(item.getTeacher());
+                if(falseTeachers.size() == teachers.size()){
+                    break;
+                }
             }
         }
 

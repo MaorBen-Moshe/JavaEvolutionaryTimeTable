@@ -57,11 +57,11 @@ public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemData
                     chosen.setSchoolClass(ItemCreationUtil.getRandItem(classes));
                     break;
                 case D:
-                    randSize = RandomUtils.nextIntInRange(0, supplier.getDays());
+                    randSize = RandomUtils.nextIntInRange(1, supplier.getDays());
                     chosen.setDay(randSize);
                     break;
                 case H:
-                    randSize = RandomUtils.nextIntInRange(0, supplier.getHours());
+                    randSize = RandomUtils.nextIntInRange(1, supplier.getHours());
                     chosen.setHour(randSize);
                     break;
                 case S:

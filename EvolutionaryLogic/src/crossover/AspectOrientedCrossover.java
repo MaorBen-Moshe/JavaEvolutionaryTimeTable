@@ -94,8 +94,8 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
         int count = 0;
         int currentCuttingPointPlace = 0; // the cell in the list of cutting points;
 
-        for(int d = 0; d < supplier.getDays(); d++){
-            for(int h = 0; h < supplier.getHours(); h++){
+        for(int d = 1; d <= supplier.getDays(); d++){
+            for(int h = 1; h <= supplier.getHours(); h++){
                 for(int c = 1; c <= supplier.getClasses().size(); c++){
                     for(int s = 1; s <= supplier.getSubjects().size(); s++){
                         if(currentCuttingPointPlace < cuttingPoints.size() &&

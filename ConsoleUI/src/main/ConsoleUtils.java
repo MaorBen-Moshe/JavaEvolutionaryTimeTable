@@ -249,8 +249,8 @@ public class ConsoleUtils {
     private static void rawDisplay(BestSolutionDTO solution) {
         TimeTableDTO timeTable = solution.getSolution();
         System.out.println("Fitness = " + solution.getFitness());
-        timeTable.getItems().forEach(item -> System.out.println("< " + (item.getDay() + 1) + ", "
-                           + (item.getHour() + 1) + ", "
+        timeTable.getItems().forEach(item -> System.out.println("< " + item.getDay() + ", "
+                           + item.getHour() + ", "
                            + item.getSchoolClass().getName() + ", "
                            + item.getTeacher().getName() + ", "
                            + item.getSubject().getName() + ">"));
@@ -304,9 +304,9 @@ public class ConsoleUtils {
 
     private static Map<Integer, Map<Integer, List<TimeTableItemDTO>>> initializeTableView(TimeTableSystemDataSupplierDTO supplier){
         Map<Integer, Map<Integer, List<TimeTableItemDTO>>> dayHourTable = new HashMap<>();
-        for(int i = 0; i < supplier.getDays(); i++){
+        for(int i = 1; i <= supplier.getDays(); i++){
             dayHourTable.put(i, new HashMap<>());
-            for(int j = 0; j < supplier.getHours(); j++){
+            for(int j = 1; j <= supplier.getHours(); j++){
                 dayHourTable.get(i).put(j, new ArrayList<>());
             }
         }
@@ -317,7 +317,7 @@ public class ConsoleUtils {
     private static void printMap(Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map , BestDisplay mode) {
         getMaxOfListAndPrintHours(map);
         map.forEach((days, hours) -> {
-            System.out.print((days + 1) + ":  ");
+            System.out.print(days + ":  ");
             hours.forEach((hour, items) -> items.forEach(item -> {
                 switch (mode){
                     case Teacher:
@@ -338,7 +338,7 @@ public class ConsoleUtils {
         int max = maxHour.entrySet().stream().max((key, val) -> val.getValue().size()).get().getValue().size();
         int hours = map.values().size();
         System.out.print("days\\hours ");
-        IntStream.range(1, hours + 1).forEach(i -> {
+        IntStream.range(1, hours).forEach(i -> {
             Stream.generate(() -> " ").limit(max/2).forEach(System.out::print);
             System.out.print(i);
             Stream.generate(() -> " ").limit(max/2).forEach(System.out::print);

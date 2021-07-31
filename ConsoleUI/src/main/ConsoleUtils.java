@@ -57,7 +57,7 @@ public class ConsoleUtils {
           }, ConsoleUtils::getTerminate,
                   (result) -> System.out.println("Generation: " +
                                                   result.getNumberOfGeneration() +
-                                                    ", Fitness: " + result.getFitness() + " .")
+                                                    ", Fitness: " + String.format("%.1f", result.getFitness()) + " .")
                   , (result) -> {
               if(result.isFailed()){
                   System.out.println(result.getErrorMessage());

@@ -2,7 +2,6 @@ package evolutinary;
 
 import Interfaces.DataSupplier;
 import crossover.Crossover;
-import models.GenerationTerminateRule;
 import models.JumpInGenerationsResult;
 import models.TerminateRule;
 import mutation.Mutation;
@@ -81,13 +80,17 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         generationFitnessHistory.clear();
         try{
             /* initial*/
-            initialPopulation();
-            bestItem = evaluateGeneration();
+            initialAndEvaluatePopulation();
+            bestItem = getCurrentBestOption();
             generationFitnessHistory.put(0, bestItem.getFitness());
+            if(currentNumberOfGenerations % jumpInGenerations == 0){
+                generationFitnessHistory.put(currentNumberOfGenerations, bestItem.getFitness());
+                listener.accept(new JumpInGenerationsResult(bestItem.getFitness(), currentNumberOfGenerations));
+            }
             /* iterative*/
             while(!isTerminate(terminateBy)){
-                createGeneration();
-                bestItem = evaluateGeneration();
+                createAndEvaluateGeneration();
+                bestItem = getCurrentBestOption();
                 currentNumberOfGenerations++;
                 if(currentNumberOfGenerations % jumpInGenerations == 0){
                     generationFitnessHistory.put(currentNumberOfGenerations, bestItem.getFitness());
@@ -118,14 +121,14 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         return initialPopulationSize;
     }
 
-    protected void createGeneration(){
+    protected void createAndEvaluateGeneration(){
         S supplier = getSystemInfo();
         Map<T, Double> selected = selection.select(population);
         while(childPopulation.size() < population.size()){
             Set<T> children = crossover.crossover(selected, supplier);
             children.forEach(child ->{
                 mutations.forEach(mutation -> mutation.mutate(child, supplier));
-                childPopulation.put(child, 0.);
+                childPopulation.put(child, evaluate(child));
             });
         }
 
@@ -155,9 +158,8 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         return answer;
     }
 
-    private BestSolutionItem<T, S> evaluateGeneration() {
+    private BestSolutionItem<T, S> getCurrentBestOption() {
         BestSolutionItem<T, S> retVal = null;
-        population.keySet().forEach(item -> population.replace(item, evaluate(item)));
         Optional<Map.Entry<T, Double>> optional = population.entrySet()
                 .stream()
                 .max(Comparator.comparingDouble(Map.Entry::getValue));
@@ -170,10 +172,10 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         return retVal;
     }
 
-    private void initialPopulation(){
-        for(int i =0; i < initialPopulationSize; i++){
+    private void initialAndEvaluatePopulation(){
+        for(int i = 0; i < initialPopulationSize; i++){
             T option = createOptionalSolution();
-            population.put(option, 0.);
+            population.put(option, evaluate(option));
         }
     }
 }

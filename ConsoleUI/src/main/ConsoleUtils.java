@@ -104,7 +104,7 @@ public class ConsoleUtils {
     private static StartSystemInfoDTO getTerminate(){
         Set<TerminateRuleDTO> retRules = new HashSet<>();
         int jump;
-        System.out.println("please enter the way you want the algorithm would terminate (write all the numbers of rules you want with coma between each one):");
+        System.out.println("please enter the way you want the algorithm would terminate (possible multiple-choice, for example: 1,2 OR 2 ):");
         EvolutionarySystem.TerminateRules[] rules = EvolutionarySystem.TerminateRules.values();
         for (int i = 1; i <= rules.length; i++) {
             System.out.println(i + ". " + rules[i - 1].toString());
@@ -266,7 +266,7 @@ public class ConsoleUtils {
                 }
             });
 
-            printMap(dayHourTable);
+            printMap(dayHourTable, BestDisplay.Class);
             System.out.println("======================================");
         });
 
@@ -289,7 +289,7 @@ public class ConsoleUtils {
                 }
             });
 
-            printMap(dayHourTable);
+            printMap(dayHourTable, BestDisplay.Teacher);
             System.out.println("======================================");
         });
 
@@ -308,8 +308,24 @@ public class ConsoleUtils {
         return dayHourTable;
     }
 
-    private static void printMap(Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map){
+    private static void printMap(Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map , BestDisplay mode) {
 
+        for (Map.Entry<Integer, Map<Integer,List<TimeTableItemDTO>>> day : map.entrySet()) {
+            Map<Integer,List<TimeTableItemDTO>>hours = day.getValue();
+            for(Map.Entry<Integer, List<TimeTableItemDTO>> hour: hours.entrySet()) {
+                for(TimeTableItemDTO tableItem: hour.getValue()){
+                    switch (mode){
+                        case Teacher:
+                            System.out.print("  <" + tableItem.getSchoolClass().getId() +" , " +tableItem.getSubject().getId()  + ">  ");
+                            break;
+                        case Class:
+                            System.out.print("  <" + tableItem.getTeacher().getId() +" , " +tableItem.getSubject().getId()  + ">  ");
+                            break;
+                    }
+
+                }
+            }
+        }
     }
 
     private static void printRules(Map<RuleDTO, Double> rules, double softAvg, double hardAvg){

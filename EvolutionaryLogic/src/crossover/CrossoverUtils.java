@@ -7,9 +7,9 @@ import java.util.*;
 
 public class CrossoverUtils {
     public static TimeTable getParent(Map<TimeTable, Double> parents){
-        final int randomNumber = RandomUtils.nextIntInRange(0, parents.size());
+        final int randomNumber = RandomUtils.nextIntInRange(1, parents.size());
         TimeTable retVal = null;
-        int i = 0;
+        int i = 1;
         for(TimeTable timeTable : parents.keySet()){
             if(i == randomNumber){
                 retVal = timeTable;

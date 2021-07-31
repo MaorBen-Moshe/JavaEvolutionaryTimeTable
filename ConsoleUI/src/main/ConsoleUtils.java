@@ -1,12 +1,18 @@
 package main;
 
 import DTO.*;
+import com.sun.deploy.util.StringUtils;
 import commands.*;
 import evolutinary.EvolutionarySystem;
-import models.TimeTable;
-import models.TimeTableSystemDataSupplier;
+import evolutinary.TimeTableEvolutionarySystemImpel;
+import models.*;
+import utils.ETTXmlParser;
+import utils.ItemCreationUtil;
+import utils.RandomUtils;
 
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class ConsoleUtils {
     private enum BestDisplay {
@@ -309,23 +315,36 @@ public class ConsoleUtils {
     }
 
     private static void printMap(Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map , BestDisplay mode) {
-
-        for (Map.Entry<Integer, Map<Integer,List<TimeTableItemDTO>>> day : map.entrySet()) {
-            Map<Integer,List<TimeTableItemDTO>>hours = day.getValue();
-            for(Map.Entry<Integer, List<TimeTableItemDTO>> hour: hours.entrySet()) {
-                for(TimeTableItemDTO tableItem: hour.getValue()){
-                    switch (mode){
-                        case Teacher:
-                            System.out.print("  <" + tableItem.getSchoolClass().getId() +" , " +tableItem.getSubject().getId()  + ">  ");
-                            break;
-                        case Class:
-                            System.out.print("  <" + tableItem.getTeacher().getId() +" , " +tableItem.getSubject().getId()  + ">  ");
-                            break;
-                    }
-
+        getMaxOfListAndPrintHours(map);
+        map.forEach((days, hours) -> {
+            System.out.print((days + 1) + ":  ");
+            hours.forEach((hour, items) -> items.forEach(item -> {
+                switch (mode){
+                    case Teacher:
+                        System.out.print("  <" + item.getSchoolClass().getId() +", " +item.getSubject().getId()  + ">  ");
+                        break;
+                    case Class:
+                        System.out.print("  <" + item.getTeacher().getId() +", " +item.getSubject().getId()  + ">  ");
+                        break;
                 }
-            }
-        }
+            }));
+
+            System.out.print(System.getProperty("line.separator"));
+        });
+    }
+
+    private static void getMaxOfListAndPrintHours(Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map){
+        Map<Integer, List<TimeTableItemDTO>> maxHour = map.entrySet().stream().max((key, val) -> val.getValue().size()).get().getValue();
+        int max = maxHour.entrySet().stream().max((key, val) -> val.getValue().size()).get().getValue().size();
+        int hours = map.values().size();
+        System.out.print("days\\hours ");
+        IntStream.range(1, hours + 1).forEach(i -> {
+            Stream.generate(() -> " ").limit(max/2).forEach(System.out::print);
+            System.out.print(i);
+            Stream.generate(() -> " ").limit(max/2).forEach(System.out::print);
+        });
+
+        System.out.print(System.getProperty("line.separator"));
     }
 
     private static void printRules(Map<RuleDTO, Double> rules, double softAvg, double hardAvg){

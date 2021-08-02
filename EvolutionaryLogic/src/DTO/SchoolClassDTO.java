@@ -53,7 +53,7 @@ public class SchoolClassDTO extends SerialItemDTO implements Comparable<SchoolCl
     private String subjectToString(){
         StringBuilder builder = new StringBuilder();
         subjectsNeeded.forEach((key, val) -> {
-            builder.append("[subject = ").append(key).append(", hours = ").append(val).append("]");
+            builder.append("[ subject = ").append(key).append(", hours = ").append(val).append(" ]");
             builder.append(", ");
         });
 

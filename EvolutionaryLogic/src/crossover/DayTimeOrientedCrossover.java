@@ -20,8 +20,8 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableS
         }
 
         Set<TimeTable> children = new HashSet<>();
-        TimeTable child1 = createChild(parent1, parent2, supplier);
-        TimeTable child2 = createChild(parent1, parent2, supplier);
+        TimeTable child1 = createChild(parent1, parent2, true, supplier);
+        TimeTable child2 = createChild(parent1, parent2, false, supplier);
         /*while(child2.equals(child1)){
             child2 = createChild(parent1, parent2, supplier);
         }*/
@@ -51,11 +51,10 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableS
         return Objects.hash(cuttingPoints);
     }
 
-    private TimeTable createChild(TimeTable parent1, TimeTable parent2, TimeTableSystemDataSupplier supplier){
+    private TimeTable createChild(TimeTable parent1, TimeTable parent2, boolean isParent1, TimeTableSystemDataSupplier supplier){
         TimeTable currentParent;
         TimeTable child = new TimeTable();
         List<Integer> cuttingPoints = CrossoverUtils.getCuttingPoints(parent1, parent2, this.cuttingPoints);
-        boolean isParent1 = true;
         int count = 0;
         int currentCuttingPointPlace = 0; // the cell in the list of cutting points;
 

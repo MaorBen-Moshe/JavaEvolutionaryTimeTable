@@ -32,8 +32,11 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
             parent2 = CrossoverUtils.getParent(parents);
         }
 
-        children.add(createChild(parent1, parent2, true, items, supplier));
-        children.add(createChild(parent1, parent2, false, items, supplier));
+        TimeTable child1 = createChild(parent1, parent2, items, supplier);
+        TimeTable child2 = createChild(parent2, parent1,items, supplier);
+
+        children.add(child1);
+        children.add(child2);
         return children;
     }
 
@@ -58,17 +61,18 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
         return Objects.hash(cuttingPoints, orientation);
     }
 
-    private <T extends SerialItem> TimeTable createChild(TimeTable parent1, TimeTable parent2, boolean isParent1, Map<Integer, T> byAspectMap, TimeTableSystemDataSupplier supplier){
+    private <T extends SerialItem> TimeTable createChild(TimeTable parent1, TimeTable parent2, Map<Integer, T> byAspectMap, TimeTableSystemDataSupplier supplier){
         Map<T, TimeTable> descendantsOfEachT = new HashMap<>();
         TimeTable childCreated = new TimeTable();
         byAspectMap.values().forEach(current -> descendantsOfEachT.put(current, new TimeTable()));
 
+        final int maxCuttingPoints = supplier.getDays() * supplier.getHours() * supplier.getClasses().size() * supplier.getTeachers().size() * supplier.getSubjects().size();
         byAspectMap.forEach((key, val) -> {
-            List<Integer> cutting = CrossoverUtils.getCuttingPoints(parent1, parent2, this.cuttingPoints);
+            List<Integer> cutting = CrossoverUtils.getCuttingPoints(parent1, parent2, this.cuttingPoints, maxCuttingPoints);
             TimeTable current = null;
             switch (orientation){
-                case Teacher: current = createTeacherChildHelper(parent1, parent2, isParent1, cutting, key, supplier); break;
-                case Class: current = createClassChildHelper(parent1, parent2, isParent1, cutting, key, supplier); break;
+                case Teacher: current = createTeacherChildHelper(parent1, parent2, cutting, key, supplier); break;
+                case Class: current = createClassChildHelper(parent1, parent2, cutting, key, supplier); break;
             }
 
             descendantsOfEachT.replace(val, current);
@@ -87,9 +91,10 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
         return childCreated;
     }
 
-    private TimeTable createTeacherChildHelper(TimeTable parent1, TimeTable parent2, boolean isParent1, List<Integer> cuttingPoints, int currentAspectId, TimeTableSystemDataSupplier supplier){
+    private TimeTable createTeacherChildHelper(TimeTable parent1, TimeTable parent2, List<Integer> cuttingPoints, int currentAspectId, TimeTableSystemDataSupplier supplier){
         TimeTable currentParent;
         TimeTable child = new TimeTable();
+        boolean isParent1 = true;
         int count = 0;
         int currentCuttingPointPlace = 0; // the cell in the list of cutting points;
 
@@ -120,9 +125,10 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
         return child;
     }
 
-    private TimeTable createClassChildHelper(TimeTable parent1, TimeTable parent2, boolean isParent1, List<Integer> cuttingPoints, int currentAspectId, TimeTableSystemDataSupplier supplier){
+    private TimeTable createClassChildHelper(TimeTable parent1, TimeTable parent2, List<Integer> cuttingPoints, int currentAspectId, TimeTableSystemDataSupplier supplier){
         TimeTable currentParent;
         TimeTable child = new TimeTable();
+        boolean isParent1 = true;
         int count = 0;
         int currentCuttingPointPlace = 0; // the cell in the list of cutting points;
 

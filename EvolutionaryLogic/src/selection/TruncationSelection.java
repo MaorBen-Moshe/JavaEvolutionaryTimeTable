@@ -25,7 +25,7 @@ public class TruncationSelection implements Selection<TimeTable> {
                          .stream()
                          .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                          .limit(percent)
-                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1));
 
     }
 

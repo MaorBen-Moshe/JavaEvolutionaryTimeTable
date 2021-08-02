@@ -1,6 +1,6 @@
 package crossover;
 
-import models.TimeTable;
+import models.*;
 import utils.RandomUtils;
 
 import java.util.*;
@@ -22,11 +22,10 @@ public class CrossoverUtils {
         return retVal;
     }
 
-    public static List<Integer> getCuttingPoints(TimeTable parent1, TimeTable parent2, int cuttingPointsCount){
+    public static List<Integer> getCuttingPoints(TimeTable parent1, TimeTable parent2, int cuttingPointsCount, int maxCuttingPointsRange){
         List<Integer> cuttingPoints = new ArrayList<>();
-        int maxCuttingOption = Math.max(parent1.size(), parent2.size());
         while(cuttingPoints.size() < cuttingPointsCount){
-            int current = RandomUtils.nextIntInRange(0, maxCuttingOption);
+            int current = RandomUtils.nextIntInRange(1, maxCuttingPointsRange - 2);
             if(!cuttingPoints.contains(current)){
                 cuttingPoints.add(current);
             }

@@ -1,7 +1,5 @@
 package DTO;
 
-import models.SerialItem;
-
 import java.util.Objects;
 
 public class SerialItemDTO {

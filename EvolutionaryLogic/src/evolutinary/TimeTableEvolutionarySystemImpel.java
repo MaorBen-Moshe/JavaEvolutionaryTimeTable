@@ -81,10 +81,9 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
     }
 
     protected TimeTable createOptionalSolution(){
-        int maxNumber = days * hours * teachers.size() * subjects.size() * classes.size();
         int minNumber = classes.values().stream().mapToInt(SchoolClass::getTotalNumberOfHours).sum();
         TimeTable timeTable = new TimeTable();
-        int currentTableSize = RandomUtils.nextIntInRange((int)Math.floor(minNumber * 0.8), (int)Math.floor(minNumber*1.2));
+        int currentTableSize = RandomUtils.nextIntInRange((int)Math.floor(minNumber * 0.7), (int)Math.floor(minNumber*3));
         for(int i = 0; i < currentTableSize; i++){
             timeTable.add(createItem());
         }

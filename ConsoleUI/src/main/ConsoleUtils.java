@@ -253,7 +253,7 @@ public class ConsoleUtils {
     }
 
     private static void classDisplay(BestSolutionDTO solution) {
-        final Map<SchoolClassDTO, Map<Integer, Map<Integer, List<TimeTableItemDTO>>>> allDaysMap = new HashMap<>();
+        final Map<SchoolClassDTO, Map<Integer, Map<Integer, List<TimeTableItemDTO>>>> allDaysMap = new LinkedHashMap<>();
         TimeTableSystemDataSupplierDTO info = solution.getSupplier();
         System.out.println("Fitness = " + solution.getFitness());
         TimeTableDTO table = solution.getSolution();
@@ -273,7 +273,7 @@ public class ConsoleUtils {
     }
 
     private static void teacherDisplay(BestSolutionDTO solution) {
-        final Map<TeacherDTO, Map<Integer, Map<Integer, List<TimeTableItemDTO>>>> allDaysMap = new HashMap<>();
+        final Map<TeacherDTO, Map<Integer, Map<Integer, List<TimeTableItemDTO>>>> allDaysMap = new LinkedHashMap<>();
         System.out.println("Teachers display");
         System.out.println("======================================");
         TimeTableSystemDataSupplierDTO info = solution.getSupplier();

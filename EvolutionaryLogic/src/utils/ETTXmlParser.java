@@ -130,10 +130,10 @@ public class ETTXmlParser {
         FlippingMutation.Component retVal;
 
         if(first[0].equalsIgnoreCase("Component")){
-            retVal = FlippingMutation.Component.valueOf(first[1]);
+            retVal = FlippingMutation.Component.valueOf(first[1].toUpperCase(Locale.ROOT));
         }
         else if(second[0].equalsIgnoreCase("Component")){
-            retVal = FlippingMutation.Component.valueOf(second[1]);
+            retVal = FlippingMutation.Component.valueOf(second[1].toUpperCase(Locale.ROOT));
         }
         else{
             throw new IllegalArgumentException("Failed to find Component in ETTXmlParser:getFlippingComponent");
@@ -146,11 +146,15 @@ public class ETTXmlParser {
         Crossover<TimeTable, TimeTableSystemDataSupplier> retCrossover = null;
         CrossoverTypes type = CrossoverTypes.valueOf(ettCrossover.getName());
         int cuttingPoints = ettCrossover.getCuttingPoints();
+        if(cuttingPoints <= 0){
+            throw new IllegalArgumentException("Crossover accept only positive values for cutting points");
+        }
+
         try{
             if(ValidateUtils.crossoverValid(ettCrossover)){
                 switch (type){
                     case AspectOriented:
-                        AspectOrientedCrossover.Orientation orientation = AspectOrientedCrossover.Orientation.valueOf(ettCrossover.getConfiguration().replace(" ", "").split("=")[1]);
+                        AspectOrientedCrossover.Orientation orientation = AspectOrientedCrossover.Orientation.valueOf(ettCrossover.getConfiguration().replace(" ", "").split("=")[1].toUpperCase(Locale.ROOT));
                         retCrossover = new AspectOrientedCrossover(cuttingPoints, orientation);
                         break;
                     case DayTimeOriented:
@@ -198,7 +202,7 @@ public class ETTXmlParser {
         List<ETTClass> ettClassList = ettClasses.getETTClass();
         List<SchoolClass> tempClasses = new ArrayList<>(ettClassList.size());
         for(ETTClass klass : ettClassList){
-            Map<Subject, Integer> subjects = createSubjectMapByRequirements(klass.getETTRequirements(), allSubjects, totalNumberOfHoursInSystem);
+            Map<Subject, Integer> subjects = createSubjectMapByRequirements(klass, klass.getETTRequirements(), allSubjects, totalNumberOfHoursInSystem);
             tempClasses.add(new SchoolClass(klass.getETTName(), klass.getId(), subjects));
         }
 
@@ -214,7 +218,7 @@ public class ETTXmlParser {
         return retClasses;
     }
 
-    private static Map<Subject, Integer> createSubjectMapByRequirements(ETTRequirements ettRequirements, Collection<Subject> allSubjects, int totalNumberOfHoursInSystem) throws Exception {
+    private static Map<Subject, Integer> createSubjectMapByRequirements(ETTClass klass, ETTRequirements ettRequirements, Collection<Subject> allSubjects, int totalNumberOfHoursInSystem) throws Exception {
         List<ETTStudy> ettStudies = ettRequirements.getETTStudy();
         List<Integer> allIds = new ArrayList<>(ettStudies.size());
         Map<Subject, Integer> retSubjectsMap = new HashMap<>();
@@ -237,7 +241,7 @@ public class ETTXmlParser {
         totalHoursCounter = retSubjectsMap.values().stream().mapToInt(i -> i).sum();
         if(totalHoursCounter > totalNumberOfHoursInSystem){
             //result.addError()
-            throw new IllegalArgumentException("class total hours must be at most number of days in system times number of hours in system");
+            throw new IllegalArgumentException("class " + klass.getETTName() + ", id: " + klass.getId() + " total hours must be at most number of days in system times number of hours in system");
         }
 
         return retSubjectsMap;
@@ -254,7 +258,7 @@ public class ETTXmlParser {
                                              teacher.getId(),
                                              getSubjectsById(allSubjectsInSystem, ids)));
             }catch (Exception e){
-                throw new Exception("In teachers: " + teacher.getETTName() + ", " + teacher.getId() + e.getMessage());
+                throw new Exception("In teachers: " + teacher.getETTName() + ", id: " + teacher.getId() + " " + e.getMessage());
             }
         }
 
@@ -324,11 +328,11 @@ public class ETTXmlParser {
             if(ValidateUtils.enumValid(Rule.eStrength.values(), Rule.eStrength.class, rule.getType()) &&
                ValidateUtils.enumValid(Rules.eRules.values(), Rules.eRules.class, rule.getETTRuleId())){
                 Rule.eStrength strength = Rule.eStrength.valueOf(rule.getType());
-                Map<String, String> configurations = null;
+                Map<String, Object> configurations = null;
                 if(rule.getType().equals(Rules.eRules.Sequentiality.toString())){
                     int total = setSequentiality(rule.getETTConfiguration());
                     configurations = new HashMap<>();
-                    configurations.put("Total hours", String.valueOf(total));
+                    configurations.put("Total hours", total);
                 }
 
                 current = new Rule(Rules.eRules.valueOf(rule.getETTRuleId()), strength, configurations);

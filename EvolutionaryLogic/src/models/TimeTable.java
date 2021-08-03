@@ -13,9 +13,13 @@ public class TimeTable {
     public TimeTable() {
         sortedItems = new TreeSet<>();
         rulesScore = new HashMap<>();
+        unModifiedSortedItems = Collections.unmodifiableSet(sortedItems);
+        unModifiedRulesScore = Collections.unmodifiableMap(rulesScore);
     }
 
-    public Set<TimeTableItem> getSortedItems() { return unModifiedSortedItems; }
+    public Set<TimeTableItem> getSortedItems() {
+        return unModifiedSortedItems;
+    }
 
     public double getHardRulesAvg() {
         return hardRulesAvg;

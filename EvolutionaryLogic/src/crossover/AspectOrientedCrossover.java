@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSystemDataSupplier> {
     public enum Orientation{
-        Class, Teacher
+        CLASS, TEACHER
     }
     private final int cuttingPoints;
     private final Orientation orientation;
@@ -22,8 +22,8 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
         Set<TimeTable> children = new HashSet<>();
         Map<Integer, ? extends SerialItem> items = null;
         switch (orientation){
-            case Teacher: items = supplier.getTeachers(); break;
-            case Class: items = supplier.getClasses(); break;
+            case TEACHER: items = supplier.getTeachers(); break;
+            case CLASS: items = supplier.getClasses(); break;
         }
 
         TimeTable parent1 = CrossoverUtils.getParent(parents);
@@ -63,26 +63,26 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
 
     private <T extends SerialItem> TimeTable createChild(TimeTable parent1, TimeTable parent2, Map<Integer, T> byAspectMap, TimeTableSystemDataSupplier supplier){
         Map<T, TimeTable> descendantsOfEachT = new HashMap<>();
-        TimeTable childCreated = new TimeTable();
-        byAspectMap.values().forEach(current -> descendantsOfEachT.put(current, new TimeTable()));
-
         final int maxCuttingPoints = supplier.getDays() * supplier.getHours() * supplier.getClasses().size() * supplier.getTeachers().size() * supplier.getSubjects().size();
         byAspectMap.forEach((key, val) -> {
             List<Integer> cutting = CrossoverUtils.getCuttingPoints(parent1, parent2, this.cuttingPoints, maxCuttingPoints);
             TimeTable current = null;
             switch (orientation){
-                case Teacher: current = createTeacherChildHelper(parent1, parent2, cutting, key, supplier); break;
-                case Class: current = createClassChildHelper(parent1, parent2, cutting, key, supplier); break;
+                case TEACHER: current = createTeacherChildHelper(parent1, parent2, cutting, key, supplier); break;
+                case CLASS: current = createClassChildHelper(parent1, parent2, cutting, key, supplier); break;
             }
 
-            descendantsOfEachT.replace(val, current);
+            if(!descendantsOfEachT.containsKey(val)){
+                descendantsOfEachT.put(val, current);
+            }
         });
 
+        TimeTable childCreated = new TimeTable();
         descendantsOfEachT.forEach((key, val) -> val.getSortedItems().forEach(item -> {
             boolean notContains = !checkContainsByAspect(childCreated,
-                                                         item.getDay(),
-                                                         item.getHour(),
-                                                         key.getId());
+                    item.getDay(),
+                    item.getHour(),
+                    key.getId());
             if(notContains){
                 childCreated.add(item);
             }
@@ -136,7 +136,8 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
             for(int h = 1; h <= supplier.getHours(); h++){
                 for(int t = 1; t <= supplier.getTeachers().size(); t++){
                     for(int s = 1; s <= supplier.getSubjects().size(); s++){
-                        if(count > cuttingPoints.get(currentCuttingPointPlace)){
+                        if(currentCuttingPointPlace < cuttingPoints.size() &&
+                                count > cuttingPoints.get(currentCuttingPointPlace)){
                             currentCuttingPointPlace++;
                             isParent1 = !isParent1;
                         }
@@ -160,7 +161,7 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
 
     private boolean checkContainsByAspect(TimeTable check, int day, int hour, int id){
         Predicate<TimeTableItem> predicate = testItem ->
-                orientation.equals(Orientation.Teacher) ? testItem.getTeacher().getId() == id :
+                orientation.equals(Orientation.TEACHER) ? testItem.getTeacher().getId() == id :
                                                           testItem.getSchoolClass().getId() == id;
 
 

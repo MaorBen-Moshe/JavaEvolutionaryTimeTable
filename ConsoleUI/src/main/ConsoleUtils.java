@@ -18,12 +18,12 @@ public class ConsoleUtils {
         }, Class{
             @Override
             public String toString() {
-                return "Class display";
+                return "CLASS display";
             }
         }, Teacher{
             @Override
             public String toString() {
-                return "Teacher display";
+                return "TEACHER display";
             }
         }
     }
@@ -51,7 +51,7 @@ public class ConsoleUtils {
           }, ConsoleUtils::getTerminate,
                   (result) -> System.out.println("Generation: " +
                                                   result.getNumberOfGeneration() +
-                                                    ", Fitness: " + String.format("%.1f", result.getFitness()) + " .")
+                                                    ", Fitness: " + String.format("%.1f", result.getFitness()))
                   , (result) -> {
               if(result.isFailed()){
                   System.out.println(result.getErrorMessage());
@@ -242,7 +242,7 @@ public class ConsoleUtils {
 
     private static void rawDisplay(BestSolutionDTO solution) {
         TimeTableDTO timeTable = solution.getSolution();
-        System.out.println("Fitness = " + solution.getFitness());
+        System.out.printf("Fitness = %.2f%n", solution.getFitness());
         timeTable.getItems().forEach(item -> System.out.println("<" + item.getDay() + ", "
                            + item.getHour() + ", "
                            + item.getSchoolClass().getName() + ", "
@@ -255,7 +255,7 @@ public class ConsoleUtils {
     private static void classDisplay(BestSolutionDTO solution) {
         final Map<SchoolClassDTO, Map<Integer, Map<Integer, List<TimeTableItemDTO>>>> allDaysMap = new LinkedHashMap<>();
         TimeTableSystemDataSupplierDTO info = solution.getSupplier();
-        System.out.println("Fitness = " + solution.getFitness());
+        System.out.printf("Fitness = %.2f%n", solution.getFitness());
         TimeTableDTO table = solution.getSolution();
         info.getClasses().forEach((key, val) -> {
             Map<Integer, Map<Integer, List<TimeTableItemDTO>>> dayHourTable = initializeTableView(info);
@@ -277,7 +277,7 @@ public class ConsoleUtils {
         System.out.println("Teachers display");
         System.out.println("======================================");
         TimeTableSystemDataSupplierDTO info = solution.getSupplier();
-        System.out.println("Fitness = " + solution.getFitness());
+        System.out.printf("Fitness = %.2f%n", solution.getFitness());
         TimeTableDTO table = solution.getSolution();
         info.getTeachers().forEach((key, val) -> {
             Map<Integer, Map<Integer, List<TimeTableItemDTO>>> dayHourTable = initializeTableView(info);
@@ -316,7 +316,7 @@ public class ConsoleUtils {
         });
 
         allDaysMap.forEach((key, val) ->{
-            System.out.println((howToDisplay.equals(BestDisplay.Teacher) ? "Teacher: " : "Class: ") + key.getName() + ", id: " + key.getId());
+            System.out.println((howToDisplay.equals(BestDisplay.Teacher) ? "TEACHER: " : "CLASS: ") + key.getName() + ", id: " + key.getId());
             System.out.println("================");
             printMap(val, howToDisplay, max[0], numOfHoursInSystem);
             System.out.println("======================================");

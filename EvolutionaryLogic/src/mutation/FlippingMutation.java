@@ -17,6 +17,10 @@ public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemData
     private final Component component;
 
     public FlippingMutation(double probability, int maxTupples, Component component){
+        if(maxTupples <= 0){
+            throw new IllegalArgumentException("Flipping mutation accept only positive number for maxTupples");
+        }
+
         this.maxTupples = maxTupples;
         this.component = component;
         this.probability = probability;
@@ -33,7 +37,7 @@ public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemData
         int i = 1;
 
         int numberOfChosen = 0;
-        int itemsToGenerateNumber = RandomUtils.nextIntInRange(0, maxTupples);
+        int itemsToGenerateNumber = RandomUtils.nextIntInRange(1, maxTupples);
         Set<TimeTableItem> itemsChosen = new HashSet<>();
         for(TimeTableItem item : child.getSortedItems()){
             random = RandomUtils.nextIntInRange(0, child.size() + 1);

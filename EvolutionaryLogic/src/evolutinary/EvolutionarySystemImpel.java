@@ -77,6 +77,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     public BestSolutionItem<T, S> StartAlgorithm(Set<TerminateRule> terminateBy, int jumpInGenerations, Consumer<JumpInGenerationsResult> listener) {
         jumpInGenerations = jumpInGenerations <= 0 ? 1 : jumpInGenerations;
         isRunning = true;
+        currentNumberOfGenerations = 0;
         generationFitnessHistory.clear();
         try{
             /* initial*/
@@ -103,6 +104,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         }
 
         isRunning = false;
+        population.clear();
         return bestItem;
     }
 

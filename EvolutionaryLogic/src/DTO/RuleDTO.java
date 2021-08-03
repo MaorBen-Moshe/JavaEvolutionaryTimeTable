@@ -11,11 +11,11 @@ import java.util.Objects;
 public class RuleDTO {
     private final Rule.eStrength strength;
     private final Rules.eRules type;
-    private final Map<String, String> configurations;
-    private Map<String,String> unModifiedConfigurations;
+    private final Map<String, Object> configurations;
+    private Map<String,Object> unModifiedConfigurations;
 
 
-    public RuleDTO(Rules.eRules ruleType, Rule.eStrength ruleStrength, Map<String, String> configurations){
+    public RuleDTO(Rules.eRules ruleType, Rule.eStrength ruleStrength, Map<String, Object> configurations){
         this.strength = ruleStrength;
         this.type = ruleType;
         this.configurations = configurations == null ? new HashMap<>() : configurations;
@@ -32,15 +32,8 @@ public class RuleDTO {
         return type;
     }
 
-    public Map<String, String> getConfigurations() {
+    public Map<String, Object> getConfigurations() {
         return unModifiedConfigurations;
-    }
-
-    public void addConfiguration(String key, String val){
-        if(!configurations.containsKey(key)){
-            configurations.put(key, val);
-            this.unModifiedConfigurations = Collections.unmodifiableMap(configurations);
-        }
     }
 
     @Override

@@ -57,7 +57,7 @@ public class ValidateUtils {
         String configurations;
         if(stringType.equals(SelectionTypes.Truncation.toString())){
             configurations = selection.getConfiguration();
-            if(!configurations.replace(" ", "").isEmpty()){
+            if(configurations != null && !configurations.replace(" ", "").isEmpty()){
                 String[] split = configurations.replace(" ", "").split("=");
                 if(!(split.length == 2) || !split[0].equalsIgnoreCase("TopPercent")){
                     throw new IllegalArgumentException("selection configuration of type " + split[0] + " is not valid");
@@ -107,13 +107,13 @@ public class ValidateUtils {
         String stringType = crossover.getName();
         if(CrossoverTypes.AspectOriented.toString().equals(stringType)){
             String configurations = crossover.getConfiguration();
-            if(!configurations.replace(" ", "").isEmpty()){
+            if(configurations != null &&!configurations.replace(" ", "").isEmpty()){
                 String[] split = configurations.replace(" ", "").split("=");
                 if(!(split.length == 2) || !split[0].equalsIgnoreCase("Orientation")){
                     throw new IllegalArgumentException("crossover configuration of type " + split[0] + " is not valid");
                 }
                 else{
-                    if(!(split[1].equals("Class") || split[1].equals("Teacher"))){
+                    if(!(split[1].toLowerCase(Locale.ROOT).equals("class") || split[1].toLowerCase(Locale.ROOT).equals("teacher"))){
                         throw new IllegalArgumentException("crossover configuration: + " + split[0] + " with value " + split[1] + " is not valid");
                     }
                 }
@@ -159,7 +159,7 @@ public class ValidateUtils {
     private static void checkFlipping(ETTMutation flipping){
         String configurations = flipping.getConfiguration();
         String[] splitArray = configurations.split(",");
-        if(!configurations.replace(" ", "").isEmpty()){
+        if(configurations != null &&!configurations.replace(" ", "").isEmpty()){
             if(splitArray.length != 2){
                 throw new IllegalArgumentException("configurations of flipping mutation accept only MaxTupples and Component");
             }
@@ -206,7 +206,7 @@ public class ValidateUtils {
             }
             else{
                 try{
-                    FlippingMutation.Component.valueOf(splitArray[1]);
+                    FlippingMutation.Component.valueOf(splitArray[1].toUpperCase(Locale.ROOT));
                     retValue = true;
                 } catch (IllegalArgumentException e){
                     retValue = false;
@@ -219,7 +219,7 @@ public class ValidateUtils {
 
     private static void checkSizer(ETTMutation sizer){
         String configurations = sizer.getConfiguration();
-        if(!configurations.replace(" ", "").isEmpty()){
+        if(configurations != null &&!configurations.replace(" ", "").isEmpty()){
             String[] split = configurations.replace(" ", "").split("=");
             if(!(split.length == 2) || !split[0].equalsIgnoreCase("TotalTupples")){
                 throw new IllegalArgumentException("mutation configuration of type " + split[0] + " is not valid");

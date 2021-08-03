@@ -13,10 +13,10 @@ public class Rule {
 
     private final Rules.eRules ruleType;
     private final eStrength strength;
-    private final Map<String, String> configurations;
-    private Map<String, String> unModifiedConfigurations;
+    private final Map<String, Object> configurations;
+    private Map<String, Object> unModifiedConfigurations;
 
-    public Rule(Rules.eRules rule, eStrength strength,  Map<String, String> configurations){
+    public Rule(Rules.eRules rule, eStrength strength,  Map<String, Object> configurations){
         ruleType = rule;
         this.strength = strength;
         this.configurations = configurations == null ? new HashMap<>() : configurations;
@@ -31,7 +31,7 @@ public class Rule {
         return strength;
     }
 
-    public Map<String, String> getConfigurations() {
+    public Map<String, Object> getConfigurations() {
         return unModifiedConfigurations;
     }
 
@@ -57,7 +57,7 @@ public class Rule {
         return Objects.hash(strength, ruleType, configurations);
     }
 
-    public void addConfiguration(String key, String val){
+    public void addConfiguration(String key, Object val){
         if(!configurations.containsKey(key)){
             configurations.put(key, val);
             unModifiedConfigurations = Collections.unmodifiableMap(this.configurations);

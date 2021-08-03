@@ -82,8 +82,9 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
 
     protected TimeTable createOptionalSolution(){
         int minNumber = classes.values().stream().mapToInt(SchoolClass::getTotalNumberOfHours).sum();
+        int maxNumber = days * hours * subjects.size() * teachers.size() * classes.size();
         TimeTable timeTable = new TimeTable();
-        int currentTableSize = RandomUtils.nextIntInRange((int)Math.floor(minNumber * 0.7), (int)Math.floor(minNumber*3));
+        int currentTableSize = RandomUtils.nextIntInRange(minNumber, maxNumber);
         for(int i = 0; i < currentTableSize; i++){
             timeTable.add(createItem());
         }
@@ -117,12 +118,37 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
             optional.addRuleScore(rule, answer);
         }
 
-        double hard = getAvg(hardList);
-        double soft = getAvg(softList);
-        optional.setHardRulesAvg(hard);
-        optional.setSoftRulesAvg(soft);
+        return setRulesScoreAndGetResult(optional, hardList, softList);
+    }
+
+    private double setRulesScoreAndGetResult(TimeTable optional, List<Double> hardList, List<Double> softList) {
+        double retVal;
+        double hard = 0;
+        double soft = 0;
         int hardWeight = rules.getHardRulesWeight();
-        return ((hardWeight * hard) + ((100 - hardWeight) * soft)) / 100;
+        if(hardList.size() == 0 || softList.size() == 0){
+            if(hardList.size() == 0){
+                soft = getAvg(softList);
+                hard = 100;
+                optional.setHardRulesAvg(hard);
+                optional.setSoftRulesAvg(soft);
+            }
+            else{
+                hard = getAvg(hardList);
+                soft = 100;
+                optional.setHardRulesAvg(hard);
+                optional.setSoftRulesAvg(soft);
+            }
+        }
+        else{
+            hard = getAvg(hardList);
+            soft = getAvg(softList);
+            optional.setHardRulesAvg(hard);
+            optional.setSoftRulesAvg(soft);
+        }
+
+        retVal = ((hardWeight * hard) + ((100 - hardWeight) * soft)) / 100;
+        return retVal;
     }
 
     private TimeTableItem createItem(){

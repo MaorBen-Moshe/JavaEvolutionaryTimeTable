@@ -5,6 +5,17 @@ import Interfaces.DataSupplier;
 import java.util.Objects;
 
 public class BestSolutionItem<T, S extends DataSupplier> {
+    private S supplier;
+    private double fitness;
+    private int generationCreated;
+    private T solution;
+
+    public BestSolutionItem(T table, double fitness, int generationCreated, S supplier){
+        setSolution(table);
+        setFitness(fitness);
+        setSupplier(supplier);
+    }
+
     public double getFitness() {
         return fitness;
     }
@@ -29,19 +40,16 @@ public class BestSolutionItem<T, S extends DataSupplier> {
         this.solution = solution;
     }
 
-    private double fitness;
-    private T solution;
-
     private void setSupplier(S supplier) {
         this.supplier = supplier;
     }
 
-    private S supplier;
+    public int getGenerationCreated() {
+        return generationCreated;
+    }
 
-    public BestSolutionItem(T table, double fitness, S supplier){
-        setSolution(table);
-        setFitness(fitness);
-        setSupplier(supplier);
+    public void setGenerationCreated(int generationCreated) {
+        this.generationCreated = generationCreated;
     }
 
     @Override

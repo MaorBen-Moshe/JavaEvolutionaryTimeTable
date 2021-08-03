@@ -242,6 +242,7 @@ public class ConsoleUtils {
 
     private static void rawDisplay(BestSolutionDTO solution) {
         TimeTableDTO timeTable = solution.getSolution();
+        System.out.println("The generation this solution was created: " + solution.getGenerationCreated());
         System.out.printf("Fitness = %.2f%n", solution.getFitness());
         timeTable.getItems().forEach(item -> System.out.println("<" + item.getDay() + ", "
                            + item.getHour() + ", "
@@ -255,6 +256,7 @@ public class ConsoleUtils {
     private static void classDisplay(BestSolutionDTO solution) {
         final Map<SchoolClassDTO, Map<Integer, Map<Integer, List<TimeTableItemDTO>>>> allDaysMap = new LinkedHashMap<>();
         TimeTableSystemDataSupplierDTO info = solution.getSupplier();
+        System.out.println("The generation this solution was created: " + solution.getGenerationCreated());
         System.out.printf("Fitness = %.2f%n", solution.getFitness());
         TimeTableDTO table = solution.getSolution();
         info.getClasses().forEach((key, val) -> {
@@ -277,6 +279,7 @@ public class ConsoleUtils {
         System.out.println("Teachers display");
         System.out.println("======================================");
         TimeTableSystemDataSupplierDTO info = solution.getSupplier();
+        System.out.println("The generation this solution was created: " + solution.getGenerationCreated());
         System.out.printf("Fitness = %.2f%n", solution.getFitness());
         TimeTableDTO table = solution.getSolution();
         info.getTeachers().forEach((key, val) -> {

@@ -4,8 +4,8 @@ import models.BestSolutionItem;
 
 public class BestSolutionDTO extends BestSolutionItem<TimeTableDTO, TimeTableSystemDataSupplierDTO> {
 
-    public BestSolutionDTO(TimeTableDTO table, double fitness, TimeTableSystemDataSupplierDTO supplier){
-        super(table, fitness, supplier);
+    public BestSolutionDTO(TimeTableDTO table, double fitness, int generationCreated, TimeTableSystemDataSupplierDTO supplier){
+        super(table, fitness, generationCreated, supplier);
     }
 
     @Override

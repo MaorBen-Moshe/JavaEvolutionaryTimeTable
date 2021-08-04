@@ -14,6 +14,7 @@ public class BestSolutionItem<T, S extends DataSupplier> {
         setSolution(table);
         setFitness(fitness);
         setSupplier(supplier);
+        setGenerationCreated(generationCreated);
     }
 
     public double getFitness() {

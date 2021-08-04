@@ -3,7 +3,8 @@ package main;
 import DTO.*;
 import commands.*;
 import evolutinary.EvolutionarySystem;
-import models.*;
+import models.TimeTable;
+import models.TimeTableSystemDataSupplier;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -75,6 +76,7 @@ public class ConsoleUtils {
                 if(choice >= 1 && choice <= (commands.length + 1)){
                     if(choice == commands.length + 1){
                         System.out.println("goodbye :)");
+                        // if algorithm is still running on the different thread we should notify him to stop.
                         break;
                     }
 
@@ -396,18 +398,16 @@ public class ConsoleUtils {
         System.out.println("Soft rules average: " + softAvg);
     }
 
-    private static void displayProcess(CommandResult<Map<Integer, Double>> result){
+    private static void displayProcess(CommandResult<List<FitnessHistoryItemDTO>> result){
         if(result.isFailed()){
             System.out.println(result.getErrorMessage());
             return;
         }
 
-        Map<Integer, Double> generation = result.getResult();
-        double lastFitness = -1;
-        for(Map.Entry<Integer, Double> keyVal : generation.entrySet()){
-            String improvement = lastFitness != -1 ? ", improvement: " + String.format ("%.1f", (keyVal.getValue() - lastFitness)) : "";
-            System.out.println("Generation number: " + keyVal.getKey() + " with fitness: " + keyVal.getValue() + improvement);
-            lastFitness = keyVal.getValue();
-        }
+        List<FitnessHistoryItemDTO> generation = result.getResult();
+        generation.forEach(current -> {
+            String improvement = current.getGenerationNumber() != 0 ? ", improvement: " + String.format ("%.1f", current.getImprovementFromLastGeneration()) : "";
+            System.out.println("Generation number: " + current.getGenerationNumber() + " with fitness: " + current.getCurrentGenerationFitness() + improvement);
+        });
     }
 }

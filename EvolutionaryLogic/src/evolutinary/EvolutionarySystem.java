@@ -3,13 +3,13 @@ package evolutinary;
 import Interfaces.DataSupplier;
 import crossover.Crossover;
 import models.BestSolutionItem;
+import models.FitnessHistoryItem;
 import models.JumpInGenerationsResult;
 import models.TerminateRule;
 import mutation.Mutation;
 import selection.Selection;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -19,7 +19,7 @@ public interface EvolutionarySystem<T, S extends DataSupplier> {
         ByFitness, NumberOfGenerations
     }
 
-    BestSolutionItem<T, S> StartAlgorithm(Set<TerminateRule> terminateBy, int jumpInGenerations, Consumer<JumpInGenerationsResult> listener);
+    void StartAlgorithm(Set<TerminateRule> terminateBy, int jumpInGenerations, Consumer<JumpInGenerationsResult> listener);
 
     boolean IsRunningProcess();
 
@@ -31,7 +31,7 @@ public interface EvolutionarySystem<T, S extends DataSupplier> {
 
     List<Mutation<T, S>> getMutations();
 
-    Map<Integer, Double> getGenerationFitnessHistory();
+    List<FitnessHistoryItem> getGenerationFitnessHistory();
 
     S getSystemInfo();
 

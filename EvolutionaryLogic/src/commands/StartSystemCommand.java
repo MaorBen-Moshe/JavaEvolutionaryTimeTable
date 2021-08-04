@@ -44,16 +44,19 @@ public class StartSystemCommand extends CommandImpel{
 
             if(rules == null){
                 result.setErrorMessage("Algorithm cannot start without terminate rules");
+                afterStart.accept(result);
                 return;
             }
 
-            evolutionarySystem.StartAlgorithm(setByTerminate(rules.getRules()), rules.getJumpInGenerations(), jumpInGenerationsListener);
+            new Thread(() -> {
+                evolutionarySystem.StartAlgorithm(setByTerminate(rules.getRules()), rules.getJumpInGenerations(), jumpInGenerationsListener);
+                afterStart.accept(result);
+                }, "System Thread").start();
         }
         else{
             result.setErrorMessage("File should be loaded first");
+            afterStart.accept(result);
         }
-
-        afterStart.accept(result);
     }
 
     @Override

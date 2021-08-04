@@ -1,29 +1,38 @@
 package commands;
 
-import java.util.Map;
+import DTO.FitnessHistoryItemDTO;
+import models.FitnessHistoryItem;
+
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class ProcessCommand extends CommandImpel{
 
-    private Consumer<CommandResult<Map<Integer, Double>>> action;
+    private Consumer<CommandResult<List<FitnessHistoryItemDTO>>> action;
 
-    public ProcessCommand(Consumer<CommandResult<Map<Integer, Double>>> o) {
+    public ProcessCommand(Consumer<CommandResult<List<FitnessHistoryItemDTO>>> o) {
         this.action = o;
     }
 
     @Override
     public void execute() {
-        CommandResult<Map<Integer, Double>> result = new CommandResult<>();
+        CommandResult<List<FitnessHistoryItemDTO>> result = new CommandResult<>();
         if(isFileLoaded){
+            List<FitnessHistoryItem> process = evolutionarySystem.getGenerationFitnessHistory();
             if(evolutionarySystem.IsRunningProcess()){
-                result.setErrorMessage("Process is still running, current number of generation: " + evolutionarySystem.getCurrentNumberOfGenerations());
+                process = process.stream()
+                        .sorted(Collections.reverseOrder())
+                        .limit(10)
+                        .collect(Collectors.toList());
+
+                result.setResult(createAnswer(process));
             }
             else{
-                Map<Integer, Double> process = evolutionarySystem.getGenerationFitnessHistory();
                 if(process.size() > 0){
-                    result.setResult(process);
+                    result.setResult(createAnswer(process));
                 }
-                else{
+                else {
                     result.setErrorMessage("Algorithm should start first at least one time");
                 }
             }
@@ -38,5 +47,15 @@ public class ProcessCommand extends CommandImpel{
     @Override
     public String getCommandName() {
         return "System process details";
+    }
+
+    private List<FitnessHistoryItemDTO> createAnswer(List<FitnessHistoryItem> old){
+        List<FitnessHistoryItemDTO> ret = new ArrayList<>();
+        old.forEach(item -> {
+            ret.add(new FitnessHistoryItemDTO(item.getGenerationNumber(), item.getCurrentGenerationFitness(), item.getImprovementFromLastGeneration()));
+        });
+
+        ret.sort(FitnessHistoryItemDTO::compareTo);
+        return ret;
     }
 }

@@ -1,22 +1,42 @@
 package commands;
 
+import models.TimeTable;
+import models.TimeTableSystemDataSupplier;
+
+import java.util.function.Supplier;
+
 public class ExitCommand extends CommandImpel{
     private final Runnable beforeExit;
+    private final Supplier<Boolean> ifRunning;
 
-    public ExitCommand(Runnable beforeExit){ this.beforeExit = beforeExit; }
+    public ExitCommand(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper,
+                       Runnable beforeExit,
+                       Supplier<Boolean> ifRunning){
+        super(wrapper);
+        this.ifRunning = ifRunning;
+        this.beforeExit = beforeExit;
+    }
 
     @Override
     public void execute() {
-        beforeExit.run();
-        if(evolutionarySystem != null && evolutionarySystem.IsRunningProcess()){
-            evolutionarySystem.stopProcess();
+        if(engineWrapper.getEngine() != null && engineWrapper.getEngine().IsRunningProcess()){
+            if(ifRunning.get()){
+                engineWrapper.getEngine().stopProcess();
+                doExit();
+            }
         }
-
-        System.exit(0);
+        else{
+           doExit();
+        }
     }
 
     @Override
     public String getCommandName() {
         return "Exit";
+    }
+
+    private void doExit(){
+        beforeExit.run();
+        System.exit(0);
     }
 }

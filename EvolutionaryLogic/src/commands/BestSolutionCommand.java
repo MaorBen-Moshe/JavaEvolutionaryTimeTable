@@ -9,15 +9,17 @@ import java.util.function.Consumer;
 public class BestSolutionCommand extends CommandImpel{
     private Consumer<CommandResult<BestSolutionDTO>> after;
 
-    public BestSolutionCommand(Consumer<CommandResult<BestSolutionDTO>> after) {
+    public BestSolutionCommand(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper,
+                               Consumer<CommandResult<BestSolutionDTO>> after) {
+        super(wrapper);
         this.after = after;
     }
 
     @Override
     public void execute() {
         CommandResult<BestSolutionDTO> result = new CommandResult<>();
-        if(isFileLoaded){
-          if(evolutionarySystem.getBestSolution() != null){
+        if(engineWrapper.isFileLoaded()){
+          if(engineWrapper.getEngine().getBestSolution() != null){
               result.setResult(createAnswer());
           }
           else{
@@ -38,7 +40,7 @@ public class BestSolutionCommand extends CommandImpel{
 
     private BestSolutionDTO createAnswer(){
         ModelToDTOConverter converter = new ModelToDTOConverter();
-        BestSolutionItem<TimeTable, TimeTableSystemDataSupplier> solution = evolutionarySystem.getBestSolution();
+        BestSolutionItem<TimeTable, TimeTableSystemDataSupplier> solution = engineWrapper.getEngine().getBestSolution();
         TimeTable table = solution.getSolution();
         Set<TimeTableItemDTO> set = new TreeSet<>();
         table.getSortedItems().forEach(item -> set.add(new TimeTableItemDTO(item.getDay(),
@@ -49,7 +51,7 @@ public class BestSolutionCommand extends CommandImpel{
 
         TimeTableDTO newTable = new TimeTableDTO(set, converter.createRuleMapDTO(table.getRulesScore()),
                 table.getHardRulesAvg(), table.getSoftRulesAvg());
-        TimeTableSystemDataSupplierDTO supplier = new ModelToDTOConverter().createDataSupplierDTO(evolutionarySystem.getSystemInfo());
+        TimeTableSystemDataSupplierDTO supplier = new ModelToDTOConverter().createDataSupplierDTO(engineWrapper.getEngine().getSystemInfo());
         return new BestSolutionDTO(newTable, solution.getFitness(), solution.getGenerationCreated(), supplier);
     }
 }

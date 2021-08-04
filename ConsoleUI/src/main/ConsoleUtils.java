@@ -33,13 +33,15 @@ public class ConsoleUtils {
 
     static {
         scan = new Scanner(System.in);
+        EngineWrapper<TimeTable, TimeTableSystemDataSupplier> engine = new EngineWrapper<>();
         commands = new Command[] {
-          new LoadCommand(() -> {
+          new LoadCommand(engine,
+                  () -> {
               System.out.println("Please enter the full path of your file: (don't forget .xml at the end of the path)");
               return scan.nextLine();
           }, (x) -> System.out.println("File loaded successfully.")),
-          new SystemInfoCommand(ConsoleUtils::displaySystemInfo),
-          new StartSystemCommand(() -> {
+          new SystemInfoCommand(engine, ConsoleUtils::displaySystemInfo),
+          new StartSystemCommand(engine,() -> {
               System.out.println("There is a running process");
               System.out.println("Do you want to stop it and run a new one? (answer y/n)");
               String answer = scan.nextLine();
@@ -61,9 +63,12 @@ public class ConsoleUtils {
 
               System.out.println("Process finished!");
           }),
-          new BestSolutionCommand(ConsoleUtils::displayBestSolution),
-          new ProcessCommand(ConsoleUtils::displayProcess),
-          new ExitCommand(() -> System.out.println("Goodbye :)"))
+          new BestSolutionCommand(engine,ConsoleUtils::displayBestSolution),
+          new ProcessCommand(engine,ConsoleUtils::displayProcess),
+          new ExitCommand(engine, () -> System.out.println("Goodbye :)"), () ->{
+              System.out.println("There is a running process, do you still want to leave? (y/n)");
+              return scan.nextLine().toLowerCase(Locale.ROOT).equals("y");
+          })
         };
     }
 

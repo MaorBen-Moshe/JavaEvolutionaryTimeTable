@@ -2,6 +2,8 @@ package commands;
 
 import DTO.FitnessHistoryItemDTO;
 import models.FitnessHistoryItem;
+import models.TimeTable;
+import models.TimeTableSystemDataSupplier;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -11,16 +13,18 @@ public class ProcessCommand extends CommandImpel{
 
     private Consumer<CommandResult<List<FitnessHistoryItemDTO>>> action;
 
-    public ProcessCommand(Consumer<CommandResult<List<FitnessHistoryItemDTO>>> o) {
+    public ProcessCommand(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper,
+                          Consumer<CommandResult<List<FitnessHistoryItemDTO>>> o) {
+        super(wrapper);
         this.action = o;
     }
 
     @Override
     public void execute() {
         CommandResult<List<FitnessHistoryItemDTO>> result = new CommandResult<>();
-        if(isFileLoaded){
-            List<FitnessHistoryItem> process = evolutionarySystem.getGenerationFitnessHistory();
-            if(evolutionarySystem.IsRunningProcess()){
+        if(engineWrapper.isFileLoaded()){
+            List<FitnessHistoryItem> process = engineWrapper.getEngine().getGenerationFitnessHistory();
+            if(engineWrapper.getEngine().IsRunningProcess()){
                 process = process.stream()
                         .sorted(Collections.reverseOrder())
                         .limit(10)
@@ -51,9 +55,7 @@ public class ProcessCommand extends CommandImpel{
 
     private List<FitnessHistoryItemDTO> createAnswer(List<FitnessHistoryItem> old){
         List<FitnessHistoryItemDTO> ret = new ArrayList<>();
-        old.forEach(item -> {
-            ret.add(new FitnessHistoryItemDTO(item.getGenerationNumber(), item.getCurrentGenerationFitness(), item.getImprovementFromLastGeneration()));
-        });
+        old.forEach(item -> ret.add(new FitnessHistoryItemDTO(item.getGenerationNumber(), item.getCurrentGenerationFitness(), item.getImprovementFromLastGeneration())));
 
         ret.sort(FitnessHistoryItemDTO::compareTo);
         return ret;

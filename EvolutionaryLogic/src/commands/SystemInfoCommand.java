@@ -12,14 +12,16 @@ public class SystemInfoCommand extends CommandImpel{
 
     private Consumer<CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>>> action;
 
-    public SystemInfoCommand(Consumer<CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>>> o) {
+    public SystemInfoCommand(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper,
+                             Consumer<CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>>> o) {
+        super(wrapper);
         this.action = o;
     }
 
     @Override
     public void execute() {
         CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>> result = new CommandResult<>();
-        if(isFileLoaded){
+        if(engineWrapper.isFileLoaded()){
             result.setResult(createAnswer());
         }
         else{
@@ -36,7 +38,7 @@ public class SystemInfoCommand extends CommandImpel{
 
     private SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier> createAnswer(){
         ModelToDTOConverter converter = new ModelToDTOConverter();
-        TimeTableEvolutionarySystemImpel system = (TimeTableEvolutionarySystemImpel) evolutionarySystem;
+        TimeTableEvolutionarySystemImpel system = (TimeTableEvolutionarySystemImpel) engineWrapper.getEngine();
         return new SystemInfoDTO<>(system.getDays(),
                 system.getHours(),
                 converter.createTeachersFromMap(system.getTeachers()),

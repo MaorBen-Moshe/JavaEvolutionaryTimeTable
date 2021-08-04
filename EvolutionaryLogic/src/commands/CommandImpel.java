@@ -1,10 +1,13 @@
 package commands;
 
 import evolutinary.EvolutionarySystem;
+import evolutinary.TimeTableEvolutionarySystemImpel;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
 
 public abstract class CommandImpel implements Command{
-    protected static EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> evolutionarySystem;
-    protected static boolean isFileLoaded = false;
+    protected EngineWrapper<TimeTable, TimeTableSystemDataSupplier> engineWrapper;
+    protected CommandImpel(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper){
+        this.engineWrapper = wrapper;
+    }
 }

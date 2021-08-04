@@ -4,10 +4,7 @@ import DTO.FitnessTerminateRuleDTO;
 import DTO.GenerationsTerminateRuleDTO;
 import DTO.TerminateRuleDTO;
 import DTO.StartSystemInfoDTO;
-import models.FitnessTerminateRule;
-import models.GenerationTerminateRule;
-import models.JumpInGenerationsResult;
-import models.TerminateRule;
+import models.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,10 +17,12 @@ public class StartSystemCommand extends CommandImpel{
     private final Consumer<JumpInGenerationsResult> jumpInGenerationsListener;
     private final Consumer<CommandResult<?>> afterStart;
 
-    public StartSystemCommand(Supplier<StartSystemInfoDTO> whenRunningAlready,
+    public StartSystemCommand(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper,
+                              Supplier<StartSystemInfoDTO> whenRunningAlready,
                               Supplier<StartSystemInfoDTO> whenNotRunning,
                               Consumer<JumpInGenerationsResult> jumpInGenerationsListener,
                               Consumer<CommandResult<?>> after) {
+        super(wrapper);
         this.whenNotRunning = whenNotRunning;
         this.whenRunningAlready = whenRunningAlready;
         this.afterStart = after;
@@ -34,8 +33,8 @@ public class StartSystemCommand extends CommandImpel{
     public void execute() {
         CommandResult<?> result = new CommandResult<>();
         StartSystemInfoDTO rules;
-        if(isFileLoaded){
-            if(evolutionarySystem.IsRunningProcess()){
+        if(engineWrapper.isFileLoaded()){
+            if(engineWrapper.getEngine().IsRunningProcess()){
                 rules = whenRunningAlready.get();
             }
             else{
@@ -49,7 +48,9 @@ public class StartSystemCommand extends CommandImpel{
             }
 
             Thread sysThread = new Thread(() -> {
-                evolutionarySystem.StartAlgorithm(setByTerminate(rules.getRules()), rules.getJumpInGenerations(), jumpInGenerationsListener);
+                engineWrapper.getEngine().StartAlgorithm(setByTerminate(rules.getRules()),
+                                                         rules.getJumpInGenerations(),
+                                                         jumpInGenerationsListener);
                 afterStart.accept(result);
                 }, "System Thread");
 

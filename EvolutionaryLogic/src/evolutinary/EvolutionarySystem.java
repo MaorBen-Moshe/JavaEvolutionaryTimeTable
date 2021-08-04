@@ -38,4 +38,6 @@ public interface EvolutionarySystem<T, S extends DataSupplier> {
     BestSolutionItem<T, S> getBestSolution();
 
     int getCurrentNumberOfGenerations();
+
+    void stopProcess();
 }

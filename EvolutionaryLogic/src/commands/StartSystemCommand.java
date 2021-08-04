@@ -48,10 +48,12 @@ public class StartSystemCommand extends CommandImpel{
                 return;
             }
 
-            new Thread(() -> {
+            Thread sysThread = new Thread(() -> {
                 evolutionarySystem.StartAlgorithm(setByTerminate(rules.getRules()), rules.getJumpInGenerations(), jumpInGenerationsListener);
                 afterStart.accept(result);
-                }, "System Thread").start();
+                }, "System Thread");
+
+            sysThread.start();
         }
         else{
             result.setErrorMessage("File should be loaded first");

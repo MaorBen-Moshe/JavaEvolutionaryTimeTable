@@ -63,23 +63,18 @@ public class ConsoleUtils {
           }),
           new BestSolutionCommand(ConsoleUtils::displayBestSolution),
           new ProcessCommand(ConsoleUtils::displayProcess),
+          new ExitCommand(() -> System.out.println("Goodbye :)"))
         };
     }
 
     public static void RunApp(){
-        final String choiceError = "Please choose a number of your choice between 1 -  " + (commands.length + 1);
+        final String choiceError = "Please choose a number of your choice between 1 -  " + commands.length;
         while(true){
             try{
                 displayMenu();
                 String tempChoice = scan.nextLine();
                 int choice = Integer.parseInt(tempChoice);
-                if(choice >= 1 && choice <= (commands.length + 1)){
-                    if(choice == commands.length + 1){
-                        System.out.println("goodbye :)");
-                        // if algorithm is still running on the different thread we should notify him to stop.
-                        break;
-                    }
-
+                if(choice >= 1 && choice <= commands.length){
                     commands[choice- 1].execute();
                     continue;
                 }
@@ -99,8 +94,7 @@ public class ConsoleUtils {
             System.out.println(i + ". " + commands[i-1].getCommandName());
         }
 
-        System.out.println((commands.length + 1) + ". Exit");
-        System.out.println("please choose an option. (1 - " + (commands.length + 1) + ")");
+        System.out.println("please choose an option. (1 - " + commands.length + ")");
     }
 
     private static StartSystemInfoDTO getTerminate(){

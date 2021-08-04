@@ -24,6 +24,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     private final List<FitnessHistoryItem> generationFitnessHistory; // cell 0: best fitness of generation 1 and so on... (by jump in generations)
     private BestSolutionItem<T, S> bestItem;
     private boolean isRunning = false;
+    private boolean stopOccurred = false;
     private int currentNumberOfGenerations;
     private final Object generationsLock;
     private final Object bestItemLock;
@@ -44,6 +45,13 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     public int getCurrentNumberOfGenerations() {
         synchronized (generationsLock){
             return currentNumberOfGenerations;
+        }
+    }
+
+    @Override
+    public void stopProcess() {
+        if(isRunning){
+            stopOccurred = true;
         }
     }
 
@@ -103,7 +111,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
                                          bestItem.getFitness(),
                                          0));
             /* iterative*/
-            while(!isTerminate(terminateBy)){
+            while(!isTerminate(terminateBy) && !stopOccurred){
                 createAndEvaluateGeneration();
                 synchronized (bestItemLock){
                     bestItem = getCurrentBestOption();
@@ -124,6 +132,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         }
 
         isRunning = false;
+        stopOccurred = false;
         population.clear();
     }
 

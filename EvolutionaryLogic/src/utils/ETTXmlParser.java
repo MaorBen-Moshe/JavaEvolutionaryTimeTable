@@ -326,16 +326,16 @@ public class ETTXmlParser {
         Rules rules = new Rules(rulesWeight);
         for(ETTRule rule : ettRulesList){
             if(ValidateUtils.enumValid(Rule.eStrength.values(), Rule.eStrength.class, rule.getType()) &&
-               ValidateUtils.enumValid(Rules.eRules.values(), Rules.eRules.class, rule.getETTRuleId())){
+               ValidateUtils.enumValid(Rule.eRules.values(), Rule.eRules.class, rule.getETTRuleId())){
                 Rule.eStrength strength = Rule.eStrength.valueOf(rule.getType());
                 Map<String, Object> configurations = null;
-                if(rule.getType().equals(Rules.eRules.Sequentiality.toString())){
+                if(rule.getType().equals(Rule.eRules.Sequentiality.toString())){
                     int total = setSequentiality(rule.getETTConfiguration());
                     configurations = new HashMap<>();
                     configurations.put("Total hours", total);
                 }
 
-                current = new Rule(Rules.eRules.valueOf(rule.getETTRuleId()), strength, configurations);
+                current = new Rule(Rule.eRules.valueOf(rule.getETTRuleId()), strength, configurations);
             }
 
             if(rules.contains(current)){

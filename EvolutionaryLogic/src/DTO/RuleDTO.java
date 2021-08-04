@@ -10,12 +10,12 @@ import java.util.Objects;
 
 public class RuleDTO {
     private final Rule.eStrength strength;
-    private final Rules.eRules type;
+    private final Rule.eRules type;
     private final Map<String, Object> configurations;
     private Map<String,Object> unModifiedConfigurations;
 
 
-    public RuleDTO(Rules.eRules ruleType, Rule.eStrength ruleStrength, Map<String, Object> configurations){
+    public RuleDTO(Rule.eRules ruleType, Rule.eStrength ruleStrength, Map<String, Object> configurations){
         this.strength = ruleStrength;
         this.type = ruleType;
         this.configurations = configurations == null ? new HashMap<>() : configurations;
@@ -28,7 +28,7 @@ public class RuleDTO {
         return strength;
     }
 
-    public Rules.eRules getType() {
+    public Rule.eRules getType() {
         return type;
     }
 

@@ -388,8 +388,8 @@ public class ConsoleUtils {
             }
         });
 
-        System.out.println("Hard rules average: " + hardAvg);
-        System.out.println("Soft rules average: " + softAvg);
+        System.out.println("Hard rules average: " + (hardAvg >= 0 ? hardAvg : "No hard rules were found."));
+        System.out.println("Soft rules average: " + (softAvg >= 0 ? softAvg : "No soft rules were found."));
     }
 
     private static void displayProcess(CommandResult<List<FitnessHistoryItemDTO>> result){

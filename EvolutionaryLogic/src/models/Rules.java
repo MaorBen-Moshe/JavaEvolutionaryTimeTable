@@ -3,11 +3,6 @@ package models;
 import java.util.*;
 
 public class Rules{
-
-    public enum eRules {
-        DayOffClass, DayOffTeacher, Knowledgeable, Sequentiality, Singularity, TeacherIsHuman, WorkingHoursPreference,Satisfactory
-    }
-
     private final int hardRulesWeight;
     private final Set<Rule> rules;
     private Set<Rule> unModifiedRules;
@@ -23,6 +18,63 @@ public class Rules{
 
     public Set<Rule> getRules() {
         return unModifiedRules;
+    }
+
+    public double evaluateRules(TimeTable optional, TimeTableSystemDataSupplier supplier){
+        List<Double> hardList = new ArrayList<>();
+        List<Double> softList = new ArrayList<>();
+        final double[] answer = {0};
+        rules.forEach(rule -> {
+            answer[0] = rule.evaluateRule(optional, supplier);
+            if(rule.getStrength().equals(Rule.eStrength.Hard)){
+                hardList.add(answer[0]);
+            }else {
+                softList.add(answer[0]);
+            }
+
+            optional.addRuleScore(rule, answer[0]);
+        });
+
+        return setRulesScoreAndGetResult(optional, hardList, softList);
+    }
+
+    private double setRulesScoreAndGetResult(TimeTable optional, List<Double> hardList, List<Double> softList) {
+        double retVal;
+        double hard;
+        double soft;
+        int hardWeight = getHardRulesWeight();
+        if(hardList.size() == 0 || softList.size() == 0){
+            if(hardList.size() == 0){
+                soft = getAvg(softList);
+                hard = -1;
+                retVal = soft;
+            }
+            else{
+                hard = getAvg(hardList);
+                soft = -1;
+                retVal = hard;
+            }
+        }
+        else{
+            hard = getAvg(hardList);
+            soft = getAvg(softList);
+            retVal = ((hardWeight * hard) + ((100 - hardWeight) * soft)) / 100;
+        }
+
+        optional.setHardRulesAvg(hard);
+        optional.setSoftRulesAvg(soft);
+        return retVal;
+    }
+
+
+    private double getAvg(List<Double> list){
+        double ret = 0;
+        if(list.size() != 0){
+            ret = list.stream().mapToDouble(x -> x).sum();
+            ret /= list.size();
+        }
+
+        return ret;
     }
 
     @Override

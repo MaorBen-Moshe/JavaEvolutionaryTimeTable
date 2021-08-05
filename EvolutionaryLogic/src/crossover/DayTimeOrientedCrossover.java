@@ -52,7 +52,7 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableS
         boolean isParent1 = true;
         TimeTable child = new TimeTable();
         final int maxCuttingPoints = supplier.getDays() * supplier.getHours() * supplier.getClasses().size() * supplier.getTeachers().size() * supplier.getSubjects().size();
-        List<Integer> cuttingPoints = CrossoverUtils.getCuttingPoints(parent1, parent2, this.cuttingPoints, maxCuttingPoints);
+        List<Integer> cuttingPoints = CrossoverUtils.getCuttingPoints(this.cuttingPoints, maxCuttingPoints);
         int count = 0;
         int currentCuttingPointPlace = 0; // the cell in the list of cutting points;
 
@@ -60,7 +60,6 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableS
             for(int h = 1; h <= supplier.getHours(); h++){
                 for(int c = 1; c <= supplier.getClasses().size(); c++){
                     for(int t = 1; t <= supplier.getTeachers().size(); t++){
-
                         for(int s = 1; s <= supplier.getSubjects().size(); s++){
                             if(currentCuttingPointPlace < cuttingPoints.size() &&
                                     count > cuttingPoints.get(currentCuttingPointPlace)){

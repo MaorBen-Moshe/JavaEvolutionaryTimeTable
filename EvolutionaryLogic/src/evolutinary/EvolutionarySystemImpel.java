@@ -112,12 +112,12 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
                                          0));
             /* iterative*/
             while(!isTerminate(terminateBy) && !stopOccurred){
+                incCurrentNumberOfGenerations();
                 createAndEvaluateGeneration();
                 synchronized (bestItemLock){
                     bestItem = getCurrentBestOption();
                 }
 
-                incCurrentNumberOfGenerations();
                 if(getCurrentNumberOfGenerations() % jumpInGenerations == 0){
                     double improvement = bestItem.getFitness() - generationFitnessHistory.get(generationFitnessHistory.size() - 1).getCurrentGenerationFitness();
                     FitnessHistoryItem item = new FitnessHistoryItem(getCurrentNumberOfGenerations(),
@@ -156,6 +156,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     protected void createAndEvaluateGeneration(){
         S supplier = getSystemInfo();
         Map<T, Double> selected = selection.select(population);
+        //childPopulation.putAll(selected);
         while(childPopulation.size() < population.size()){
             Set<T> children = crossover.crossover(selected, supplier);
             children.forEach(child ->{

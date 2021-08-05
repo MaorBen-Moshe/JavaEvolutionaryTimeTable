@@ -22,7 +22,6 @@ public class LoadCommand extends CommandImpel{
     public void execute() throws Exception {
         String input = before.get();
         engineWrapper.setEngine(ETTXmlParser.parse(input));
-        engineWrapper.setFileLoaded(true);
         after.accept(null);
     }
 

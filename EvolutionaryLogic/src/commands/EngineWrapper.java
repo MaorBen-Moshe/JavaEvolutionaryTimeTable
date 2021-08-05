@@ -12,14 +12,13 @@ public final class EngineWrapper<T, S extends DataSupplier> {
     }
 
     public void setEngine(EvolutionarySystem<T, S> engine) {
-        this.engine = engine;
+        if(engine != null){
+            this.engine = engine;
+            isFileLoaded = true;
+        }
     }
 
     public boolean isFileLoaded() {
         return isFileLoaded;
-    }
-
-    public void setFileLoaded(boolean fileLoaded) {
-        isFileLoaded = fileLoaded;
     }
 }

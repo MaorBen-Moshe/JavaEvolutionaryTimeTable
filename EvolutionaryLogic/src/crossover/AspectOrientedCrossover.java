@@ -65,7 +65,7 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
         Map<T, TimeTable> descendantsOfEachT = new HashMap<>();
         final int maxCuttingPoints = supplier.getDays() * supplier.getHours() * supplier.getClasses().size() * supplier.getTeachers().size() * supplier.getSubjects().size();
         byAspectMap.forEach((key, val) -> {
-            List<Integer> cutting = CrossoverUtils.getCuttingPoints(parent1, parent2, this.cuttingPoints, maxCuttingPoints);
+            List<Integer> cutting = CrossoverUtils.getCuttingPoints(this.cuttingPoints, maxCuttingPoints);
             TimeTable current = null;
             switch (orientation){
                 case TEACHER: current = createTeacherChildHelper(parent1, parent2, cutting, key, supplier); break;

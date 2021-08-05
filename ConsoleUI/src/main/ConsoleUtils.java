@@ -29,9 +29,12 @@ public class ConsoleUtils {
         }
     }
     private final static Command[] commands;
-    private final static Scanner scan;
+    private static Scanner scan;
+    private static boolean finished;
+
 
     static {
+        finished = false;
         scan = new Scanner(System.in);
         EngineWrapper<TimeTable, TimeTableSystemDataSupplier> engine = new EngineWrapper<>();
         commands = new Command[] {
@@ -65,7 +68,10 @@ public class ConsoleUtils {
           }),
           new BestSolutionCommand(engine,ConsoleUtils::displayBestSolution),
           new ProcessCommand(engine,ConsoleUtils::displayProcess),
-          new ExitCommand(engine, () -> System.out.println("Goodbye :)"), () ->{
+          new ExitCommand(engine, () -> {
+              System.out.println("Goodbye :)");
+              finished = true;
+          }, () ->{
               System.out.println("There is a running process, do you still want to leave? (y/n)");
               return scan.nextLine().toLowerCase(Locale.ROOT).equals("y");
           })
@@ -74,9 +80,10 @@ public class ConsoleUtils {
 
     public static void RunApp(){
         final String choiceError = "Please choose a number of your choice between 1 -  " + commands.length;
-        while(true){
+        while(!finished){
             try{
                 displayMenu();
+                scan = new Scanner(System.in);
                 String tempChoice = scan.nextLine();
                 int choice = Integer.parseInt(tempChoice);
                 if(choice >= 1 && choice <= commands.length){

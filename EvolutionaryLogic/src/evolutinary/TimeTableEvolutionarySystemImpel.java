@@ -17,9 +17,6 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
     private int days;
     private int hours;
 
-    public TimeTableEvolutionarySystemImpel(){
-    }
-
     public void setRules(Rules rules) {
         this.rules = rules;
     }
@@ -81,11 +78,12 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
     }
 
     protected TimeTable createOptionalSolution(){
+        TimeTableSystemDataSupplier supplier = getSystemInfo();
         int minNumber = classes.values().stream().mapToInt(SchoolClass::getTotalNumberOfHours).sum();
         TimeTable timeTable = new TimeTable();
         int currentTableSize = RandomUtils.nextIntInRange((int)Math.floor(0.7*minNumber), minNumber * 5);
         for(int i = 0; i < currentTableSize; i++){
-            timeTable.add(createItem());
+            timeTable.add(ItemCreationUtil.createItem(supplier));
         }
 
         return timeTable;
@@ -94,20 +92,6 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
     @Override
     protected double evaluate(TimeTable optional) {
         return rules.evaluateRules(optional, getSystemInfo());
-    }
-
-    private TimeTableItem createItem(){
-        int daySelected, hourSelected;
-        Teacher teacherSelected;
-        Subject subjectSelected;
-        SchoolClass classSelected;
-
-        daySelected = RandomUtils.nextIntInRange(1, days);
-        hourSelected = RandomUtils.nextIntInRange(1, hours);
-        teacherSelected = ItemCreationUtil.getRandItem(teachers);
-        subjectSelected = ItemCreationUtil.getRandItem(subjects);
-        classSelected = ItemCreationUtil.getRandItem(classes);
-        return new TimeTableItem(daySelected, hourSelected, classSelected, teacherSelected, subjectSelected);
     }
 
     private <T extends SerialItem> Map<Integer, T> createMapFromSet(Set<T> items){

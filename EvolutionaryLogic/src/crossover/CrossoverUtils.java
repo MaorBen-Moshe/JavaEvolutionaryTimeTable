@@ -22,7 +22,7 @@ public class CrossoverUtils {
         return retVal;
     }
 
-    public static List<Integer> getCuttingPoints(TimeTable parent1, TimeTable parent2, int cuttingPointsCount, int maxCuttingPointsRange){
+    public static List<Integer> getCuttingPoints(int cuttingPointsCount, int maxCuttingPointsRange){
         List<Integer> cuttingPoints = new ArrayList<>();
         while(cuttingPoints.size() < cuttingPointsCount){
             int current = RandomUtils.nextIntInRange(1, maxCuttingPointsRange - 2);

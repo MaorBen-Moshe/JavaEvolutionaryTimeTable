@@ -6,15 +6,15 @@ import models.TimeTableSystemDataSupplier;
 import java.util.function.Supplier;
 
 public class ExitCommand extends CommandImpel{
-    private final Runnable beforeExit;
+    private final Runnable exitRun;
     private final Supplier<Boolean> ifRunning;
 
     public ExitCommand(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper,
-                       Runnable beforeExit,
+                       Runnable exitRun,
                        Supplier<Boolean> ifRunning){
         super(wrapper);
         this.ifRunning = ifRunning;
-        this.beforeExit = beforeExit;
+        this.exitRun = exitRun;
     }
 
     @Override
@@ -22,21 +22,17 @@ public class ExitCommand extends CommandImpel{
         if(engineWrapper.getEngine() != null && engineWrapper.getEngine().IsRunningProcess()){
             if(ifRunning.get()){
                 engineWrapper.getEngine().stopProcess();
-                doExit();
+                exitRun.run();
+                Thread.currentThread().interrupt();
             }
         }
         else{
-           doExit();
+            exitRun.run();
         }
     }
 
     @Override
     public String getCommandName() {
         return "Exit";
-    }
-
-    private void doExit(){
-        beforeExit.run();
-        System.exit(0);
     }
 }

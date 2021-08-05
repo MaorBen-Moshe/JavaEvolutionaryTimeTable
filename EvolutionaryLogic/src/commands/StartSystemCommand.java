@@ -15,17 +15,20 @@ public class StartSystemCommand extends CommandImpel{
     private final Supplier<StartSystemInfoDTO> whenRunningAlready;
     private final Supplier<StartSystemInfoDTO> whenNotRunning;
     private final Consumer<JumpInGenerationsResult> jumpInGenerationsListener;
-    private final Consumer<CommandResult<?>> afterStart;
+    private final Consumer<CommandResult<?>> endRunning;
+    private final Runnable startRunning;
 
     public StartSystemCommand(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper,
                               Supplier<StartSystemInfoDTO> whenRunningAlready,
                               Supplier<StartSystemInfoDTO> whenNotRunning,
                               Consumer<JumpInGenerationsResult> jumpInGenerationsListener,
-                              Consumer<CommandResult<?>> after) {
+                              Runnable startRunning,
+                              Consumer<CommandResult<?>> endRunning) {
         super(wrapper);
         this.whenNotRunning = whenNotRunning;
         this.whenRunningAlready = whenRunningAlready;
-        this.afterStart = after;
+        this.endRunning = endRunning;
+        this.startRunning = startRunning;
         this.jumpInGenerationsListener = jumpInGenerationsListener;
     }
 
@@ -36,6 +39,11 @@ public class StartSystemCommand extends CommandImpel{
         if(engineWrapper.isFileLoaded()){
             if(engineWrapper.getEngine().IsRunningProcess()){
                 rules = whenRunningAlready.get();
+                if(rules == null){
+                    return;
+                }
+
+                engineWrapper.getEngine().stopProcess();
             }
             else{
                 rules = whenNotRunning.get();
@@ -43,7 +51,7 @@ public class StartSystemCommand extends CommandImpel{
 
             if(rules == null){
                 result.setErrorMessage("Algorithm cannot start without terminate rules");
-                afterStart.accept(result);
+                endRunning.accept(result);
                 return;
             }
 
@@ -51,14 +59,15 @@ public class StartSystemCommand extends CommandImpel{
                 engineWrapper.getEngine().StartAlgorithm(setByTerminate(rules.getRules()),
                                                          rules.getJumpInGenerations(),
                                                          jumpInGenerationsListener);
-                afterStart.accept(result);
+                endRunning.accept(result);
                 }, "System Thread");
 
             sysThread.start();
+            startRunning.run();
         }
         else{
             result.setErrorMessage("File should be loaded first");
-            afterStart.accept(result);
+            endRunning.accept(result);
         }
     }
 

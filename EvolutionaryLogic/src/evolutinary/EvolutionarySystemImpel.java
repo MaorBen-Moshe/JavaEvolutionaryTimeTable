@@ -95,7 +95,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     }
 
     @Override
-    public void StartAlgorithm(Set<TerminateRule> terminateBy, int jumpInGenerations, Consumer<JumpInGenerationsResult> listener) {
+    public synchronized void StartAlgorithm(Set<TerminateRule> terminateBy, int jumpInGenerations, Consumer<JumpInGenerationsResult> listener) {
         jumpInGenerations = jumpInGenerations <= 0 ? 1 : jumpInGenerations;
         isRunning = true;
         currentNumberOfGenerations = 0;

@@ -7,6 +7,7 @@ import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 public class ConsoleUtils {
@@ -42,14 +43,18 @@ public class ConsoleUtils {
                   () -> {
               System.out.println("Please enter the full path of your file: (don't forget .xml at the end of the path)");
               return scan.nextLine();
-          }, (x) -> System.out.println("File loaded successfully.")),
+          }, (x) -> System.out.println("File loaded successfully."),
+                  () -> {
+                      System.out.println("There is a running process, do you want to terminate it and load the new file? (y/n)");
+                      String answer = new Scanner(System.in).nextLine();
+                      return answer.toLowerCase(Locale.ROOT).equals("y");
+                  }),
           new SystemInfoCommand(engine, ConsoleUtils::displaySystemInfo),
           new StartSystemCommand(engine,() -> {
               System.out.println("There is a running process");
               System.out.println("Do you want to stop it and run a new one? (answer y/n)");
               String answer = scan.nextLine();
               if(answer.equalsIgnoreCase("y")){
-                  // need to reset algorithm first
                   return getTerminate();
               }
 
@@ -57,8 +62,9 @@ public class ConsoleUtils {
           }, ConsoleUtils::getTerminate,
                   (result) -> System.out.println("Generation: " +
                                                   result.getNumberOfGeneration() +
-                                                    ", Fitness: " + String.format("%.1f", result.getFitness()))
-                  , (result) -> {
+                                                    ", Fitness: " + String.format("%.2f", result.getFitness()))
+                  ,() -> System.out.println("Algorithm has started!") ,
+                  (result) -> {
               if(result.isFailed()){
                   System.out.println(result.getErrorMessage());
                   return;
@@ -412,8 +418,8 @@ public class ConsoleUtils {
 
         List<FitnessHistoryItemDTO> generation = result.getResult();
         generation.forEach(current -> {
-            String improvement = current.getGenerationNumber() != 0 ? ", improvement: " + String.format ("%.1f", current.getImprovementFromLastGeneration()) : "";
-            System.out.println("Generation number: " + current.getGenerationNumber() + " with fitness: " + current.getCurrentGenerationFitness() + improvement);
+            String improvement = current.getGenerationNumber() != 0 ? ", improvement: " + String.format ("%.2f", current.getImprovementFromLastGeneration()) : "";
+            System.out.println("Generation number: " + current.getGenerationNumber() + String.format(" with fitness: %.2f", current.getCurrentGenerationFitness()) + improvement);
         });
     }
 }

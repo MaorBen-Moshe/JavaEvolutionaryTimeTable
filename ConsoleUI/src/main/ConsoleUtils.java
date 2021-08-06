@@ -7,7 +7,6 @@ import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 public class ConsoleUtils {
@@ -50,7 +49,17 @@ public class ConsoleUtils {
                       return answer.toLowerCase(Locale.ROOT).equals("y");
                   }),
           new SystemInfoCommand(engine, ConsoleUtils::displaySystemInfo),
-          new StartSystemCommand(engine,() -> {
+          new StartSystemCommand(engine, () ->{
+              System.out.println("There is an information from last run of the algorithm");
+              System.out.println("Do you want to clean it and start a new one? (answer y/n)");
+              String answer = scan.nextLine();
+              if(answer.equalsIgnoreCase("y")){
+                  return getTerminate();
+              }
+
+              return null;
+          } ,
+          () -> {
               System.out.println("There is a running process");
               System.out.println("Do you want to stop it and run a new one? (answer y/n)");
               String answer = scan.nextLine();
@@ -79,7 +88,7 @@ public class ConsoleUtils {
               finished = true;
           }, () ->{
               System.out.println("There is a running process, do you still want to leave? (y/n)");
-              return scan.nextLine().toLowerCase(Locale.ROOT).equals("y");
+              return scan.nextLine().equalsIgnoreCase("y");
           })
         };
     }
@@ -184,17 +193,23 @@ public class ConsoleUtils {
         System.out.println("=================");
         System.out.println("Days in time table: " + info.getDays());
         System.out.println("Hours per day in time table: " + info.getHours());
+        System.out.println("=================");
         System.out.println("Subjects: ");
         System.out.println("=================");
         printSerialItems(info.getSubjects());
+        System.out.println("=================");
         System.out.println("Teachers: ");
         System.out.println("=================");
         printSerialItems(info.getTeachers());
+        System.out.println("=================");
         System.out.println("School classes: ");
         System.out.println("=================");
         printSerialItems(info.getClasses());
+        System.out.println("=================");
+        System.out.println("Rules classes: ");
+        System.out.println("=================");
+        printRulesInfo(info.getRules());
         System.out.println("=====================================================");
-
         System.out.println("Engine info: ");
         System.out.println("=================");
         System.out.println("Population size: " + info.getInitialSize());
@@ -202,6 +217,20 @@ public class ConsoleUtils {
         System.out.println("Crossover technique: " + info.getCrossover());
         System.out.println("Mutations: ");
         info.getMutations().forEach(System.out::println);
+    }
+
+    private static void printRulesInfo(RulesDTO rules) {
+        StringBuilder output = new StringBuilder();
+        rules.getRules().forEach(rule ->{
+            output.setLength(0);
+            output.append("Rule name: ").append(rule.getType().toString()).append(", ");
+            output.append("Strength: ").append(rule.getStrength().toString());
+            if(rule.getConfigurations().size() != 0){
+                output.append(", configurations of rule: ").append(rule.getConfigurations());
+            }
+
+            System.out.println(output);
+        });
     }
 
     private static <T extends SerialItemDTO> void printSerialItems(Set<T> items){

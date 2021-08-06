@@ -113,7 +113,7 @@ public class ValidateUtils {
                     throw new IllegalArgumentException("crossover configuration of type " + split[0] + " is not valid");
                 }
                 else{
-                    if(!(split[1].toLowerCase(Locale.ROOT).equals("class") || split[1].toLowerCase(Locale.ROOT).equals("teacher"))){
+                    if(!(split[1].equalsIgnoreCase("class") || split[1].equalsIgnoreCase("teacher"))){
                         throw new IllegalArgumentException("crossover configuration: + " + split[0] + " with value " + split[1] + " is not valid");
                     }
                 }

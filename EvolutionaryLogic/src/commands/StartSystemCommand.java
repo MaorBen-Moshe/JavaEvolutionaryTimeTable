@@ -16,15 +16,18 @@ public class StartSystemCommand extends CommandImpel{
     private final Supplier<StartSystemInfoDTO> whenNotRunning;
     private final Consumer<JumpInGenerationsResult> jumpInGenerationsListener;
     private final Consumer<CommandResult<?>> endRunning;
+    private final Supplier<StartSystemInfoDTO> whenRunPastAlgo;
     private final Runnable startRunning;
 
     public StartSystemCommand(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper,
+                              Supplier<StartSystemInfoDTO> whenRunPastAlgo,
                               Supplier<StartSystemInfoDTO> whenRunningAlready,
                               Supplier<StartSystemInfoDTO> whenNotRunning,
                               Consumer<JumpInGenerationsResult> jumpInGenerationsListener,
                               Runnable startRunning,
                               Consumer<CommandResult<?>> endRunning) {
         super(wrapper);
+        this.whenRunPastAlgo = whenRunPastAlgo;
         this.whenNotRunning = whenNotRunning;
         this.whenRunningAlready = whenRunningAlready;
         this.endRunning = endRunning;
@@ -46,7 +49,17 @@ public class StartSystemCommand extends CommandImpel{
                 engineWrapper.getEngine().stopProcess();
             }
             else{
-                rules = whenNotRunning.get();
+                // the algorithm is not running right now but it run in the past and has its information
+                // so the user should be notify by that and decide if he wants to start the new algorithm.
+                if(engineWrapper.getEngine().getGenerationFitnessHistory().size() != 0){
+                    rules = whenRunPastAlgo.get();
+                    if(rules == null){
+                        return;
+                    }
+                }
+                else{
+                    rules = whenNotRunning.get();
+                }
             }
 
             if(rules == null){

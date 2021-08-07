@@ -284,7 +284,7 @@ public class ETTXmlParser {
             });
 
             if(oldSize == tempSubjects.size()){
-                throw new IllegalArgumentException(id + " of subject that you provided is not one of the subjects ids");
+                throw new IllegalArgumentException("subject id -> " + id + " that you provided is not one of the subjects ids in the system");
             }
         });
 

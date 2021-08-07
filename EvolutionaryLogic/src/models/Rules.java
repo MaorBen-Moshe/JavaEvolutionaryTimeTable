@@ -68,13 +68,11 @@ public class Rules{
 
 
     private double getAvg(List<Double> list){
-        double ret = 0;
-        if(list.size() != 0){
-            ret = list.stream().mapToDouble(x -> x).sum();
-            ret /= list.size();
+        if(list.size() == 0){
+            return 0;
         }
 
-        return ret;
+        return list.stream().mapToDouble(x -> x).average().orElse(0.0);
     }
 
     @Override
@@ -92,7 +90,7 @@ public class Rules{
 
     @Override
     public String toString() {
-        return "Rules{" +
+        return "Rules { " +
                 "hardRulesWeight=" + hardRulesWeight +
                 ", rules=" + rules +
                 '}';

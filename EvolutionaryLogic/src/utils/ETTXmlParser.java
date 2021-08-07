@@ -30,8 +30,7 @@ public class ETTXmlParser {
 
     // parse region
     public static EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> parse(String filePath) throws Exception {
-        filePath = filePath.trim();
-        File file = new File(filePath);
+        File file = new File(filePath.trim());
         InputStream inputStream = new FileInputStream(file);
         ETTDescriptor descriptor = deserializeFrom(inputStream);
         return createTimeTableImpel(descriptor.getETTTimeTable(), descriptor.getETTEvolutionEngine());
@@ -117,7 +116,7 @@ public class ETTXmlParser {
             retVal = Integer.parseInt(second[1]);
         }
         else{
-            throw new IllegalArgumentException("Failed to find MaxTupples in ETTXmlParser:getFlippingMaxTupples");
+            throw new IllegalArgumentException("Failed to find MaxTupples in flipping mutation");
         }
 
         return retVal;
@@ -136,7 +135,7 @@ public class ETTXmlParser {
             retVal = FlippingMutation.Component.valueOf(second[1].toUpperCase(Locale.ROOT));
         }
         else{
-            throw new IllegalArgumentException("Failed to find Component in ETTXmlParser:getFlippingComponent");
+            throw new IllegalArgumentException("Failed to find Component in flipping mutation");
         }
 
         return retVal;
@@ -240,7 +239,6 @@ public class ETTXmlParser {
 
         totalHoursCounter = retSubjectsMap.values().stream().mapToInt(i -> i).sum();
         if(totalHoursCounter > totalNumberOfHoursInSystem){
-            //result.addError()
             throw new IllegalArgumentException("class " + klass.getETTName() + ", id: " + klass.getId() + " total hours must be at most number of days in system times number of hours in system");
         }
 

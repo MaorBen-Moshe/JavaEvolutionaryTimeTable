@@ -10,19 +10,20 @@ import selection.SelectionTypes;
 import java.util.*;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class ValidateUtils {
 
-    public static <T extends Enum<T>> boolean enumValid(T[] enumTypes,Class<T> enumType, String stringType){
+    public static <T extends Enum<T>> boolean enumValid(T[] enumTypes,Class<T> enumTypeClass, String stringType){
         boolean isTypeValid = false;
         for(T type : enumTypes){
             try{
-                if(type.equals(T.valueOf(enumType, stringType))){
+                if(type.equals(T.valueOf(enumTypeClass, stringType))){
                     isTypeValid = true;
                     break;
                 }
             }catch (Exception e){
-                throw new IllegalArgumentException(stringType + " is not part of valid " + enumType.getSimpleName());
+                throw new IllegalArgumentException(stringType + " is not part of valid " + enumTypeClass.getSimpleName());
             }
         }
 
@@ -34,18 +35,16 @@ public class ValidateUtils {
     }
 
     public static boolean serialItemsNotValid(Set<? extends SerialItem> items) {
-        boolean isValid = false;
+        final boolean[] isValid = {false};
         List<? extends SerialItem> sorted = items.stream()
                 .sorted(Comparator.comparingInt((ToIntFunction<SerialItem>) SerialItem::getId))
                 .collect(Collectors.toList());
 
         if((sorted.get(0).getId() == 1)){
-            for(int i = 1; i < items.size(); i++){
-                isValid = (sorted.get(i).getId() == i + 1) && (sorted.get(i - 1).getId() + 1 == i + 1);
-            }
+            IntStream.range(1, items.size()).forEach(i -> isValid[0] = (sorted.get(i).getId() == i + 1) && (sorted.get(i - 1).getId() + 1 == i + 1));
         }
 
-        return !isValid;
+        return !isValid[0];
     }
 
     public static boolean initialPopulationPositive(int initialPopulation){
@@ -57,8 +56,8 @@ public class ValidateUtils {
         String configurations;
         if(stringType.equals(SelectionTypes.Truncation.toString())){
             configurations = selection.getConfiguration();
-            if(configurations != null && !configurations.replace(" ", "").isEmpty()){
-                String[] split = configurations.replace(" ", "").split("=");
+            if(configurations != null && !configurations.trim().isEmpty()){
+                String[] split = configurations.trim().split("=");
                 if(!(split.length == 2) || !split[0].equalsIgnoreCase("TopPercent")){
                     throw new IllegalArgumentException("selection configuration of type " + split[0] + " is not valid");
                 }
@@ -79,7 +78,7 @@ public class ValidateUtils {
         }
         else if(stringType.equals(SelectionTypes.Tournament.toString())){
             configurations = selection.getConfiguration();
-            if(!configurations.replace(" ", "").isEmpty()){
+            if(!configurations.trim().isEmpty()){
                 String[] split = configurations.replace(" ", "").split("=");
                 if(!(split.length == 2) || !split[0].equalsIgnoreCase("PTE")){
                     throw new IllegalArgumentException("selection configuration of type " + split[0] + " is not valid");
@@ -107,7 +106,7 @@ public class ValidateUtils {
         String stringType = crossover.getName();
         if(CrossoverTypes.AspectOriented.toString().equals(stringType)){
             String configurations = crossover.getConfiguration();
-            if(configurations != null &&!configurations.replace(" ", "").isEmpty()){
+            if(configurations != null &&!configurations.trim().isEmpty()){
                 String[] split = configurations.replace(" ", "").split("=");
                 if(!(split.length == 2) || !split[0].equalsIgnoreCase("Orientation")){
                     throw new IllegalArgumentException("crossover configuration of type " + split[0] + " is not valid");
@@ -159,7 +158,7 @@ public class ValidateUtils {
     private static void checkFlipping(ETTMutation flipping){
         String configurations = flipping.getConfiguration();
         String[] splitArray = configurations.split(",");
-        if(configurations != null &&!configurations.replace(" ", "").isEmpty()){
+        if(!configurations.trim().isEmpty()){
             if(splitArray.length != 2){
                 throw new IllegalArgumentException("configurations of flipping mutation accept only MaxTupples and Component");
             }
@@ -180,7 +179,7 @@ public class ValidateUtils {
     private static boolean checkMaxTupples(String maxTupple){
         String[] splitArray = maxTupple.split("=");
         boolean retValue = false;
-        if(!maxTupple.replace(" ", "").isEmpty()){
+        if(!maxTupple.trim().isEmpty()){
             if(!(splitArray.length == 2) || !splitArray[0].equalsIgnoreCase("MaxTupples")){
                 retValue = false;
             }
@@ -200,7 +199,7 @@ public class ValidateUtils {
     private static boolean checkComponent(String componentString){
         String[] splitArray = componentString.split("=");
         boolean retValue = false;
-        if(!componentString.replace(" ", "").isEmpty()){
+        if(!componentString.trim().isEmpty()){
             if(!(splitArray.length == 2) || !splitArray[0].equalsIgnoreCase("Component")){
                 retValue = false;
             }
@@ -219,7 +218,7 @@ public class ValidateUtils {
 
     private static void checkSizer(ETTMutation sizer){
         String configurations = sizer.getConfiguration();
-        if(configurations != null &&!configurations.replace(" ", "").isEmpty()){
+        if(configurations != null &&!configurations.trim().isEmpty()){
             String[] split = configurations.replace(" ", "").split("=");
             if(!(split.length == 2) || !split[0].equalsIgnoreCase("TotalTupples")){
                 throw new IllegalArgumentException("mutation configuration of type " + split[0] + " is not valid");
@@ -228,7 +227,7 @@ public class ValidateUtils {
                 try{
                     Integer.parseInt(split[1]);
                 } catch (NumberFormatException e){
-                  throw new IllegalArgumentException("TotalTupples of sizer mutation require an integer instead of: " + split[1]);
+                    throw new IllegalArgumentException("TotalTupples of sizer mutation require an integer instead of: " + split[1]);
                 }
             }
         }

@@ -1,7 +1,6 @@
 package models;
 
 import evolutinary.EvolutionarySystem;
-
 import java.util.Objects;
 
 public abstract class TerminateRule {

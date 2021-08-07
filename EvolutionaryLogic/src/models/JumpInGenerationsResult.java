@@ -3,20 +3,20 @@ package models;
 import java.util.Objects;
 
 public class JumpInGenerationsResult {
-    public double getFitness() {
-        return fitness;
-    }
-
-    public int getNumberOfGeneration() {
-        return numberOfGeneration;
-    }
-
     private final double fitness;
     private final int numberOfGeneration;
 
     public JumpInGenerationsResult(double fitness, int numberOfGeneration) {
         this.fitness = fitness;
         this.numberOfGeneration = numberOfGeneration;
+    }
+
+    public double getFitness() {
+        return fitness;
+    }
+
+    public int getNumberOfGeneration() {
+        return numberOfGeneration;
     }
 
     @Override

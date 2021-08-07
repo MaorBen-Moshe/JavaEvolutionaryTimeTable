@@ -29,30 +29,28 @@ public class ConsoleUtils {
         }
     }
     private final static Command[] commands;
-    private static Scanner scan;
     private static boolean finished;
 
 
     static {
         finished = false;
-        scan = new Scanner(System.in);
         EngineWrapper<TimeTable, TimeTableSystemDataSupplier> engine = new EngineWrapper<>();
         commands = new Command[] {
           new LoadCommand(engine,
                   () -> {
               System.out.println("Please enter the full path of your file: (don't forget .xml at the end of the path)");
-              return scan.nextLine();
+              return new Scanner(System.in).nextLine();
           }, (x) -> System.out.println("File loaded successfully."),
                   () -> {
                       System.out.println("There is a running process, do you want to terminate it and load the new file? (y/n)");
                       String answer = new Scanner(System.in).nextLine();
-                      return answer.toLowerCase(Locale.ROOT).equals("y");
+                      return answer.equalsIgnoreCase("y");
                   }),
           new SystemInfoCommand(engine, ConsoleUtils::displaySystemInfo),
           new StartSystemCommand(engine, () ->{
               System.out.println("There is an information from last run of the algorithm");
               System.out.println("Do you want to clean it and start a new one? (answer y/n)");
-              String answer = scan.nextLine();
+              String answer = new Scanner(System.in).nextLine();
               if(answer.equalsIgnoreCase("y")){
                   return getTerminate();
               }
@@ -62,7 +60,7 @@ public class ConsoleUtils {
           () -> {
               System.out.println("There is a running process");
               System.out.println("Do you want to stop it and run a new one? (answer y/n)");
-              String answer = scan.nextLine();
+              String answer = new Scanner(System.in).nextLine();
               if(answer.equalsIgnoreCase("y")){
                   return getTerminate();
               }
@@ -88,7 +86,7 @@ public class ConsoleUtils {
               finished = true;
           }, () ->{
               System.out.println("There is a running process, do you still want to leave? (y/n)");
-              return scan.nextLine().equalsIgnoreCase("y");
+              return new Scanner(System.in).nextLine().equalsIgnoreCase("y");
           })
         };
     }
@@ -98,7 +96,7 @@ public class ConsoleUtils {
         while(!finished){
             try{
                 displayMenu();
-                scan = new Scanner(System.in);
+                Scanner scan = new Scanner(System.in);
                 String tempChoice = scan.nextLine();
                 int choice = Integer.parseInt(tempChoice);
                 if(choice >= 1 && choice <= commands.length){
@@ -121,19 +119,19 @@ public class ConsoleUtils {
             System.out.println(i + ". " + commands[i-1].getCommandName());
         }
 
-        System.out.println("please choose an option. (1 - " + commands.length + ")");
+        System.out.printf("please choose an option. (1 - %d)%n", commands.length);
     }
 
     private static StartSystemInfoDTO getTerminate(){
         Set<TerminateRuleDTO> retRules = new HashSet<>();
         int jump;
-        System.out.println("please enter the way you want the algorithm would terminate (possible multiple-choice, for example: 1,2 OR 2 ):");
+        System.out.println("please enter the way you want the algorithm would terminate: (possible multiple-choice, for example: 1,2 OR 2 etc)");
         EvolutionarySystem.TerminateRules[] rules = EvolutionarySystem.TerminateRules.values();
         for (int i = 1; i <= rules.length; i++) {
             System.out.println(i + ". " + rules[i - 1].toString());
         }
 
-        String answer = scan.nextLine();
+        String answer = new Scanner(System.in).nextLine();
         String[] splitted = answer.replace(" ", "").split(",");
         if (splitted.length > 0 && splitted.length <= rules.length) {
             for (String ruleId : splitted) {
@@ -143,23 +141,25 @@ public class ConsoleUtils {
                     switch (current) {
                         case NumberOfGenerations:
                             System.out.println("please enter the number of generations (at least 100):");
-                            int gen = scan.nextInt();
+                            int gen = new Scanner(System.in).nextInt();
                             if(gen < 100){
                                 throw new IllegalArgumentException("number of generations should be at least 100");
                             }
                             else{
                                 retRules.add(new GenerationsTerminateRuleDTO(gen));
                             }
+
                             break;
                         case ByFitness:
                             System.out.println("please enter the max fitness(positive number between 0-100):");
-                            double fit = scan.nextDouble();
+                            double fit = new Scanner(System.in).nextDouble();
                             if(fit >= 0 && fit <= 100){
                                 retRules.add(new FitnessTerminateRuleDTO(fit));
                             }
                             else{
                                 throw new IllegalArgumentException("fitness should be an integer between 0-100");
                             }
+
                             break;
                     }
 
@@ -174,7 +174,7 @@ public class ConsoleUtils {
 
         try {
             System.out.println("please enter a number which you will see the algorithm process generation with jump of each generation:");
-            jump = scan.nextInt();
+            jump = new Scanner(System.in).nextInt();
         } catch (Exception e) {
             throw new IllegalArgumentException("jump in generations number must be positive");
         }
@@ -206,7 +206,7 @@ public class ConsoleUtils {
         System.out.println("=================");
         printSerialItems(info.getClasses());
         System.out.println("=================");
-        System.out.println("Rules classes: ");
+        System.out.println("Rules in system: ");
         System.out.println("=================");
         printRulesInfo(info.getRules());
         System.out.println("=====================================================");
@@ -234,9 +234,9 @@ public class ConsoleUtils {
     }
 
     private static <T extends SerialItemDTO> void printSerialItems(Set<T> items){
-        List<T> listItems = new ArrayList<>(items);
-        listItems.sort(Comparator.comparing(T::getId));
-        listItems.forEach(item -> System.out.println(item.toString()));
+        items.stream()
+                .sorted(Comparator.comparing(T::getId))
+                .forEach(System.out::println);
     }
 
     private static void displayBestSolution(CommandResult<BestSolutionDTO> result){
@@ -249,7 +249,7 @@ public class ConsoleUtils {
         while(true){
             displayBestMenu(displayOptions);
             try{
-                int choice = Integer.parseInt(scan.nextLine());
+                int choice = Integer.parseInt(new Scanner(System.in).nextLine());
                 if(choice == displayOptions.length + 1){
                     break;
                 }
@@ -275,10 +275,7 @@ public class ConsoleUtils {
     private static void displayBestMenu(BestDisplay[] displayOptions){
         System.out.println("Best solution display:");
         System.out.println("Please choose the way you want the solution would display:");
-        for(int i = 0; i < displayOptions.length; i++){
-            System.out.println((i + 1) + ". " + displayOptions[i].toString());
-        }
-
+        IntStream.range(0, displayOptions.length).forEach(i -> System.out.println((i + 1) + ". " + displayOptions[i].toString()));
         System.out.println((displayOptions.length + 1) + ". Go back");
         System.out.println("Please choose a  number between 1 - " + (displayOptions.length + 1) + ".");
     }
@@ -342,25 +339,17 @@ public class ConsoleUtils {
 
     private static Map<Integer, Map<Integer, List<TimeTableItemDTO>>> initializeTableView(TimeTableSystemDataSupplierDTO supplier){
         Map<Integer, Map<Integer, List<TimeTableItemDTO>>> dayHourTable = new HashMap<>();
-        for(int i = 1; i <= supplier.getDays(); i++){
+        IntStream.range(1, supplier.getDays() + 1).forEach(i -> {
             dayHourTable.put(i, new HashMap<>());
-            for(int j = 1; j <= supplier.getHours(); j++){
-                dayHourTable.get(i).put(j, new ArrayList<>());
-            }
-        }
+            IntStream.range(1, supplier.getHours() + 1).forEach(j -> dayHourTable.get(i).put(j, new ArrayList<>()));
+        });
 
         return dayHourTable;
     }
 
     private static void getMaxAndDisplayMaps(Map<? extends SerialItemDTO, Map<Integer, Map<Integer, List<TimeTableItemDTO>>>> allDaysMap, BestDisplay howToDisplay, int numOfHoursInSystem){
         final int[] max = {0};
-        allDaysMap.forEach((key, val) -> {
-            int tempMax = getMax(val);
-            if(tempMax > max[0]){
-                max[0] = tempMax;
-            }
-        });
-
+        allDaysMap.forEach((key, val) -> max[0] = Math.max(getMax(val), max[0]));
         allDaysMap.forEach((key, val) ->{
             System.out.println((howToDisplay.equals(BestDisplay.Teacher) ? "TEACHER: " : "CLASS: ") + key.getName() + ", id: " + key.getId());
             System.out.println("================");
@@ -369,31 +358,31 @@ public class ConsoleUtils {
         });
     }
 
-   private static void printMap(Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map , BestDisplay mode, int maxWidth,  int numOfHoursInSystem) {
+    private static void printMap(Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map , BestDisplay mode, int maxWidth,  int numOfHoursInSystem) {
         final String daysHours = "days\\hours";
-       printInitialHours(daysHours, maxWidth, numOfHoursInSystem);
+        printInitialHours(daysHours, maxWidth, numOfHoursInSystem);
         map.forEach((days, hours) -> {
              int numOfSpaces = (daysHours.length() - String.valueOf(days).length() -1);
-            System.out.print(days + ":" + String.format("%" + numOfSpaces + "s", " "));
-            hours.forEach((hour, items) -> {
+             System.out.print(days + ":" + String.format("%" + numOfSpaces + "s", " "));
+             hours.forEach((hour, items) -> {
                             int spacesToAdd = (maxWidth - items.size()) * 10;
                             items.forEach(item -> {
-                                switch (mode) {
-                                case Teacher:
-                                System.out.print("  <" + item.getSchoolClass().getId() + ", " + item.getSubject().getId() + ">  ");
-                                break;
-                                case Class:
-                                System.out.print("  <" + item.getTeacher().getId() + ", " + item.getSubject().getId() + ">  ");
-                                break;
+                                    switch (mode) {
+                                    case Teacher:
+                                    System.out.print("  <" + item.getSchoolClass().getId() + ", " + item.getSubject().getId() + ">  ");
+                                    break;
+                                    case Class:
+                                    System.out.print("  <" + item.getTeacher().getId() + ", " + item.getSubject().getId() + ">  ");
+                                    break;
+                                }
+                            });
+
+                            if(spacesToAdd != 0){
+                                System.out.printf(("%" + spacesToAdd + "s"), " ");
                             }
-                        });
 
-                        if(spacesToAdd != 0){
-                            System.out.printf(("%" + spacesToAdd + "s"), " ");
-                        }
-
-                        System.out.print("|"); // good
-                });
+                            System.out.print("|");
+             });
 
             System.out.print(System.getProperty("line.separator"));
         });
@@ -413,16 +402,9 @@ public class ConsoleUtils {
     }
 
     private static int getMax(Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map){
-        int max = 0;
-        for(Map.Entry<Integer, Map<Integer, List<TimeTableItemDTO>>> daysEntry : map.entrySet()){
-            for(Map.Entry<Integer, List<TimeTableItemDTO>> hoursEntry : daysEntry.getValue().entrySet()){
-                if(hoursEntry.getValue().size() > max){
-                    max = hoursEntry.getValue().size();
-                }
-            }
-        }
-
-        return max;
+        final int[] max = {0};
+        map.forEach((dayKey, dayValue) -> dayValue.forEach((hourKey, hourValue) -> max[0] = Math.max(max[0], hourValue.size())));
+        return max[0];
     }
 
     private static void printRules(Map<RuleDTO, Double> rules, double softAvg, double hardAvg){

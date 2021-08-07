@@ -77,11 +77,12 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
         return new TimeTableSystemDataSupplier(days, hours, new HashMap<>(teachers), new HashMap<>(subjects), new HashMap<>(classes));
     }
 
+    @Override
     protected TimeTable createOptionalSolution(){
         TimeTableSystemDataSupplier supplier = getSystemInfo();
         int minNumber = classes.values().stream().mapToInt(SchoolClass::getTotalNumberOfHours).sum();
         TimeTable timeTable = new TimeTable();
-        int currentTableSize = RandomUtils.nextIntInRange((int)Math.floor(0.7*minNumber), minNumber * 5);
+        int currentTableSize = RandomUtils.nextIntInRange(minNumber, minNumber * 6);
         for(int i = 0; i < currentTableSize; i++){
             timeTable.add(ItemCreationUtil.createItem(supplier));
         }

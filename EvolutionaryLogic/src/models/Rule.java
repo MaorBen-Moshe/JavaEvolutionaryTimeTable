@@ -1,6 +1,7 @@
 package models;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class Rule {
 
@@ -57,12 +58,10 @@ public class Rule {
                 Map<Integer, SchoolClass> classes = supplier.getClasses();
                 Map<SchoolClass, Map<Integer, Set<Integer>>> classesDaysAndHours = new HashMap<>(classes.size());
                 // initialize each teacher an map of days an optional hours of working
-                for (SchoolClass klass : classes.values()) {
+                classes.values().forEach(klass ->{
                     classesDaysAndHours.put(klass, new HashMap<>());
-                    for(int i = 1; i <= supplier.getDays(); i++){
-                        classesDaysAndHours.get(klass).put(i, new HashSet<>(supplier.getHours()));
-                    }
-                }
+                    IntStream.range(1, supplier.getDays() + 1).forEach(i -> classesDaysAndHours.get(klass).put(i, new HashSet<>(supplier.getHours())));
+                });
 
                 Set<SchoolClass> falseClasses = new HashSet<>();
                 for (TimeTableItem item : optional.getSortedItems()) {
@@ -89,12 +88,10 @@ public class Rule {
                 Map<Integer, Teacher> teachers = supplier.getTeachers();
                 Map<Teacher, Map<Integer, Set<Integer>>> teachersDaysAndHours = new HashMap<>(teachers.size());
                 // initialize each teacher an map of days an optional hours of working
-                for (Teacher teacher : teachers.values()) {
+                teachers.values().forEach(teacher ->{
                     teachersDaysAndHours.put(teacher, new HashMap<>());
-                    for(int i = 1; i <= supplier.getDays(); i++){
-                        teachersDaysAndHours.get(teacher).put(i, new HashSet<>(supplier.getHours()));
-                    }
-                }
+                    IntStream.range(1, supplier.getDays() + 1).forEach(i -> teachersDaysAndHours.get(teacher).put(i, new HashSet<>(supplier.getHours())));
+                });
 
                 Set<Teacher> falseTeachers = new HashSet<>();
                 for (TimeTableItem item : optional.getSortedItems()) {
@@ -146,16 +143,16 @@ public class Rule {
                     classesMap.get(klass).replace(subject, oldVal - 1);
                 }
 
-                for (Map.Entry<SchoolClass, Map<Subject, Integer>> current : classesMap.entrySet()) {
-                    for (Map.Entry<Subject, Integer> entry : current.getValue().entrySet()) {
+                classesMap.forEach((key, val) -> {
+                    for (Map.Entry<Subject, Integer> entry : val.entrySet()) {
                         if(entry.getValue() != 0){
-                            falseClasses.add(current.getKey());
+                            falseClasses.add(key);
                             if(falseClasses.size() == classes.size()){
                                 break;
                             }
                         }
                     }
-                }
+                });
 
                 ret -= ((double)(100 / classes.size()) * falseClasses.size());
                 return ret;
@@ -195,7 +192,7 @@ public class Rule {
 
     @Override
     public String toString() {
-        return "Rule{" +
+        return "Rule { " +
                 "ruleType=" + ruleType +
                 ", strength=" + strength +
                 (configurations.size() != 0 ? ", configurations= " + configurations : "") +

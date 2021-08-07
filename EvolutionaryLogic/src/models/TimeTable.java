@@ -46,16 +46,14 @@ public class TimeTable {
         return ret;
     }
 
-    public boolean remove(TimeTableItem item){
+    public void remove(TimeTableItem item){
         boolean ret = sortedItems.remove(item);
         if(ret){
             this.unModifiedSortedItems = Collections.unmodifiableSortedSet(new TreeSet<>(sortedItems));
         }
-
-        return ret;
     }
 
-    public int size() {return sortedItems.size(); }
+    public int size() { return sortedItems.size(); }
 
     public boolean contains(int day, int hour, int classId, int teacherId, int subjectId){
         boolean ret = false;
@@ -92,7 +90,7 @@ public class TimeTable {
         unModifiedRulesScore = Collections.unmodifiableMap(rulesScore);
     }
 
-    public Map<Rule, Double> getRulesScore(){
+    public Map<Rule, Double> getRulesScore() {
         return unModifiedRulesScore;
     }
 

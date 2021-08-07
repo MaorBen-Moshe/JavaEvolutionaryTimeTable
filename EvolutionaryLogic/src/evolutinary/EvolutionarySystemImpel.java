@@ -11,6 +11,7 @@ import models.BestSolutionItem;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 // T is a population item
 public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> implements EvolutionarySystem<T, S> {
@@ -28,6 +29,9 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     private int currentNumberOfGenerations;
     private final Object generationsLock;
     private final Object bestItemLock;
+    private final Object stopLock;
+    private final Object runningLock;
+    private final Object fitnessHistoryLock;
 
     protected EvolutionarySystemImpel(){
         population = new HashMap<>();
@@ -35,11 +39,16 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         generationFitnessHistory = new ArrayList<>();
         generationsLock = new Object();
         bestItemLock = new Object();
+        stopLock = new Object();
+        runningLock = new Object();
+        fitnessHistoryLock = new Object();
     }
 
     @Override
     public List<FitnessHistoryItem> getGenerationFitnessHistory() {
-        return new ArrayList<>(generationFitnessHistory);
+        synchronized (fitnessHistoryLock){
+            return new ArrayList<>(generationFitnessHistory);
+        }
     }
 
     public int getCurrentNumberOfGenerations() {
@@ -50,8 +59,9 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
 
     @Override
     public void stopProcess() {
-        if(isRunning){
-            stopOccurred = true;
+        if(isRunningProcess()){
+            setStopOccurred(true);
+            setRunning(false);
         }
     }
 
@@ -60,7 +70,6 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
             currentNumberOfGenerations++;
         }
     }
-
 
     public void setCrossover(Crossover<T, S> crossover) {
         this.crossover = crossover;
@@ -97,43 +106,24 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     @Override
     public synchronized void StartAlgorithm(Set<TerminateRule> terminateBy, int jumpInGenerations, Consumer<JumpInGenerationsResult> listener) {
         jumpInGenerations = jumpInGenerations <= 0 ? 1 : jumpInGenerations;
-        isRunning = true;
-        currentNumberOfGenerations = 0;
-        generationFitnessHistory.clear();
+        initialAlgoData();
         try{
             /* initial*/
             initialAndEvaluatePopulation();
-            synchronized (bestItemLock){
-                bestItem = getCurrentBestOption();
-            }
-
-            generationFitnessHistory.add(new FitnessHistoryItem(getCurrentNumberOfGenerations(),
-                                         bestItem.getFitness(),
-                                         0));
             /* iterative*/
-            while(!isTerminate(terminateBy) && !stopOccurred){
+            while(!isTerminate(terminateBy) && !isStopOccurred()){
                 incCurrentNumberOfGenerations();
                 createAndEvaluateGeneration();
-                synchronized (bestItemLock){
-                    bestItem = getCurrentBestOption();
-                }
-
                 if(getCurrentNumberOfGenerations() % jumpInGenerations == 0){
-                    double improvement = bestItem.getFitness() - generationFitnessHistory.get(generationFitnessHistory.size() - 1).getCurrentGenerationFitness();
-                    FitnessHistoryItem item = new FitnessHistoryItem(getCurrentNumberOfGenerations(),
-                                                                     bestItem.getFitness(),
-                                                                     improvement);
-                    generationFitnessHistory.add(item);
+                    addFitnessItemToHistory();
                 }
             }
         } catch (Exception e){
-            isRunning = false;
+            clearAlgoData();
             throw e;
         }
 
-        isRunning = false;
-        stopOccurred = false;
-        population.clear();
+        clearAlgoData();
     }
 
     @Override
@@ -144,8 +134,10 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     }
 
     @Override
-    public boolean IsRunningProcess() {
-        return isRunning;
+    public boolean isRunningProcess() {
+        synchronized (runningLock){
+            return isRunning;
+        }
     }
 
     @Override
@@ -167,6 +159,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
 
         population = new HashMap<>(childPopulation);
         childPopulation.clear();
+        setBestItem(getCurrentBestOption());
     }
 
     protected abstract double evaluate(T optional);
@@ -206,9 +199,64 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     }
 
     private void initialAndEvaluatePopulation(){
-        for(int i = 0; i < initialPopulationSize; i++){
+        IntStream.range(0, initialPopulationSize).forEach(i ->{
             T option = createOptionalSolution();
             population.put(option, evaluate(option));
+        });
+
+        setBestItem(getCurrentBestOption());
+        addFitnessItemToHistory();
+    }
+
+    private void setBestItem(BestSolutionItem<T, S> bestItem) {
+        synchronized (bestItemLock){
+            this.bestItem = bestItem;
+        }
+    }
+
+    private void setCurrentNumberOfGenerations(int currentNumberOfGenerations) {
+        synchronized (generationsLock){
+            this.currentNumberOfGenerations = currentNumberOfGenerations;
+        }
+    }
+
+    private boolean isStopOccurred() {
+        synchronized (stopLock){
+            return stopOccurred;
+        }
+    }
+
+    private void setRunning(boolean running) {
+        synchronized (runningLock){
+            isRunning = running;
+        }
+    }
+
+    private void setStopOccurred(boolean stopOccurred) {
+        synchronized (stopLock){
+            this.stopOccurred = stopOccurred;
+        }
+    }
+
+    private void initialAlgoData(){
+        setRunning(true);
+        setCurrentNumberOfGenerations(0);
+        generationFitnessHistory.clear();
+    }
+
+    private void clearAlgoData(){
+        setRunning(false);
+        setStopOccurred(false);
+        population.clear();
+    }
+
+    private void addFitnessItemToHistory(){
+        synchronized (fitnessHistoryLock){
+            double improvement = generationFitnessHistory.size() == 0 ? 0 : bestItem.getFitness() - generationFitnessHistory.get(generationFitnessHistory.size() - 1).getCurrentGenerationFitness();
+            FitnessHistoryItem item = new FitnessHistoryItem(getCurrentNumberOfGenerations(),
+                    getBestSolution().getFitness(),
+                    improvement);
+            generationFitnessHistory.add(item);
         }
     }
 }

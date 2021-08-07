@@ -82,7 +82,7 @@ public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemData
 
     @Override
     public String toString() {
-        return "FlippingMutation { " +
+        return "Flipping Mutation { " +
                 "probability=" + probability +
                 ", maxTupples=" + maxTupples +
                 ", component=" + component +

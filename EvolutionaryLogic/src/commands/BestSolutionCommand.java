@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class BestSolutionCommand extends CommandImpel{
-    private Consumer<CommandResult<BestSolutionDTO>> after;
+    private final Consumer<CommandResult<BestSolutionDTO>> after;
 
     public BestSolutionCommand(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper,
                                Consumer<CommandResult<BestSolutionDTO>> after) {
@@ -18,12 +18,12 @@ public class BestSolutionCommand extends CommandImpel{
     @Override
     public void execute() {
         CommandResult<BestSolutionDTO> result = new CommandResult<>();
-        if(engineWrapper.isFileLoaded()){
-          if(engineWrapper.getEngine().getBestSolution() != null){
+        if(getEngineWrapper().isFileLoaded()){
+          if(getEngineWrapper().getEngine().getBestSolution() != null){
               result.setResult(createAnswer());
           }
           else{
-              result.setErrorMessage("You should start the algorithm first at least one time.");
+              result.setErrorMessage("Algorithm should start first at least one time.");
           }
         }
         else{
@@ -40,7 +40,7 @@ public class BestSolutionCommand extends CommandImpel{
 
     private BestSolutionDTO createAnswer(){
         ModelToDTOConverter converter = new ModelToDTOConverter();
-        BestSolutionItem<TimeTable, TimeTableSystemDataSupplier> solution = engineWrapper.getEngine().getBestSolution();
+        BestSolutionItem<TimeTable, TimeTableSystemDataSupplier> solution = getEngineWrapper().getEngine().getBestSolution();
         TimeTable table = solution.getSolution();
         Set<TimeTableItemDTO> set = new TreeSet<>();
         table.getSortedItems().forEach(item -> set.add(new TimeTableItemDTO(item.getDay(),
@@ -51,7 +51,7 @@ public class BestSolutionCommand extends CommandImpel{
 
         TimeTableDTO newTable = new TimeTableDTO(set, converter.createRuleMapDTO(table.getRulesScore()),
                 table.getHardRulesAvg(), table.getSoftRulesAvg());
-        TimeTableSystemDataSupplierDTO supplier = new ModelToDTOConverter().createDataSupplierDTO(engineWrapper.getEngine().getSystemInfo());
+        TimeTableSystemDataSupplierDTO supplier = new ModelToDTOConverter().createDataSupplierDTO(getEngineWrapper().getEngine().getSystemInfo());
         return new BestSolutionDTO(newTable, solution.getFitness(), solution.getGenerationCreated(), supplier);
     }
 }

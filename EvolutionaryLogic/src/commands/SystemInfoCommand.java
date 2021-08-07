@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 
 public class SystemInfoCommand extends CommandImpel{
 
-    private Consumer<CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>>> action;
+    private final Consumer<CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>>> action;
 
     public SystemInfoCommand(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper,
                              Consumer<CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>>> o) {
@@ -21,7 +21,7 @@ public class SystemInfoCommand extends CommandImpel{
     @Override
     public void execute() {
         CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>> result = new CommandResult<>();
-        if(engineWrapper.isFileLoaded()){
+        if(getEngineWrapper().isFileLoaded()){
             result.setResult(createAnswer());
         }
         else{
@@ -38,13 +38,13 @@ public class SystemInfoCommand extends CommandImpel{
 
     private SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier> createAnswer(){
         ModelToDTOConverter converter = new ModelToDTOConverter();
-        TimeTableEvolutionarySystemImpel system = (TimeTableEvolutionarySystemImpel) engineWrapper.getEngine();
+        TimeTableEvolutionarySystemImpel system = (TimeTableEvolutionarySystemImpel) getEngineWrapper().getEngine();
         return new SystemInfoDTO<>(system.getDays(),
                 system.getHours(),
                 converter.createTeachersFromMap(system.getTeachers()),
                 converter.createClassesFromMap(system.getClasses()),
                 converter.createSubjectsFromMap(system.getSubjects()),
-                converter.createRulesDTO(system.getRules()),
+                converter.createRulesObjectDTO(system.getRules()),
                 system.getInitialPopulationSize(),
                 system.getSelection(),
                 system.getCrossover(),

@@ -39,19 +39,19 @@ public class StartSystemCommand extends CommandImpel{
     public void execute() {
         CommandResult<?> result = new CommandResult<>();
         StartSystemInfoDTO rules;
-        if(engineWrapper.isFileLoaded()){
-            if(engineWrapper.getEngine().IsRunningProcess()){
+        if(getEngineWrapper().isFileLoaded()){
+            if(getEngineWrapper().getEngine().isRunningProcess()){
                 rules = whenRunningAlready.get();
                 if(rules == null){
                     return;
                 }
 
-                engineWrapper.getEngine().stopProcess();
+                getEngineWrapper().getEngine().stopProcess();
             }
             else{
                 // the algorithm is not running right now but it run in the past and has its information
                 // so the user should be notify by that and decide if he wants to start the new algorithm.
-                if(engineWrapper.getEngine().getGenerationFitnessHistory().size() != 0){
+                if(getEngineWrapper().getEngine().getGenerationFitnessHistory().size() != 0){
                     rules = whenRunPastAlgo.get();
                     if(rules == null){
                         return;
@@ -69,7 +69,7 @@ public class StartSystemCommand extends CommandImpel{
             }
 
             Thread sysThread = new Thread(() -> {
-                engineWrapper.getEngine().StartAlgorithm(setByTerminate(rules.getRules()),
+                getEngineWrapper().getEngine().StartAlgorithm(setByTerminate(rules.getRules()),
                                                          rules.getJumpInGenerations(),
                                                          jumpInGenerationsListener);
                 endRunning.accept(result);

@@ -26,7 +26,7 @@ public class ModelToDTOConverter {
         return ret;
     }
 
-    public RulesDTO createRulesDTO(Rules rules){
+    public RulesDTO createRulesObjectDTO(Rules rules){
         Set<RuleDTO> ret = new HashSet<>();
         rules.getRules().forEach(rule -> ret.add(new RuleDTO(rule.getRuleType(), rule.getStrength(), rule.getConfigurations())));
         return new RulesDTO(ret);
@@ -71,21 +71,18 @@ public class ModelToDTOConverter {
     private Map<Integer, TeacherDTO> createTeacherMap(Map<Integer, Teacher> old){
         Map<Integer, TeacherDTO> ret = new HashMap<>();
         old.forEach((key, val) -> ret.put(key, new TeacherDTO(val.getName(), val.getId(), createSubjects(val.getSubjects()))));
-
         return ret;
     }
 
     private Map<Integer, SubjectDTO> createSubjectsMap(Map<Integer, Subject> old){
         Map<Integer, SubjectDTO> ret = new HashMap<>();
         old.forEach((key, val) -> ret.put(key, new SubjectDTO(val.getName(), val.getId())));
-
         return ret;
     }
 
     private Map<Integer, SchoolClassDTO> createClassMap(Map<Integer, SchoolClass> old){
         Map<Integer, SchoolClassDTO> ret = new HashMap<>();
         old.forEach((key, val) -> ret.put(key, new SchoolClassDTO(val.getName(), val.getId(), createRequirementsDTO(val.getSubjectsNeeded()))));
-
         return ret;
     }
 }

@@ -19,9 +19,9 @@ public class ExitCommand extends CommandImpel{
 
     @Override
     public void execute() {
-        if(engineWrapper.getEngine() != null && engineWrapper.getEngine().IsRunningProcess()){
+        if(getEngineWrapper().getEngine() != null && getEngineWrapper().getEngine().isRunningProcess()){
             if(ifRunning.get()){
-                engineWrapper.getEngine().stopProcess();
+                getEngineWrapper().getEngine().stopProcess();
                 exitRun.run();
                 Thread.currentThread().interrupt();
             }

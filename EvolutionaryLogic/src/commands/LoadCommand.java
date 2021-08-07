@@ -7,9 +7,9 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class LoadCommand extends CommandImpel{
-    private Consumer<?> after;
-    private Supplier<String> before;
-    private Supplier<Boolean> ifRunningAlready;
+    private final Consumer<?> after;
+    private final Supplier<String> before;
+    private final Supplier<Boolean> ifRunningAlready;
 
     public LoadCommand(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper,
                        Supplier<String> before,
@@ -23,9 +23,9 @@ public class LoadCommand extends CommandImpel{
 
     @Override
     public void execute() throws Exception {
-        if(engineWrapper.isFileLoaded() && engineWrapper.getEngine().IsRunningProcess()){
+        if(getEngineWrapper().isFileLoaded() && getEngineWrapper().getEngine().isRunningProcess()){
             if(ifRunningAlready.get()){
-                engineWrapper.getEngine().stopProcess();
+                getEngineWrapper().getEngine().stopProcess();
                 loadFile();
             }
         }
@@ -41,7 +41,7 @@ public class LoadCommand extends CommandImpel{
 
     private void loadFile() throws Exception{
         String input = before.get();
-        engineWrapper.setEngine(ETTXmlParser.parse(input));
+        getEngineWrapper().setEngine(ETTXmlParser.parse(input));
         after.accept(null);
     }
 }

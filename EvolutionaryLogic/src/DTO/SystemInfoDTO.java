@@ -81,4 +81,17 @@ public class SystemInfoDTO<T, S extends DataSupplier> {
     public int getInitialSize() {
         return initialSize;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SystemInfoDTO<?, ?> that = (SystemInfoDTO<?, ?>) o;
+        return days == that.days && hours == that.hours && initialSize == that.initialSize && Objects.equals(teachers, that.teachers) && Objects.equals(unModifiedTeachers, that.unModifiedTeachers) && Objects.equals(classes, that.classes) && Objects.equals(unModifiedClasses, that.unModifiedClasses) && Objects.equals(subjects, that.subjects) && Objects.equals(unModifiedSubjects, that.unModifiedSubjects) && Objects.equals(rules, that.rules) && Objects.equals(selection, that.selection) && Objects.equals(crossover, that.crossover) && Objects.equals(mutations, that.mutations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(teachers, unModifiedTeachers, classes, unModifiedClasses, subjects, unModifiedSubjects, rules, days, hours, initialSize, selection, crossover, mutations);
+    }
 }

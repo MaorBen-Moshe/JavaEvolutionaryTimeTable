@@ -29,7 +29,7 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableS
 
     @Override
     public String toString() {
-        return "DayTimeOrientedCrossover { " +
+        return "Day Time Oriented Crossover { " +
                 "cuttingPoints=" + cuttingPoints +
                 " }";
     }
@@ -61,8 +61,8 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableS
                 for(int c = 1; c <= supplier.getClasses().size(); c++){
                     for(int t = 1; t <= supplier.getTeachers().size(); t++){
                         for(int s = 1; s <= supplier.getSubjects().size(); s++){
-                            if(currentCuttingPointPlace < cuttingPoints.size() &&
-                                    count > cuttingPoints.get(currentCuttingPointPlace)){
+                            if((currentCuttingPointPlace < cuttingPoints.size()) &&
+                                    (count > cuttingPoints.get(currentCuttingPointPlace))){
                                 currentCuttingPointPlace++;
                                 isParent1 = !isParent1;
                             }

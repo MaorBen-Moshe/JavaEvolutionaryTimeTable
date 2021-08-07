@@ -2,7 +2,7 @@ package DTO;
 
 import java.util.Objects;
 
-public class SerialItemDTO {
+public abstract class SerialItemDTO {
     private final int id;
     private final String name;
 

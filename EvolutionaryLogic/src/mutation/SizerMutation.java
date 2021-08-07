@@ -58,7 +58,7 @@ public class SizerMutation implements Mutation<TimeTable, TimeTableSystemDataSup
 
     @Override
     public String toString() {
-        return "SizerMutation { " +
+        return "Sizer Mutation { " +
                 "probability=" + probability +
                 ", totalTupples=" + totalTupples +
                 " }";

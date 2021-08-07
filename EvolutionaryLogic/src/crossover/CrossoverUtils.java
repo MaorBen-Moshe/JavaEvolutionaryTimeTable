@@ -1,9 +1,12 @@
 package crossover;
 
-import models.*;
+import models.TimeTable;
 import utils.RandomUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class CrossoverUtils {
     public static TimeTable getParent(Map<TimeTable, Double> parents){

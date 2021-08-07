@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class ProcessCommand extends CommandImpel{
 
-    private Consumer<CommandResult<List<FitnessHistoryItemDTO>>> action;
+    private final Consumer<CommandResult<List<FitnessHistoryItemDTO>>> action;
 
     public ProcessCommand(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper,
                           Consumer<CommandResult<List<FitnessHistoryItemDTO>>> o) {
@@ -22,9 +22,9 @@ public class ProcessCommand extends CommandImpel{
     @Override
     public void execute() {
         CommandResult<List<FitnessHistoryItemDTO>> result = new CommandResult<>();
-        if(engineWrapper.isFileLoaded()){
-            List<FitnessHistoryItem> process = engineWrapper.getEngine().getGenerationFitnessHistory();
-            if(engineWrapper.getEngine().IsRunningProcess()){
+        if(getEngineWrapper().isFileLoaded()){
+            List<FitnessHistoryItem> process = getEngineWrapper().getEngine().getGenerationFitnessHistory();
+            if(getEngineWrapper().getEngine().isRunningProcess()){
                 process = process.stream()
                         .sorted(Collections.reverseOrder())
                         .limit(10)
@@ -56,7 +56,6 @@ public class ProcessCommand extends CommandImpel{
     private List<FitnessHistoryItemDTO> createAnswer(List<FitnessHistoryItem> old){
         List<FitnessHistoryItemDTO> ret = new ArrayList<>();
         old.forEach(item -> ret.add(new FitnessHistoryItemDTO(item.getGenerationNumber(), item.getCurrentGenerationFitness(), item.getImprovementFromLastGeneration())));
-
         ret.sort(FitnessHistoryItemDTO::compareTo);
         return ret;
     }

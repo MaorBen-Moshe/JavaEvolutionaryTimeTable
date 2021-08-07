@@ -21,7 +21,7 @@ public interface EvolutionarySystem<T, S extends DataSupplier> {
 
     void StartAlgorithm(Set<TerminateRule> terminateBy, int jumpInGenerations, Consumer<JumpInGenerationsResult> listener);
 
-    boolean IsRunningProcess();
+    boolean isRunningProcess();
 
     int getInitialPopulationSize();
 

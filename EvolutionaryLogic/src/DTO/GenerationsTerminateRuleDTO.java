@@ -1,6 +1,5 @@
 package DTO;
 
-
 import evolutinary.EvolutionarySystem;
 
 import java.util.Objects;

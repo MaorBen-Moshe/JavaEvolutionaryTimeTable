@@ -6,8 +6,12 @@ import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
 
 public abstract class CommandImpel implements Command{
-    protected EngineWrapper<TimeTable, TimeTableSystemDataSupplier> engineWrapper;
+    private final EngineWrapper<TimeTable, TimeTableSystemDataSupplier> engineWrapper;
     protected CommandImpel(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper){
         this.engineWrapper = wrapper;
+    }
+
+    protected EngineWrapper<TimeTable, TimeTableSystemDataSupplier> getEngineWrapper(){
+        return engineWrapper;
     }
 }

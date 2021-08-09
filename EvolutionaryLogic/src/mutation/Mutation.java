@@ -2,6 +2,8 @@ package mutation;
 
 import Interfaces.DataSupplier;
 
-public interface Mutation<T, S extends DataSupplier> {
+import java.io.Serializable;
+
+public interface Mutation<T, S extends DataSupplier> extends Serializable {
     void mutate(T child, S supplier);
 }

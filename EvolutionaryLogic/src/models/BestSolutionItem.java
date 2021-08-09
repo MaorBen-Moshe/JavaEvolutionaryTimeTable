@@ -2,9 +2,10 @@ package models;
 
 import Interfaces.DataSupplier;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class BestSolutionItem<T, S extends DataSupplier> {
+public class BestSolutionItem<T, S extends DataSupplier> implements Serializable {
     private S supplier;
     private double fitness;
     private int generationCreated;

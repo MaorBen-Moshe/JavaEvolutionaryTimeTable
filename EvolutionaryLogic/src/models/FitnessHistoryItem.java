@@ -1,8 +1,9 @@
 package models;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class FitnessHistoryItem implements Comparable<FitnessHistoryItem> {
+public class FitnessHistoryItem implements Comparable<FitnessHistoryItem>, Serializable {
     private final int generationNumber;
     private final double currentGenerationFitness;
     private final double improvementFromLastGeneration; // zero if its generation number 0;

@@ -2,10 +2,11 @@ package crossover;
 
 import models.*;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSystemDataSupplier> {
+public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSystemDataSupplier>, Serializable {
     public enum Orientation{
         CLASS, TEACHER
     }

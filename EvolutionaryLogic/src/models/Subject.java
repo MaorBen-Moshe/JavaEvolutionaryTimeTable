@@ -1,6 +1,8 @@
 package models;
 
-public class Subject extends SerialItem implements Comparable<Subject> {
+import java.io.Serializable;
+
+public class Subject extends SerialItem implements Comparable<Subject>, Serializable {
 
     public Subject(String name, int id) {
         super(name, id);

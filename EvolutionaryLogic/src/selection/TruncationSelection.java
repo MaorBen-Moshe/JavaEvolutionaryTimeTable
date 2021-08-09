@@ -2,12 +2,13 @@ package selection;
 
 import models.TimeTable;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class TruncationSelection implements Selection<TimeTable> {
+public class TruncationSelection implements Selection<TimeTable>, Serializable {
     private final int topPercent;
 
     public TruncationSelection(int topPercent){

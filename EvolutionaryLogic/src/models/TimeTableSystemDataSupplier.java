@@ -2,12 +2,13 @@ package models;
 
 import Interfaces.DataSupplier;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class TimeTableSystemDataSupplier implements DataSupplier {
+public class TimeTableSystemDataSupplier implements DataSupplier, Serializable {
     private final Map<Integer, Teacher> teachers;
     private final Map<Integer, Teacher> unModifiedTeachers;
     private final Map<Integer, Subject> subjects;

@@ -2,9 +2,10 @@ package crossover;
 
 import models.*;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableSystemDataSupplier> {
+public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableSystemDataSupplier>, Serializable {
     private final int cuttingPoints;
 
     public DayTimeOrientedCrossover(int cuttingPoints){

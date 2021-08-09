@@ -2,9 +2,10 @@ package selection;
 
 import models.TimeTable;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class RouletteWheelSelection implements Selection<TimeTable> {
+public class RouletteWheelSelection implements Selection<TimeTable>, Serializable {
     @Override
     public Map<TimeTable, Double> select(Map<TimeTable, Double> population) {
         return null;

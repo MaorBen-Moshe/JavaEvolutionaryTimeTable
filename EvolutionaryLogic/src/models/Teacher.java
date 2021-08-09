@@ -1,8 +1,9 @@
 package models;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Teacher extends SerialItem implements Comparable<Teacher> {
+public class Teacher extends SerialItem implements Comparable<Teacher>, Serializable {
     private final Set<Subject> subjects;
     private final Set<Subject> unModifiedSubjects;
 

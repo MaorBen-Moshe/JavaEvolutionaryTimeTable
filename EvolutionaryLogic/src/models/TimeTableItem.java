@@ -1,8 +1,9 @@
 package models;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class TimeTableItem implements Comparable<TimeTableItem> {
+public class TimeTableItem implements Comparable<TimeTableItem>, Serializable {
     private int day;
     private int hour;
     private SchoolClass schoolClass;

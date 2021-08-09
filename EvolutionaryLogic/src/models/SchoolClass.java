@@ -1,11 +1,12 @@
 package models;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class SchoolClass extends SerialItem implements Comparable<SchoolClass> {
+public class SchoolClass extends SerialItem implements Comparable<SchoolClass>, Serializable {
     private final Map<Subject, Integer> subjectsNeeded; // subject and the hours the class needs in a week
     private final Map<Subject, Integer> unModifiedSubjectsNeeded;
     private final int totalNumberOfHours;

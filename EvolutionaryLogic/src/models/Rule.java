@@ -1,9 +1,10 @@
 package models;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.IntStream;
 
-public class Rule {
+public class Rule implements Serializable {
 
     public enum eStrength{
         Soft, Hard

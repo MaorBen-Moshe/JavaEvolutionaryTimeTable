@@ -9,11 +9,12 @@ import models.TerminateRule;
 import mutation.Mutation;
 import selection.Selection;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public interface EvolutionarySystem<T, S extends DataSupplier> {
+public interface EvolutionarySystem<T, S extends DataSupplier> extends Serializable {
 
     enum TerminateRules {
         ByFitness, NumberOfGenerations

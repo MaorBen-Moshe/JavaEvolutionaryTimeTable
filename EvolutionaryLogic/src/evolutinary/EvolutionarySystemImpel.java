@@ -2,19 +2,17 @@ package evolutinary;
 
 import Interfaces.DataSupplier;
 import crossover.Crossover;
-import models.FitnessHistoryItem;
-import models.JumpInGenerationsResult;
-import models.TerminateRule;
+import models.*;
 import mutation.Mutation;
 import selection.Selection;
-import models.BestSolutionItem;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 // T is a population item
-public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> implements EvolutionarySystem<T, S> {
+public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> implements EvolutionarySystem<T, S>, Serializable {
     private Map<T, Double> population;
     private final Map<T, Double> childPopulation;
     private Crossover<T, S> crossover;
@@ -27,21 +25,21 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     private boolean isRunning = false;
     private boolean stopOccurred = false;
     private int currentNumberOfGenerations;
-    private final Object generationsLock;
-    private final Object bestItemLock;
-    private final Object stopLock;
-    private final Object runningLock;
-    private final Object fitnessHistoryLock;
+    private final CustomLock generationsLock;
+    private final CustomLock bestItemLock;
+    private final CustomLock stopLock;
+    private final CustomLock runningLock;
+    private final CustomLock fitnessHistoryLock;
 
     protected EvolutionarySystemImpel(){
         population = new HashMap<>();
         childPopulation = new HashMap<>();
         generationFitnessHistory = new ArrayList<>();
-        generationsLock = new Object();
-        bestItemLock = new Object();
-        stopLock = new Object();
-        runningLock = new Object();
-        fitnessHistoryLock = new Object();
+        generationsLock = new CustomLock();
+        bestItemLock = new CustomLock();
+        stopLock = new CustomLock();
+        runningLock = new CustomLock();
+        fitnessHistoryLock = new CustomLock();
     }
 
     @Override

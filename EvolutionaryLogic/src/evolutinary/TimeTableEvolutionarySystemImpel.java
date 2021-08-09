@@ -4,9 +4,10 @@ import models.*;
 import utils.ItemCreationUtil;
 import utils.RandomUtils;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<TimeTable, TimeTableSystemDataSupplier> {
+public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<TimeTable, TimeTableSystemDataSupplier> implements Serializable {
     private Map<Integer, Teacher> teachers;
     private Map<Integer, Teacher> unModifiedTeachers;
     private Map<Integer, Subject> subjects;

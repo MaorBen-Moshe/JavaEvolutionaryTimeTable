@@ -1,8 +1,9 @@
 package models;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Rules{
+public class Rules implements Serializable {
     private final int hardRulesWeight;
     private final Set<Rule> rules;
     private Set<Rule> unModifiedRules;

@@ -1,8 +1,9 @@
 package models;
+import java.io.Serializable;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class TimeTable {
+public class TimeTable implements Serializable {
     private final Set<TimeTableItem> sortedItems;
     private Set<TimeTableItem> unModifiedSortedItems;
     private final Map<Rule, Double> rulesScore;

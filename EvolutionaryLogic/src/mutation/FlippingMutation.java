@@ -4,9 +4,10 @@ import models.*;
 import utils.ItemCreationUtil;
 import utils.RandomUtils;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemDataSupplier> {
+public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemDataSupplier>, Serializable {
 
     public enum Component {
         S, T, C, H, D

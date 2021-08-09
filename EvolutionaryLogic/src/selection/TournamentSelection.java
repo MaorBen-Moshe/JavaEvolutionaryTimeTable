@@ -2,9 +2,10 @@ package selection;
 
 import models.TimeTable;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class TournamentSelection implements Selection<TimeTable> {
+public class TournamentSelection implements Selection<TimeTable>, Serializable {
     private final float pte;
 
     public TournamentSelection(float pte){

@@ -81,6 +81,18 @@ public class ConsoleUtils {
           }),
           new BestSolutionCommand(engine,ConsoleUtils::displayBestSolution),
           new ProcessCommand(engine,ConsoleUtils::displayProcess),
+          new SaveSystemCommand(engine, () -> System.out.println("Save end!"), () ->{
+              System.out.println("please enter the path you want the file will be saved: ");
+              return new Scanner(System.in).nextLine();
+          }, () -> {
+              System.out.println("There is a saved data");
+              System.out.println("Do you want to truncate it and save a new one? (y/n)");
+              return new Scanner(System.in).nextLine().equalsIgnoreCase("y");
+          }, () -> System.out.println("please load a file first!"), () -> System.out.println("There is a running process.")),
+                new LoadSystemCommand(engine, () -> System.out.println("Load end!"), () -> System.out.println("There is a running process."), () -> {
+                    System.out.println("please enter the path you want the file will be loaded from: ");
+                    return new Scanner(System.in).nextLine();
+                }),
           new ExitCommand(engine, () -> {
               System.out.println("Goodbye :)");
               finished = true;

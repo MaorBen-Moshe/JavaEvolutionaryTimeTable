@@ -1,8 +1,9 @@
 package models;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class SerialItem{
+public abstract class SerialItem implements Serializable {
     private final int id;
     private final String name;
 

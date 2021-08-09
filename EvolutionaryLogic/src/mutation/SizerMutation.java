@@ -4,9 +4,10 @@ import models.*;
 import utils.ItemCreationUtil;
 import utils.RandomUtils;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class SizerMutation implements Mutation<TimeTable, TimeTableSystemDataSupplier> {
+public class SizerMutation implements Mutation<TimeTable, TimeTableSystemDataSupplier>, Serializable {
     private final double probability;
     private final int totalTupples;
 

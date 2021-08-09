@@ -12,11 +12,11 @@ public class GenerationTerminateRule extends TerminateRule {
 
     @Override
     public boolean isTerminate(Object... args) {
-        if(args.length != 1 && !(args[0] instanceof Integer)){
+        if(args != null && args.length != 1 && !(args[0] instanceof Integer)){
             throw new IllegalArgumentException("Generations terminate rule accept only the number of generations");
         }
 
-        Integer currentNumberOfGenerations = (Integer) args[0];
+        Integer currentNumberOfGenerations = (Integer) (args != null ? args[0] : null);
         if(currentNumberOfGenerations < 0){
             throw new IllegalArgumentException("Generations terminate rule accept only a positive number of generations");
         }

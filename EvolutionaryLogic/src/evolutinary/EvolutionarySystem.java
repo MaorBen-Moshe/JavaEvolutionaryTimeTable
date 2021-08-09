@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 public interface EvolutionarySystem<T, S extends DataSupplier> extends Serializable {
 
     enum TerminateRules {
-        ByFitness, NumberOfGenerations
+        ByFitness, NumberOfGenerations, ByTime
     }
 
     void StartAlgorithm(Set<TerminateRule> terminateBy, int jumpInGenerations, Consumer<JumpInGenerationsResult> listener);
@@ -31,6 +31,10 @@ public interface EvolutionarySystem<T, S extends DataSupplier> extends Serializa
     Crossover<T, S> getCrossover();
 
     List<Mutation<T, S>> getMutations();
+
+    int getElitism();
+
+    void setElitism(int elitism);
 
     List<FitnessHistoryItem> getGenerationFitnessHistory();
 

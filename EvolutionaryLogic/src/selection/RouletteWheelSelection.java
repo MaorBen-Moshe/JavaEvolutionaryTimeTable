@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class RouletteWheelSelection implements Selection<TimeTable>, Serializable {
     @Override
-    public Map<TimeTable, Double> select(Map<TimeTable, Double> population) {
+    public Map<TimeTable, Double> select(Map<TimeTable, Double> population, Map<TimeTable, Double> elita) {
         return null;
     }
 }

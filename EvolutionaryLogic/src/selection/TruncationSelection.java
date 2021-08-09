@@ -3,7 +3,9 @@ package selection;
 import models.TimeTable;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -20,14 +22,20 @@ public class TruncationSelection implements Selection<TimeTable>, Serializable {
     }
 
     @Override
-    public Map<TimeTable, Double> select(Map<TimeTable, Double> population) {
+    public Map<TimeTable, Double> select(Map<TimeTable, Double> population, Map<TimeTable, Double> elita) {
         int percent = (topPercent * population.size()) / 100;
-        return population.entrySet()
+        if(percent - elita.size() <= 0){
+            return elita;
+        }
+
+        Map<TimeTable, Double> selected =  population.entrySet()
                          .stream()
                          .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                         .limit(percent)
+                         .limit(percent - elita.size())
                          .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1));
 
+        selected.putAll(elita);
+        return selected;
     }
 
     @Override

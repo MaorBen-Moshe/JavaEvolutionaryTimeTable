@@ -90,7 +90,7 @@ public class ValidateUtils {
                             throw new IllegalArgumentException("selection configuration: + " + split[0] + " with value " + split[1] + " is not valid");
                         }
                     }catch (NumberFormatException e){
-                        throw new IllegalArgumentException("Selection configuration Top percent should be an integer between 1 - 100");
+                        throw new IllegalArgumentException("Selection configuration pte should be a number between 0 - 1");
                     }
                 }
             }

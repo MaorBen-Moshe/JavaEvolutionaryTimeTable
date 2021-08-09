@@ -12,11 +12,11 @@ public class FitnessTerminateRule extends TerminateRule {
 
     @Override
     public boolean isTerminate(Object... args) {
-        if(args.length != 1 && !(args[0] instanceof Double)){
+        if(args != null && args.length != 1 && !(args[0] instanceof Double)){
             throw new IllegalArgumentException("Fitness terminate rule accept only the fitness");
         }
 
-        Double currentFitness = (Double) args[0];
+        Double currentFitness = (Double) (args != null ? args[0] : null);
         if(currentFitness < 0 || currentFitness > 100){
             throw new IllegalArgumentException("Fitness terminate rule accept only a fitness between 0-100");
         }

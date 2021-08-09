@@ -6,6 +6,9 @@ import models.TimeTableSystemDataSupplier;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.function.Supplier;
 
 public class SaveSystemCommand extends CommandImpel{
@@ -40,7 +43,8 @@ public class SaveSystemCommand extends CommandImpel{
         }
         else{
             String path = getPath.get();
-            File file = new File(path + "\\evoInfo");
+            Path temp = Paths.get(path, "evoInfo");
+            File file = temp.toFile();
             boolean res = file.createNewFile();
             if(!res){
                 if(!whenSavedDataAlready.get()){

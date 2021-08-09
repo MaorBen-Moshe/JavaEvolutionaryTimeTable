@@ -7,8 +7,11 @@ import mutation.Mutation;
 import selection.Selection;
 
 import java.io.Serializable;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 // T is a population item
@@ -25,6 +28,8 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     private boolean isRunning = false;
     private boolean stopOccurred = false;
     private int currentNumberOfGenerations;
+    private int elitism;
+    private Instant startTime;
     private final CustomLock generationsLock;
     private final CustomLock bestItemLock;
     private final CustomLock stopLock;
@@ -107,6 +112,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         initialAlgoData();
         try{
             /* initial*/
+
             initialAndEvaluatePopulation();
             /* iterative*/
             while(!isTerminate(terminateBy) && !isStopOccurred()){
@@ -132,6 +138,20 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     }
 
     @Override
+    public int getElitism() {
+        return elitism;
+    }
+
+    @Override
+    public void setElitism(int elitism) {
+        if(elitism < 0 || elitism > initialPopulationSize){
+            throw new IllegalArgumentException("elitism argument must be a positive integer and at most the size of the population");
+        }
+
+        this.elitism = elitism;
+    }
+
+    @Override
     public boolean isRunningProcess() {
         synchronized (runningLock){
             return isRunning;
@@ -145,8 +165,9 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
 
     protected void createAndEvaluateGeneration(){
         S supplier = getSystemInfo();
-        Map<T, Double> selected = selection.select(population);
-        //childPopulation.putAll(selected);
+        Map<T, Double> elita = getElitaPopulation();
+        childPopulation.putAll(elita);
+        Map<T, Double> selected = selection.select(population, elita);
         while(childPopulation.size() < population.size()){
             Set<T> children = crossover.crossover(selected, supplier);
             children.forEach(child ->{
@@ -164,6 +185,14 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
 
     protected abstract T createOptionalSolution();
 
+    private Map<T, Double> getElitaPopulation(){
+        return population.entrySet()
+                  .stream()
+                  .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                  .limit(getElitism())
+                  .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1));
+    }
+
     private boolean isTerminate(Set<TerminateRule> terminateBy) {
         boolean answer = false;
         for (TerminateRule terminate : terminateBy) {
@@ -171,6 +200,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
                 case NumberOfGenerations:
                     answer = terminate.isTerminate(currentNumberOfGenerations);  break;
                 case ByFitness: answer =  terminate.isTerminate(bestItem.getFitness()); break;
+                case ByTime: answer = terminate.isTerminate(Duration.between(startTime, Instant.now()).toMinutes()); break;
                 default: answer = false; break;
             }
 
@@ -240,12 +270,14 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         setRunning(true);
         setCurrentNumberOfGenerations(0);
         generationFitnessHistory.clear();
+        startTime = Instant.now();
     }
 
     private void clearAlgoData(){
         setRunning(false);
         setStopOccurred(false);
         population.clear();
+        startTime = null;
     }
 
     private void addFitnessItemToHistory(){

@@ -56,6 +56,8 @@ public class ETTXmlParser {
         int initialPopulation = engine.getETTInitialPopulation().getSize();
         setInitialPopulation(ret, initialPopulation);
         ret.setSelection(createSelection(engine.getETTSelection()));
+        Integer optionalElitism = engine.getETTSelection().getETTElitism();
+        ret.setElitism(optionalElitism != null ? optionalElitism : 0);
         ret.setCrossover(createCrossover(engine.getETTCrossover()));
         ret.setMutations(createMutations(engine.getETTMutations()));
 
@@ -254,7 +256,7 @@ public class ETTXmlParser {
             try{
                 tempTeachers.add(new Teacher(teacher.getETTName(),
                                              teacher.getId(),
-                                             getSubjectsById(allSubjectsInSystem, ids)));
+                                             getSubjectsById(allSubjectsInSystem, ids), 0));
             }catch (Exception e){
                 throw new Exception("In teachers: " + teacher.getETTName() + ", id: " + teacher.getId() + " " + e.getMessage());
             }

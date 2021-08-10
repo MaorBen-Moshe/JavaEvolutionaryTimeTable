@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ConsoleUI/ConsoleUI.iml" filepath="$PROJECT_DIR$/ConsoleUI/ConsoleUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/EvolutionaryLogic/EvolutionaryLogic.iml" filepath="$PROJECT_DIR$/EvolutionaryLogic/EvolutionaryLogic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JavaFxUI/JavaFxUI.iml" filepath="$PROJECT_DIR$/JavaFxUI/JavaFxUI.iml" />
     </modules>
   </component>
 </project>

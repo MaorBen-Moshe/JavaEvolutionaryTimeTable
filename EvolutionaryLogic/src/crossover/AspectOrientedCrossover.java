@@ -19,7 +19,7 @@ public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSy
     }
 
     @Override
-    public Set<TimeTable> crossover(Map<TimeTable, Double> parents, TimeTableSystemDataSupplier supplier) {
+    public Set<TimeTable> crossover(List<TimeTable> parents, TimeTableSystemDataSupplier supplier) {
         Set<TimeTable> children = new HashSet<>();
         Map<Integer, ? extends SerialItem> items = null;
         switch (orientation){

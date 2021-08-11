@@ -13,7 +13,7 @@ public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableS
     }
 
     @Override
-    public Set<TimeTable> crossover(Map<TimeTable, Double> parents, TimeTableSystemDataSupplier supplier) {
+    public Set<TimeTable> crossover(List<TimeTable> parents, TimeTableSystemDataSupplier supplier) {
         TimeTable parent1 = CrossoverUtils.getParent(parents);
         TimeTable parent2 = CrossoverUtils.getParent(parents);
         while(parent2 == null || parent2.equals(parent1)){

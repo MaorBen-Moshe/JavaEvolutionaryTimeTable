@@ -4,7 +4,8 @@ import models.TimeTable;
 import utils.RandomUtils;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
@@ -21,43 +22,41 @@ public class TournamentSelection implements Selection<TimeTable>, Serializable {
     }
 
     @Override
-    public Map<TimeTable, Double> select(Map<TimeTable, Double> population, Map<TimeTable, Double> elita) {
-        Map<TimeTable, Double> retVal = new HashMap<>(elita);
-        if(!(retVal.size() >= population.size())){
-            IntStream.range(0, population.size()).forEach(i ->{
-                Map.Entry<TimeTable, Double> parent1 = randomizeParent(population);
-                Map.Entry<TimeTable, Double> parent2 = randomizeParent(population);
-                double randomNum = RandomUtils.nextDouble();
-                Map.Entry<TimeTable, Double> answer;
-                if(randomNum > this.pte){
-                    answer = getMaxParent(parent1, parent2);
-                }
-                else{
-                    answer = getMinParent(parent1, parent2);
-                }
+    public List<TimeTable> select(Map<TimeTable, Double> population) {
+        List<TimeTable> retVal = new ArrayList<>();
+        IntStream.range(0, population.size()).forEach(i ->{
+            Map.Entry<TimeTable, Double> parent1 = randomizeParent(population);
+            Map.Entry<TimeTable, Double> parent2 = randomizeParent(population);
+            double randomNum = RandomUtils.nextDouble();
+            TimeTable answer;
+            if(randomNum > this.pte){
+                answer = getMaxParent(parent1, parent2);
+            }
+            else{
+                answer = getMinParent(parent1, parent2);
+            }
 
-                retVal.put(answer.getKey(), answer.getValue());
-            });
-        }
+            retVal.add(answer);
+        });
 
         return retVal;
     }
 
-    private Map.Entry<TimeTable, Double> getMinParent(Map.Entry<TimeTable, Double> parent1, Map.Entry<TimeTable, Double> parent2) {
+    private TimeTable getMinParent(Map.Entry<TimeTable, Double> parent1, Map.Entry<TimeTable, Double> parent2) {
         return getParentHelper(parent1, parent2, () -> Math.min(parent1.getValue(), parent2.getValue()) == parent1.getValue());
     }
 
-    private Map.Entry<TimeTable, Double> getMaxParent(Map.Entry<TimeTable, Double> parent1, Map.Entry<TimeTable, Double> parent2) {
+    private TimeTable getMaxParent(Map.Entry<TimeTable, Double> parent1, Map.Entry<TimeTable, Double> parent2) {
         return getParentHelper(parent1, parent2, () -> Math.max(parent1.getValue(), parent2.getValue()) == parent1.getValue());
     }
 
-    private Map.Entry<TimeTable, Double> getParentHelper(Map.Entry<TimeTable, Double> parent1, Map.Entry<TimeTable, Double> parent2, Supplier<Boolean> predicate){
-        Map.Entry<TimeTable, Double> ret;
+    private TimeTable getParentHelper(Map.Entry<TimeTable, Double> parent1, Map.Entry<TimeTable, Double> parent2, Supplier<Boolean> predicate){
+        TimeTable ret;
         if(predicate.get()){
-            ret = parent1;
+            ret = parent1.getKey();
         }
         else{
-            ret = parent2;
+            ret = parent2.getKey();
         }
 
         return ret;

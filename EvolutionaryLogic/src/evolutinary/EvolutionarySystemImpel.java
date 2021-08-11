@@ -167,7 +167,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         S supplier = getSystemInfo();
         Map<T, Double> elita = getElitaPopulation();
         childPopulation.putAll(elita);
-        Map<T, Double> selected = selection.select(population, elita);
+        List<T> selected = selection.select(population);
         while(childPopulation.size() < population.size()){
             Set<T> children = crossover.crossover(selected, supplier);
             children.forEach(child ->{

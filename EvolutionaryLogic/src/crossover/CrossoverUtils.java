@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 public class CrossoverUtils {
-    public static TimeTable getParent(Map<TimeTable, Double> parents){
+    public static TimeTable getParent(List<TimeTable> parents){
         final int randomNumber = RandomUtils.nextIntInRange(1, parents.size());
         TimeTable retVal = null;
         int i = 1;
-        for(TimeTable timeTable : parents.keySet()){
+        for(TimeTable timeTable : parents){
             if(i == randomNumber){
                 retVal = timeTable;
                 break;

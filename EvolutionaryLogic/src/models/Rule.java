@@ -85,43 +85,68 @@ public class Rule implements Serializable {
                 }
 
                 int totalHours = (int)configurations.get("Total hours");
-                Map<Subject, Map<Integer, List<Integer>>> subjectsSequentiality = new HashMap<>();
-                Set<Subject> falseSubjects = new HashSet<>();
+                Map<Subject,Map<SchoolClass, Map<Integer, List<Integer>>>> subjectsSequentiality = initializeStructure(optional, totalHours);
+                Map<Subject, List<SchoolClass>> falseClassesBySubject = calculateFalseClassesBySubject(subjectsSequentiality, totalHours);
+                int[] falseSize = {falseClassesBySubject.size()};
+                falseClassesBySubject.values().forEach(list -> falseSize[0] += list.size());
+                ret -= ((double)(100 / (supplier.getSubjects().size() * supplier.getClasses().size())) * falseSize[0]);
+                return ret;
+            }
+
+            private Map<Subject,Map<SchoolClass, Map<Integer, List<Integer>>>> initializeStructure(TimeTable optional, int totalHours){
+                Map<Subject,Map<SchoolClass, Map<Integer, List<Integer>>>> subjectsSequentiality = new HashMap<>();
                 optional.getSortedItems().forEach(item ->{
                     Subject currentSubject = item.getSubject();
+                    SchoolClass currentClass = item.getSchoolClass();
                     int currentDay = item.getDay();
                     if(!subjectsSequentiality.containsKey(currentSubject)){
                         subjectsSequentiality.put(currentSubject, new HashMap<>());
                     }
 
-                    if(!subjectsSequentiality.get(currentSubject).containsKey(currentDay)){
-                        subjectsSequentiality.get(currentSubject).put(currentDay, new ArrayList<>());
+                    if(!subjectsSequentiality.get(currentSubject).containsKey(currentClass)){
+                        subjectsSequentiality.get(currentSubject).put(currentClass, new HashMap<>());
                     }
 
-                    subjectsSequentiality.get(currentSubject).get(currentDay).add(item.getHour());
+                    if(!subjectsSequentiality.get(currentSubject).get(currentClass).containsKey(currentDay)){
+                        subjectsSequentiality.get(currentSubject).get(currentClass).put(currentDay, new ArrayList<>());
+                    }
+
+                    subjectsSequentiality.get(currentSubject).get(currentClass).get(currentDay).add(item.getHour());
                 });
+                return subjectsSequentiality;
+            }
 
-                int[] counter = {0};
-                subjectsSequentiality.forEach((subject, days) -> days.forEach((day, hours) ->{
-                    hours.sort(Comparator.naturalOrder());
-                    IntStream.range(0, hours.size()).forEach(i -> {
-                        if(!((i+1) >= hours.size())){
-                            if(hours.get(i) == (hours.get(i+1) + 1)){
-                                counter[0]++;
-                            }
-                            else{
-                                counter[0] = 0;
-                            }
+            private Map<Subject, List<SchoolClass>> calculateFalseClassesBySubject(Map<Subject,Map<SchoolClass, Map<Integer, List<Integer>>>> subjectsSequentiality,
+                                                                                   int totalHours){
+                Map<Subject, List<SchoolClass>> falseClassesBySubject = new HashMap<>();
+                subjectsSequentiality.forEach((subject, classMap) -> classMap.forEach((currentClass, days) ->{
+                    int counter = 0;
+                    for(Map.Entry<Integer, List<Integer>> dayHours : days.entrySet()){
+                        List<Integer> hours = dayHours.getValue();
+                        hours.sort(Comparator.naturalOrder());
+                        for(int i = 0; i < hours.size(); i++){
+                            if(!((i+1) >= hours.size())){
+                                if(hours.get(i) == (hours.get(i+1) + 1)){
+                                    counter++;
+                                }
+                                else{
+                                    counter = 0;
+                                }
 
-                            if(counter[0] >= totalHours){
-                                falseSubjects.add(subject);
+                                if(counter >= totalHours){
+                                    if(!falseClassesBySubject.containsKey(subject)){
+                                        falseClassesBySubject.put(subject, new ArrayList<>());
+                                    }
+
+                                    falseClassesBySubject.get(subject).add(currentClass);
+                                    break;
+                                }
                             }
                         }
-                    });
+                    }
                 }));
 
-                ret -= ((double)(100 / supplier.getSubjects().size()) * falseSubjects.size());
-                return ret;
+                return falseClassesBySubject;
             }
         },
         Singularity {

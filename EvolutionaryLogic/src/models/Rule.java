@@ -86,7 +86,7 @@ public class Rule implements Serializable {
 
                 int totalHours = (int)configurations.get("Total hours");
                 Map<Subject,Map<SchoolClass, Map<Integer, List<Integer>>>> subjectsSequentiality = initializeStructure(optional, totalHours);
-                Map<Subject, List<SchoolClass>> falseClassesBySubject = calculateFalseClassesBySubject(subjectsSequentiality, totalHours);
+                Map<Subject, Set<SchoolClass>> falseClassesBySubject = calculateFalseClassesBySubject(subjectsSequentiality, totalHours);
                 int[] falseSize = {falseClassesBySubject.size()};
                 falseClassesBySubject.values().forEach(list -> falseSize[0] += list.size());
                 ret -= ((double)(100 / (supplier.getSubjects().size() * supplier.getClasses().size())) * falseSize[0]);
@@ -116,9 +116,9 @@ public class Rule implements Serializable {
                 return subjectsSequentiality;
             }
 
-            private Map<Subject, List<SchoolClass>> calculateFalseClassesBySubject(Map<Subject,Map<SchoolClass, Map<Integer, List<Integer>>>> subjectsSequentiality,
+            private Map<Subject, Set<SchoolClass>> calculateFalseClassesBySubject(Map<Subject,Map<SchoolClass, Map<Integer, List<Integer>>>> subjectsSequentiality,
                                                                                    int totalHours){
-                Map<Subject, List<SchoolClass>> falseClassesBySubject = new HashMap<>();
+                Map<Subject, Set<SchoolClass>> falseClassesBySubject = new HashMap<>();
                 subjectsSequentiality.forEach((subject, classMap) -> classMap.forEach((currentClass, days) ->{
                     int counter = 0;
                     for(Map.Entry<Integer, List<Integer>> dayHours : days.entrySet()){
@@ -135,7 +135,7 @@ public class Rule implements Serializable {
 
                                 if(counter >= totalHours){
                                     if(!falseClassesBySubject.containsKey(subject)){
-                                        falseClassesBySubject.put(subject, new ArrayList<>());
+                                        falseClassesBySubject.put(subject, new HashSet<>());
                                     }
 
                                     falseClassesBySubject.get(subject).add(currentClass);

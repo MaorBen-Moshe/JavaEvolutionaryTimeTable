@@ -23,7 +23,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     private List<Mutation<T, S>> mutations;
     private List<Mutation<T, S>> unModifiedMutations;
     private int initialPopulationSize;
-    private final List<FitnessHistoryItem> generationFitnessHistory; // cell 0: best fitness of generation 1 and so on... (by jump in generations)
+    private final List<FitnessHistoryItem<T>> generationFitnessHistory; // cell 0: best fitness of generation 1 and so on... (by jump in generations)
     private BestSolutionItem<T, S> bestItem;
     private boolean isRunning = false;
     private boolean stopOccurred = false;
@@ -48,7 +48,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     }
 
     @Override
-    public List<FitnessHistoryItem> getGenerationFitnessHistory() {
+    public List<FitnessHistoryItem<T>> getGenerationFitnessHistory() {
         synchronized (fitnessHistoryLock){
             return new ArrayList<>(generationFitnessHistory);
         }
@@ -283,7 +283,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     private void addFitnessItemToHistory(){
         synchronized (fitnessHistoryLock){
             double improvement = generationFitnessHistory.size() == 0 ? 0 : bestItem.getFitness() - generationFitnessHistory.get(generationFitnessHistory.size() - 1).getCurrentGenerationFitness();
-            FitnessHistoryItem item = new FitnessHistoryItem(getCurrentNumberOfGenerations(),
+            FitnessHistoryItem<T> item = new FitnessHistoryItem<T>(getBestSolution().getSolution(), getCurrentNumberOfGenerations(),
                     getBestSolution().getFitness(),
                     improvement);
             generationFitnessHistory.add(item);

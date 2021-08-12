@@ -2,10 +2,7 @@ package evolutinary;
 
 import Interfaces.DataSupplier;
 import crossover.Crossover;
-import models.BestSolutionItem;
-import models.FitnessHistoryItem;
-import models.JumpInGenerationsResult;
-import models.TerminateRule;
+import models.*;
 import mutation.Mutation;
 import selection.Selection;
 
@@ -36,7 +33,7 @@ public interface EvolutionarySystem<T, S extends DataSupplier> extends Serializa
 
     void setElitism(int elitism);
 
-    List<FitnessHistoryItem> getGenerationFitnessHistory();
+    List<FitnessHistoryItem<T>> getGenerationFitnessHistory();
 
     S getSystemInfo();
 

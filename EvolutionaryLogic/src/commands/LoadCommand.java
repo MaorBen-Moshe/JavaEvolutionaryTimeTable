@@ -7,13 +7,13 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class LoadCommand extends CommandImpel{
-    private final Consumer<?> after;
+    private final Consumer<String> after;
     private final Supplier<String> before;
     private final Supplier<Boolean> ifRunningAlready;
 
     public LoadCommand(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper,
                        Supplier<String> before,
-                       Consumer<?> after,
+                       Consumer<String> after,
                        Supplier<Boolean> ifRunningProcess) {
         super(wrapper);
         this.before = before;
@@ -42,6 +42,6 @@ public class LoadCommand extends CommandImpel{
     private void loadFile() throws Exception{
         String input = before.get();
         getEngineWrapper().setEngine(ETTXmlParser.parse(input));
-        after.accept(null);
+        after.accept(input);
     }
 }

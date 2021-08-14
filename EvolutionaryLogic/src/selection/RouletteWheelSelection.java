@@ -50,10 +50,22 @@ public class RouletteWheelSelection implements Selection<TimeTable>, Serializabl
         List<TimeTable> selected = new ArrayList<>(population.size());
         IntStream.range(0, solutions.size()).forEach(i -> {
             double randomNumber = RandomUtils.nextDouble() * fitnessArr[fitnessArr.length - 1];
-            int index = Arrays.binarySearch(fitnessArr, randomNumber);
+            int index = getIndexByFitnessOffset(fitnessArr, randomNumber);
             selected.add(solutions.get(index).getSolution());
         });
 
         return selected;
+    }
+
+    public int getIndexByFitnessOffset(double[] fitnessArr, double offset){
+
+        for(int i=0; i<fitnessArr.length; i++){
+            if( offset - fitnessArr[i] <= 0){
+                return i;
+            }else {
+                offset-=fitnessArr[i];
+            }
+        }
+        return -1;
     }
 }

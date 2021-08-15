@@ -17,21 +17,21 @@ public class StartSystemCommand extends CommandImpel{
     private final Consumer<JumpInGenerationsResult> jumpInGenerationsListener;
     private final Consumer<CommandResult<?>> endRunning;
     private final Supplier<StartSystemInfoDTO> whenRunPastAlgo;
-    private final Runnable startRunning;
+    private final Object lock;
 
     public StartSystemCommand(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper,
+                              Object lock,
                               Supplier<StartSystemInfoDTO> whenRunPastAlgo,
                               Supplier<StartSystemInfoDTO> whenRunningAlready,
                               Supplier<StartSystemInfoDTO> whenNotRunning,
                               Consumer<JumpInGenerationsResult> jumpInGenerationsListener,
-                              Runnable startRunning,
                               Consumer<CommandResult<?>> endRunning) {
         super(wrapper);
+        this.lock = lock;
         this.whenRunPastAlgo = whenRunPastAlgo;
         this.whenNotRunning = whenNotRunning;
         this.whenRunningAlready = whenRunningAlready;
         this.endRunning = endRunning;
-        this.startRunning = startRunning;
         this.jumpInGenerationsListener = jumpInGenerationsListener;
     }
 
@@ -68,7 +68,7 @@ public class StartSystemCommand extends CommandImpel{
                 return;
             }
 
-            getEngineWrapper().getEngine().StartAlgorithm(setByTerminate(rules.getTerminateRules()),
+            getEngineWrapper().getEngine().StartAlgorithm(lock, setByTerminate(rules.getTerminateRules()),
                     rules.getJumpInGenerations(),
                     jumpInGenerationsListener);
         }

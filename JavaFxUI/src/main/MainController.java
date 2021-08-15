@@ -12,8 +12,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Polygon;
@@ -23,6 +21,7 @@ import javafx.stage.Stage;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
 import systemInfoComponent.SystemInfoController;
+import tasks.StartAlgorithmTask;
 
 import java.io.File;
 
@@ -32,6 +31,7 @@ public class MainController {
     private final SimpleBooleanProperty isFileSelected;
     private EngineWrapper<TimeTable, TimeTableSystemDataSupplier> engineWrapper;
     private LoadCommand loadCommand;
+    private StartAlgorithmTask startTask;
 
     @FXML
     private Button loadButton;
@@ -89,17 +89,29 @@ public class MainController {
 
     @FXML
     public void onPause(MouseEvent event) {
-
+        try {
+            startTask.pause();
+        } catch (Exception e) {
+        }
     }
 
     @FXML
     public void onStart(MouseEvent event) {
-
+        //startTask = new StartAlgorithmTask();
+        //StartSystemInfoDTO info = new StartSystemInfoDTO();
+        generationsProgressBar.progressProperty().bind(startTask.getGenerationsProperty());
+        fitnessProgressBar.progressProperty().bind(startTask.getFitnessProperty());
+        timeProgressBar.progressProperty().bind(startTask.getTimeProperty());
+        startTask.run();
     }
 
     @FXML
     public void onStop(MouseEvent event) {
-
+        try {
+            startTask.stop();
+            startTask.cancel();
+        } catch (Exception e) {
+        }
     }
 
     @FXML
@@ -132,7 +144,6 @@ public class MainController {
         generationsLabel.textProperty().bind(Bindings.concat("generations ", generationsProgressBar.progressProperty(), "%"));
         fitnessLabel.textProperty().bind(Bindings.concat("fitness ", fitnessProgressBar.progressProperty(), "%"));
         timeLabel.textProperty().bind(Bindings.concat("time ", timeProgressBar.progressProperty(), "%"));
-        //emptyInfoLabel.visibleProperty().bind(isFileSelected.not());
         systemInfo.visibleProperty().bind(isFileSelected);
     }
 
@@ -142,7 +153,6 @@ public class MainController {
             errorLabel.setText(infoResult.getErrorMessage());
             return;
         }
-
 
         systemInfoController.setView(infoResult.getResult());
     }

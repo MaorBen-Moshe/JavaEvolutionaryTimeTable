@@ -17,7 +17,7 @@ public interface EvolutionarySystem<T, S extends DataSupplier> extends Serializa
         ByFitness, NumberOfGenerations, ByTime
     }
 
-    void StartAlgorithm(Set<TerminateRule> terminateBy, int jumpInGenerations, Consumer<JumpInGenerationsResult> listener);
+    void StartAlgorithm(Object lock, Set<TerminateRule> terminateBy, int jumpInGenerations, Consumer<JumpInGenerationsResult> listener);
 
     boolean isRunningProcess();
 
@@ -42,4 +42,6 @@ public interface EvolutionarySystem<T, S extends DataSupplier> extends Serializa
     int getCurrentNumberOfGenerations();
 
     void stopProcess();
+
+    void pauseProcess();
 }

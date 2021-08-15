@@ -34,7 +34,7 @@ public class TeacherDTO extends SerialItemDTO implements Comparable<TeacherDTO>{
 
     @Override
     public String toString() {
-        return super.toString() + "[subjects=" + subjects + ']';
+        return super.toString() + " [subjects=" + subjects + ']';
     }
 
     @Override

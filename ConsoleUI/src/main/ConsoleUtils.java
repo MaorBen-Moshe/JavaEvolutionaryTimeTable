@@ -47,7 +47,7 @@ public class ConsoleUtils {
                       return answer.equalsIgnoreCase("y");
                   }),
           new SystemInfoCommand(engine, ConsoleUtils::displaySystemInfo),
-          new StartSystemCommand(engine, () ->{
+          new StartSystemCommand(engine,new Object(), () ->{
               System.out.println("There is an information from last run of the algorithm");
               System.out.println("Do you want to clean it and start a new one? (answer y/n)");
               String answer = new Scanner(System.in).nextLine();
@@ -70,7 +70,7 @@ public class ConsoleUtils {
                   (result) -> System.out.println("Generation: " +
                                                   result.getNumberOfGeneration() +
                                                     ", Fitness: " + String.format("%.2f", result.getFitness()))
-                  ,() -> System.out.println("Algorithm has started!") ,
+                  ,
                   (result) -> {
               if(result.isFailed()){
                   System.out.println(result.getErrorMessage());

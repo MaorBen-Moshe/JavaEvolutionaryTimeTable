@@ -27,12 +27,14 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     private BestSolutionItem<T, S> bestItem;
     private boolean isRunning = false;
     private boolean stopOccurred = false;
+    private boolean pauseOccurred = false;
     private int currentNumberOfGenerations;
     private int elitism;
     private Instant startTime;
     private final CustomLock generationsLock;
     private final CustomLock bestItemLock;
     private final CustomLock stopLock;
+    private final CustomLock pauseLock;
     private final CustomLock runningLock;
     private final CustomLock fitnessHistoryLock;
 
@@ -45,6 +47,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         stopLock = new CustomLock();
         runningLock = new CustomLock();
         fitnessHistoryLock = new CustomLock();
+        pauseLock = new CustomLock();
     }
 
     @Override
@@ -64,6 +67,14 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     public void stopProcess() {
         if(isRunningProcess()){
             setStopOccurred(true);
+            setRunning(false);
+        }
+    }
+
+    @Override
+    public void pauseProcess() {
+        if(isRunningProcess()){
+            setPauseOccurred(true);
             setRunning(false);
         }
     }
@@ -107,7 +118,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     }
 
     @Override
-    public synchronized void StartAlgorithm(Set<TerminateRule> terminateBy, int jumpInGenerations, Consumer<JumpInGenerationsResult> listener) {
+    public void StartAlgorithm(Object lock, Set<TerminateRule> terminateBy, int jumpInGenerations, Consumer<JumpInGenerationsResult> listener){
         jumpInGenerations = jumpInGenerations <= 0 ? 1 : jumpInGenerations;
         initialAlgoData();
         try{
@@ -116,6 +127,17 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
             initialAndEvaluatePopulation();
             /* iterative*/
             while(!isTerminate(terminateBy) && !isStopOccurred()){
+                synchronized (lock){
+                    while(isPauseOccurred()){
+                        // stop algorithm for while
+                        try{
+                            wait();
+                        }catch (InterruptedException ignored){
+                        }
+                        // resume
+                    }
+                }
+
                 incCurrentNumberOfGenerations();
                 createAndEvaluateGeneration();
                 if(getCurrentNumberOfGenerations() % jumpInGenerations == 0){
@@ -255,6 +277,12 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         }
     }
 
+    private boolean isPauseOccurred() {
+        synchronized (pauseLock){
+            return pauseOccurred;
+        }
+    }
+
     private void setRunning(boolean running) {
         synchronized (runningLock){
             isRunning = running;
@@ -264,6 +292,12 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     private void setStopOccurred(boolean stopOccurred) {
         synchronized (stopLock){
             this.stopOccurred = stopOccurred;
+        }
+    }
+
+    private void setPauseOccurred(boolean pauseOccurred) {
+        synchronized (pauseLock){
+            this.pauseOccurred = pauseOccurred;
         }
     }
 
@@ -277,6 +311,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     private void clearAlgoData(){
         setRunning(false);
         setStopOccurred(false);
+        setPauseOccurred(false);
         population.clear();
         startTime = null;
     }

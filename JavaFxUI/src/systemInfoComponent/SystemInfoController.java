@@ -17,32 +17,6 @@ import java.util.Set;
 public class SystemInfoController {
     @FXML
     private VBox vBox;
-    @FXML
-    private Label systemInfoTitle;
-    @FXML
-    private Label timeTableTitle;
-    @FXML
-    private Label daysPrefix;
-    @FXML
-    private Label days;
-    @FXML
-    private Label hoursPrefix;
-    @FXML
-    private Label hours;
-    @FXML
-    private Label engineTitle;
-    @FXML
-    private Label populationPrefix;
-    @FXML
-    private Label population;
-    @FXML
-    private Label selectionPrefix;
-    @FXML
-    private Label selection;
-    @FXML
-    private Label crossoverPrefix;
-    @FXML
-    private Label crossover;
 
     public <T extends SerialItemDTO> List<Label> setSerialItems(String title, Set<T> items){
         List<Label> labels = new ArrayList<>();
@@ -94,21 +68,27 @@ public class SystemInfoController {
     }
 
     public void setView(SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier> result) {
-        days.setText(String.valueOf(result.getDays()));
-        hours.setText(String.valueOf(result.getHours()));
-        population.setText(String.valueOf(result.getInitialSize()));
-        selection.setText(result.getSelection().toString());
-        crossover.setText(result.getCrossover().toString());
-
-        int initIndex = vBox.getChildren().indexOf(hours) + 1;
-        vBox.getChildren().addAll(initIndex, setSerialItems("Subjects: ", result.getSubjects()));
-        initIndex += result.getSubjects().size();
-        vBox.getChildren().addAll(initIndex, setSerialItems("Teachers: ", result.getTeachers()));
-        initIndex += result.getTeachers().size();
-        vBox.getChildren().addAll(initIndex, setSerialItems("Classes: ", result.getClasses()));
-        initIndex += result.getClasses().size();
-        vBox.getChildren().addAll(initIndex, setRulesComponent(result.getRules()));
-        initIndex = vBox.getChildren().indexOf(crossover) + 1;
-        vBox.getChildren().addAll(initIndex, setMutations("Mutations: ", result.getMutations()));
+        Label timeTableLabel = new Label("Time table info: ");
+        timeTableLabel.getStyleClass().addAll("subTitle", "title");
+        vBox.getChildren().add(timeTableLabel);
+        vBox.getChildren().add(new Label("Days: " + result.getDays()));
+        vBox.getChildren().add(new Label("Hours: " + result.getHours()));
+        vBox.getChildren().addAll(setSerialItems("Subjects: ", result.getSubjects()));
+        vBox.getChildren().addAll(setSerialItems("Teachers: ", result.getTeachers()));
+        vBox.getChildren().addAll(setSerialItems("Classes: ", result.getClasses()));
+        vBox.getChildren().addAll(setRulesComponent(result.getRules()));
+        Label engineInfoLabel = new Label("Engine info: ");
+        engineInfoLabel.getStyleClass().addAll("subTitle", "title");
+        vBox.getChildren().add(engineInfoLabel);
+        vBox.getChildren().add(new Label("Population: " + result.getInitialSize()));
+        Label selection = new Label("Selection:");
+        selection.getStyleClass().add("title");
+        vBox.getChildren().add(selection);
+        vBox.getChildren().add(new Label(result.getSelection().toString()));
+        Label crossover = new Label("Crossover:");
+        crossover.getStyleClass().add("title");
+        vBox.getChildren().add(crossover);
+        vBox.getChildren().add(new Label(result.getCrossover().toString()));
+        vBox.getChildren().addAll(setMutations("Mutations: ", result.getMutations()));
     }
 }

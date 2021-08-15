@@ -1,7 +1,10 @@
 package main;
 
+import DTO.SystemInfoDTO;
+import commands.CommandResult;
 import commands.EngineWrapper;
 import commands.LoadCommand;
+import commands.SystemInfoCommand;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -10,6 +13,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
@@ -17,13 +22,14 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
+import systemInfoComponent.SystemInfoController;
 
 import java.io.File;
 
 public class MainController {
     private Stage primaryStage;
-    private SimpleStringProperty selectedFileProperty;
-    private SimpleBooleanProperty isFileSelected;
+    private final SimpleStringProperty selectedFileProperty;
+    private final SimpleBooleanProperty isFileSelected;
     private EngineWrapper<TimeTable, TimeTableSystemDataSupplier> engineWrapper;
     private LoadCommand loadCommand;
 
@@ -42,10 +48,6 @@ public class MainController {
     @FXML
     private HBox pauseHBox;
     @FXML
-    private AnchorPane infoAnchorPane;
-    @FXML
-    private Label emptyInfoLabel;
-    @FXML
     private ProgressBar generationsProgressBar;
     @FXML
     private Label generationsLabel;
@@ -57,6 +59,14 @@ public class MainController {
     private ProgressBar timeProgressBar;
     @FXML
     private Label timeLabel;
+    @FXML
+    private Label errorLabel;
+    @FXML
+    private ScrollPane systemInfo;
+    @FXML
+    private SystemInfoController systemInfoController;
+    @FXML
+    private BorderPane borderPane;
 
     public MainController(){
         selectedFileProperty = new SimpleStringProperty();
@@ -72,7 +82,8 @@ public class MainController {
         try{
             loadCommand.execute();
         } catch (Exception e){
-            selectedFileProperty.set("file load failed: "+ e.getMessage());
+            errorLabel.setVisible(true);
+            errorLabel.setText("file load failed: "+ e.getMessage());
         }
     }
 
@@ -95,6 +106,7 @@ public class MainController {
     private void initialize() {
         filePathLabel.textProperty().bind(selectedFileProperty);
         EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper = new EngineWrapper<>();
+        SystemInfoCommand systemInf = new SystemInfoCommand(wrapper, this::setSystemInfo);
         loadCommand = new LoadCommand(wrapper, () -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Select evolutionary logic file");
@@ -108,6 +120,8 @@ public class MainController {
         }, (path) -> {
             selectedFileProperty.set(path);
             isFileSelected.set(wrapper.isFileLoaded());
+            errorLabel.setVisible(false);
+            systemInf.execute();
         }, () -> false);
 
         themesComboBox.getItems().addAll("default", "theme 1", "theme 2");
@@ -118,7 +132,19 @@ public class MainController {
         generationsLabel.textProperty().bind(Bindings.concat("generations ", generationsProgressBar.progressProperty(), "%"));
         fitnessLabel.textProperty().bind(Bindings.concat("fitness ", fitnessProgressBar.progressProperty(), "%"));
         timeLabel.textProperty().bind(Bindings.concat("time ", timeProgressBar.progressProperty(), "%"));
-        emptyInfoLabel.visibleProperty().bind(isFileSelected.not());
+        //emptyInfoLabel.visibleProperty().bind(isFileSelected.not());
+        systemInfo.visibleProperty().bind(isFileSelected);
+    }
+
+    private void setSystemInfo(CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>> infoResult){
+        if(infoResult.isFailed()){
+            errorLabel.setVisible(true);
+            errorLabel.setText(infoResult.getErrorMessage());
+            return;
+        }
+
+
+        systemInfoController.setView(infoResult.getResult());
     }
 
 }

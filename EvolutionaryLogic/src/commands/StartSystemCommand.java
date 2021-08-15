@@ -68,20 +68,14 @@ public class StartSystemCommand extends CommandImpel{
                 return;
             }
 
-            Thread sysThread = new Thread(() -> {
-                getEngineWrapper().getEngine().StartAlgorithm(setByTerminate(rules.getRules()),
-                                                         rules.getJumpInGenerations(),
-                                                         jumpInGenerationsListener);
-                endRunning.accept(result);
-                }, "System Thread");
-
-            sysThread.start();
-            startRunning.run();
+            getEngineWrapper().getEngine().StartAlgorithm(setByTerminate(rules.getTerminateRules()),
+                    rules.getJumpInGenerations(),
+                    jumpInGenerationsListener);
         }
         else{
             result.setErrorMessage("File should be loaded first");
-            endRunning.accept(result);
         }
+        endRunning.accept(result);
     }
 
     @Override

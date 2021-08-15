@@ -5,14 +5,20 @@ import java.util.Objects;
 public class JumpInGenerationsResult {
     private final double fitness;
     private final int numberOfGeneration;
+    private final double timePassed;
 
-    public JumpInGenerationsResult(double fitness, int numberOfGeneration) {
+    public JumpInGenerationsResult(double fitness, int numberOfGeneration, double timePassed) {
         this.fitness = fitness;
         this.numberOfGeneration = numberOfGeneration;
+        this.timePassed = timePassed;
     }
 
     public double getFitness() {
         return fitness;
+    }
+
+    public double getTimePassed() {
+        return timePassed;
     }
 
     public int getNumberOfGeneration() {

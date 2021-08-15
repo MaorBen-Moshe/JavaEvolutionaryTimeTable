@@ -8,6 +8,11 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 public class RouletteWheelSelection implements Selection<TimeTable>, Serializable {
+    @Override
+    public String toString() {
+        return "Roulette Wheel Selection";
+    }
+
     private static class TimeTableFit{
         private final double fitness;
         private final TimeTable solution;

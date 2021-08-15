@@ -15,7 +15,7 @@ public class StartSystemInfoDTO {
         this.jumpInGenerations = jumpInGenerations;
     }
 
-    public Set<TerminateRuleDTO> getRules() {
+    public Set<TerminateRuleDTO> getTerminateRules() {
         return unModifiedRules;
     }
 

@@ -9,6 +9,10 @@ public class GenerationsTerminateRuleDTO extends TerminateRuleDTO {
 
     public GenerationsTerminateRuleDTO(int generations){
         super(EvolutionarySystem.TerminateRules.NumberOfGenerations);
+        if(generations < 0){
+            throw new IllegalArgumentException("Generations must be positive number");
+        }
+
         this.generations = generations;
     }
 

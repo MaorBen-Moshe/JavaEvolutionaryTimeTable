@@ -30,6 +30,10 @@ public class ETTXmlParser {
 
     // parse region
     public static EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> parse(String filePath) throws Exception {
+        if(filePath == null){
+            throw new IllegalArgumentException("File path should be provided");
+        }
+
         File file = new File(filePath.trim());
         InputStream inputStream = new FileInputStream(file);
         ETTDescriptor descriptor = deserializeFrom(inputStream);
@@ -329,7 +333,7 @@ public class ETTXmlParser {
                ValidateUtils.enumValid(Rule.eRules.values(), Rule.eRules.class, rule.getETTRuleId())){
                 Rule.eStrength strength = Rule.eStrength.valueOf(rule.getType());
                 Map<String, Object> configurations = null;
-                if(rule.getType().equals(Rule.eRules.Sequentiality.toString())){
+                if(rule.getETTRuleId().equals(Rule.eRules.Sequentiality.toString())){
                     int total = setSequentiality(rule.getETTConfiguration());
                     configurations = new HashMap<>();
                     configurations.put("Total hours", total);

@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.IntStream;
 
-public class RouletteWheelSelection implements Selection<TimeTable>, Serializable {
+public class RouletteWheelSelection extends SelectionImpel<TimeTable> implements Serializable {
     @Override
     public String toString() {
         return "Roulette Wheel Selection";
@@ -42,6 +42,10 @@ public class RouletteWheelSelection implements Selection<TimeTable>, Serializabl
         public int hashCode() {
             return Objects.hash(fitness, solution);
         }
+    }
+
+    public RouletteWheelSelection(){
+        super(SelectionTypes.RouletteWheel);
     }
 
     @Override

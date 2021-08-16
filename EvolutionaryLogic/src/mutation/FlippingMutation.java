@@ -7,24 +7,23 @@ import utils.RandomUtils;
 import java.io.Serializable;
 import java.util.*;
 
-public class FlippingMutation implements Mutation<TimeTable, TimeTableSystemDataSupplier>, Serializable {
+public class FlippingMutation extends MutationImpel<TimeTable, TimeTableSystemDataSupplier> implements Serializable {
 
     public enum Component {
         S, T, C, H, D
     }
 
-    private final double probability;
     private final int maxTupples;
     private final Component component;
 
     public FlippingMutation(double probability, int maxTupples, Component component){
+        super(MutationTypes.Flipping, probability);
         if(maxTupples <= 0){
             throw new IllegalArgumentException("Flipping mutation accept only positive number for maxTupples");
         }
 
         this.maxTupples = maxTupples;
         this.component = component;
-        this.probability = probability;
     }
 
     @Override

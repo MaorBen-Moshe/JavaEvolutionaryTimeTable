@@ -8,6 +8,7 @@ import javafx.concurrent.Task;
 import models.JumpInGenerationsResult;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
+
 import java.util.function.Consumer;
 
 public class StartAlgorithmTask extends Task<Void> {
@@ -18,6 +19,8 @@ public class StartAlgorithmTask extends Task<Void> {
     private double totalFitness;
     private long totalTime;
     private final Object lock;
+    private final DoubleProperty currentFitnessProperty = new SimpleDoubleProperty();
+    private final IntegerProperty currentGenerationProperty = new SimpleIntegerProperty();
     private final DoubleProperty fitnessProperty = new SimpleDoubleProperty();
     private final IntegerProperty generationsProperty = new SimpleIntegerProperty();
     private final LongProperty timeProperty = new SimpleLongProperty();
@@ -26,13 +29,21 @@ public class StartAlgorithmTask extends Task<Void> {
         setInitialValues(info);
         lock = new Object();
         startCommand = new StartSystemCommand(wrapper, lock,
-                () -> info, () -> info, () -> info, this::taskProcess, whenFinished);
+                () -> info, () -> info, () -> info, this::taskProcess,(result) -> Platform.runLater(() -> whenFinished.accept(result)));
         pauseCommand = new PauseCommand(wrapper);
         stopCommand = new StopCommand(wrapper);
     }
 
     public DoubleProperty getFitnessProperty() {
         return fitnessProperty;
+    }
+
+    public DoubleProperty getCurrentFitnessProperty() {
+        return currentFitnessProperty;
+    }
+
+    public IntegerProperty getCurrentGenerationsProperty() {
+        return currentGenerationProperty;
     }
 
     public IntegerProperty getGenerationsProperty() {
@@ -58,25 +69,25 @@ public class StartAlgorithmTask extends Task<Void> {
     }
 
     @Override
-    protected Void call() throws Exception {
+    protected Void call() {
         startCommand.execute();
         return null;
     }
 
     private void taskProcess(JumpInGenerationsResult result){
-        Platform.runLater(() ->{
-            generationsProperty.setValue((double)result.getNumberOfGeneration() / totalGenerations);
-            fitnessProperty.setValue(result.getFitness() / totalFitness);
-            timeProperty.setValue(result.getTimePassed() / totalTime);
-        });
+        currentGenerationProperty.setValue(result.getNumberOfGeneration());
+        currentFitnessProperty.setValue(result.getFitness());
+        generationsProperty.setValue((double)result.getNumberOfGeneration() / totalGenerations);
+        fitnessProperty.setValue(result.getFitness() / totalFitness);
+        timeProperty.setValue(result.getTimePassed() / totalTime);
     }
 
     private void setInitialValues(StartSystemInfoDTO info){
         for(TerminateRuleDTO rule : info.getTerminateRules()){
             switch(rule.getType()){
-                case NumberOfGenerations: totalGenerations = ((GenerationsTerminateRuleDTO)rule).getGenerations();
-                case ByFitness: totalFitness = ((FitnessTerminateRuleDTO)rule).getFitness();
-                case ByTime: totalTime = ((TimeTerminateRuleDTO)rule).getTimeInMinutes();
+                case NumberOfGenerations: totalGenerations = ((GenerationsTerminateRuleDTO)rule).getGenerations(); break;
+                case ByFitness: totalFitness = ((FitnessTerminateRuleDTO)rule).getFitness(); break;
+                case ByTime: totalTime = ((TimeTerminateRuleDTO)rule).getTimeInMinutes(); break;
             }
         }
     }

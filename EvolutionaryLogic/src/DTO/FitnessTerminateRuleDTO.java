@@ -8,6 +8,10 @@ public class FitnessTerminateRuleDTO extends TerminateRuleDTO{
 
     public FitnessTerminateRuleDTO(double fitness){
         super(EvolutionarySystem.TerminateRules.ByFitness);
+        if(fitness < 0 || fitness > 100){
+            throw new IllegalArgumentException("Fitness should be a float between 0-100");
+        }
+
         this.fitness = fitness;
     }
 

@@ -5,11 +5,9 @@ import models.*;
 import java.io.Serializable;
 import java.util.*;
 
-public class DayTimeOrientedCrossover implements Crossover<TimeTable, TimeTableSystemDataSupplier>, Serializable {
-    private final int cuttingPoints;
-
+public class DayTimeOrientedCrossover extends CrossoverImpel<TimeTable, TimeTableSystemDataSupplier> implements Serializable {
     public DayTimeOrientedCrossover(int cuttingPoints){
-        this.cuttingPoints = cuttingPoints;
+        super(CrossoverTypes.DayTimeOriented, cuttingPoints);
     }
 
     @Override

@@ -7,17 +7,16 @@ import utils.RandomUtils;
 import java.io.Serializable;
 import java.util.*;
 
-public class SizerMutation implements Mutation<TimeTable, TimeTableSystemDataSupplier>, Serializable {
-    private final double probability;
+public class SizerMutation extends MutationImpel<TimeTable, TimeTableSystemDataSupplier> implements Serializable {
     private final int totalTupples;
 
     public SizerMutation(double probability, int totalTupples){
+        super(MutationTypes.Sizer, probability);
         if(totalTupples == 0){
             throw new IllegalArgumentException("Sizer mutation accept non zero values for total tupples");
         }
 
         this.totalTupples = totalTupples;
-        this.probability = probability;
     }
 
     @Override

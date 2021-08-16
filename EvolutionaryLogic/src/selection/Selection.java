@@ -6,4 +6,6 @@ import java.util.Map;
 
 public interface Selection<T> extends Serializable {
     List<T> select(Map<T, Double> population);
+
+    SelectionTypes getType();
 }

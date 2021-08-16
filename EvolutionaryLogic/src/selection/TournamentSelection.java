@@ -10,10 +10,11 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-public class TournamentSelection implements Selection<TimeTable>, Serializable {
+public class TournamentSelection extends SelectionImpel<TimeTable> implements Serializable {
     private final float pte;
 
     public TournamentSelection(float pte){
+        super(SelectionTypes.Tournament);
         if(!(pte >= 0 && pte <= 1)){
             throw new IllegalArgumentException("pte argument in tournament selection must be positive number between 0-1");
         }

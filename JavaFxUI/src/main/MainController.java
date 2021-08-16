@@ -1,6 +1,6 @@
 package main;
 
-import DTO.SystemInfoDTO;
+import DTO.*;
 import commands.CommandResult;
 import commands.EngineWrapper;
 import commands.LoadCommand;
@@ -11,19 +11,18 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
 import systemInfoComponent.SystemInfoController;
 import tasks.StartAlgorithmTask;
+import utils.AlertUtils;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainController {
     private Stage primaryStage;
@@ -42,11 +41,11 @@ public class MainController {
     @FXML
     private CheckBox animationsCheckBox;
     @FXML
-    private Rectangle stopButton;
+    private Button stopButton;
     @FXML
-    private Polygon startButton;
+    private Button startButton;
     @FXML
-    private HBox pauseHBox;
+    private Button pauseButton;
     @FXML
     private ProgressBar generationsProgressBar;
     @FXML
@@ -60,13 +59,23 @@ public class MainController {
     @FXML
     private Label timeLabel;
     @FXML
-    private Label errorLabel;
-    @FXML
     private ScrollPane systemInfo;
     @FXML
     private SystemInfoController systemInfoController;
     @FXML
     private BorderPane borderPane;
+    @FXML
+    private Label fitnessRunningLabel;
+    @FXML
+    private Label generationsRunningLabel;
+    @FXML
+    private TextField generationsTextField;
+    @FXML
+    private TextField fitnessTextField;
+    @FXML
+    private TextField timeTextField;
+    @FXML
+    private TextField jumpsTextField;
 
     public MainController(){
         selectedFileProperty = new SimpleStringProperty();
@@ -82,44 +91,64 @@ public class MainController {
         try{
             loadCommand.execute();
         } catch (Exception e){
-            errorLabel.setVisible(true);
-            errorLabel.setText("file load failed: "+ e.getMessage());
+            AlertUtils.displayAlert(Alert.AlertType.ERROR, "Fail", "file load failed: "+ e.getMessage());
         }
     }
 
     @FXML
-    public void onPause(MouseEvent event) {
+    public void onPause(ActionEvent event) {
         try {
             startTask.pause();
         } catch (Exception e) {
+            AlertUtils.displayAlert(Alert.AlertType.ERROR, "Fail", e.getMessage());
         }
     }
 
     @FXML
-    public void onStart(MouseEvent event) {
-        //startTask = new StartAlgorithmTask();
-        //StartSystemInfoDTO info = new StartSystemInfoDTO();
-        generationsProgressBar.progressProperty().bind(startTask.getGenerationsProperty());
-        fitnessProgressBar.progressProperty().bind(startTask.getFitnessProperty());
-        timeProgressBar.progressProperty().bind(startTask.getTimeProperty());
-        startTask.run();
+    public void onStart(ActionEvent event) {
+        try{
+            if(isFileSelected.get()){
+                StartSystemInfoDTO info = createRules();
+                startTask = new StartAlgorithmTask(engineWrapper, info, (result) -> startButton.setDisable(false));
+
+                startButton.setDisable(true);
+                generationsRunningLabel.textProperty().bind(Bindings.concat("Generation number: ", startTask.getCurrentGenerationsProperty()));
+                fitnessRunningLabel.textProperty().bind(Bindings.concat("Fitness number: ", startTask.getCurrentFitnessProperty()));
+                generationsProgressBar.progressProperty().bind(startTask.getGenerationsProperty());
+                fitnessProgressBar.progressProperty().bind(startTask.getFitnessProperty());
+                timeProgressBar.progressProperty().bind(startTask.getTimeProperty());
+                startTask.exceptionProperty().addListener((obs, oldVal, newVal) -> {
+                    if(newVal != null){
+                        AlertUtils.displayAlert(Alert.AlertType.ERROR, "Failure", newVal.getMessage());
+                        startButton.setDisable(false);
+                    }
+                });
+                startTask.run();
+            }
+            else{
+                AlertUtils.displayAlert(Alert.AlertType.INFORMATION, "Note", "Please load a file first!");
+            }
+        }catch (Exception e){
+            AlertUtils.displayAlert(Alert.AlertType.ERROR, "Failure", e.getMessage());
+        }
     }
 
     @FXML
-    public void onStop(MouseEvent event) {
+    public void onStop(ActionEvent event) {
         try {
             startTask.stop();
             startTask.cancel();
         } catch (Exception e) {
+            AlertUtils.displayAlert(Alert.AlertType.ERROR, "Failure", e.getMessage());
         }
     }
 
     @FXML
     private void initialize() {
         filePathLabel.textProperty().bind(selectedFileProperty);
-        EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper = new EngineWrapper<>();
-        SystemInfoCommand systemInf = new SystemInfoCommand(wrapper, this::setSystemInfo);
-        loadCommand = new LoadCommand(wrapper, () -> {
+        engineWrapper = new EngineWrapper<>();
+        SystemInfoCommand systemInf = new SystemInfoCommand(engineWrapper, this::setSystemInfo);
+        loadCommand = new LoadCommand(engineWrapper, () -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Select evolutionary logic file");
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml files", "*.xml"));
@@ -131,8 +160,7 @@ public class MainController {
             return selectedFile.getAbsolutePath();
         }, (path) -> {
             selectedFileProperty.set(path);
-            isFileSelected.set(wrapper.isFileLoaded());
-            errorLabel.setVisible(false);
+            isFileSelected.set(engineWrapper.isFileLoaded());
             systemInf.execute();
         }, () -> false);
 
@@ -141,20 +169,56 @@ public class MainController {
             // load new css according to newItem
         });
 
-        generationsLabel.textProperty().bind(Bindings.concat("generations ", generationsProgressBar.progressProperty(), "%"));
-        fitnessLabel.textProperty().bind(Bindings.concat("fitness ", fitnessProgressBar.progressProperty(), "%"));
-        timeLabel.textProperty().bind(Bindings.concat("time ", timeProgressBar.progressProperty(), "%"));
+        generationsLabel.textProperty().bind(Bindings.concat("generations ", Bindings.multiply(generationsProgressBar.progressProperty(), 100), "%"));
+        fitnessLabel.textProperty().bind(Bindings.concat("fitness ", Bindings.multiply(fitnessProgressBar.progressProperty(), 100), "%"));
+        timeLabel.textProperty().bind(Bindings.concat("time ", Bindings.multiply(timeProgressBar.progressProperty(), 100), "%"));
         systemInfo.visibleProperty().bind(isFileSelected);
+        stopButton.disableProperty().bind(startButton.disableProperty().not());
+        pauseButton.disableProperty().bind(startButton.disableProperty().not());
+        generationsTextField.visibleProperty().bind(startButton.disableProperty().not());
+        fitnessTextField.visibleProperty().bind(startButton.disableProperty().not());
+        timeTextField.visibleProperty().bind(startButton.disableProperty().not());
+        jumpsTextField.visibleProperty().bind(startButton.disableProperty().not());
+        loadButton.disableProperty().bind(startButton.disableProperty());
+        generationsRunningLabel.visibleProperty().bind(startButton.disableProperty());
+        fitnessRunningLabel.visibleProperty().bind(startButton.disableProperty());
     }
 
     private void setSystemInfo(CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>> infoResult){
         if(infoResult.isFailed()){
-            errorLabel.setVisible(true);
-            errorLabel.setText(infoResult.getErrorMessage());
+            AlertUtils.displayAlert(Alert.AlertType.ERROR, "Fail", infoResult.getErrorMessage());
             return;
         }
 
         systemInfoController.setView(infoResult.getResult());
     }
 
+    private StartSystemInfoDTO createRules(){
+        int jumps = 1;
+        if(!jumpsTextField.getText().trim().isEmpty()){
+            jumps = Integer.parseInt(jumpsTextField.getText());
+        }
+
+        Set<TerminateRuleDTO> rules = new HashSet<>();
+        if(!generationsTextField.getText().trim().isEmpty()) {
+            int generations = Integer.parseInt(generationsTextField.getText());
+            if(generations < 100){
+                throw new IllegalArgumentException("You should run the algorithm for at least 100 generations");
+            }
+
+            rules.add(new GenerationsTerminateRuleDTO(generations));
+        }
+
+        if(!fitnessTextField.getText().trim().isEmpty()) {
+            double fitness = Double.parseDouble(fitnessTextField.getText());
+            rules.add(new FitnessTerminateRuleDTO(fitness));
+        }
+
+        if(!timeTextField.getText().trim().isEmpty()){
+            long time = Long.parseLong(timeTextField.getText());
+            rules.add(new TimeTerminateRuleDTO(time));
+        }
+
+        return new StartSystemInfoDTO(rules, jumps);
+    }
 }

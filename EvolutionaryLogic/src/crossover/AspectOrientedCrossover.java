@@ -6,15 +6,15 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class AspectOrientedCrossover implements Crossover<TimeTable, TimeTableSystemDataSupplier>, Serializable {
+public class AspectOrientedCrossover extends CrossoverImpel<TimeTable, TimeTableSystemDataSupplier> implements Serializable {
     public enum Orientation{
         CLASS, TEACHER
     }
-    private final int cuttingPoints;
+
     private final Orientation orientation;
 
     public AspectOrientedCrossover(int cuttingPoints, Orientation orientation){
-        this.cuttingPoints = cuttingPoints;
+        super(CrossoverTypes.AspectOriented, cuttingPoints);
         this.orientation = orientation;
     }
 

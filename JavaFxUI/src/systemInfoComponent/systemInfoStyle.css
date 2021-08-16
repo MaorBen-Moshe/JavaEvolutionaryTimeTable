@@ -14,4 +14,10 @@
 
 .label{
     -fx-padding: 0px 0px 5px 5px;
+    -fx-font-family: "Agency FB";
+    -fx-font-size: 13px;
+}
+
+.container {
+    -fx-spacing: 100px;
 }

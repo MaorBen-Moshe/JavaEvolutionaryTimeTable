@@ -7,10 +7,11 @@ import java.sql.Time;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class TruncationSelection implements Selection<TimeTable>, Serializable {
+public class TruncationSelection extends SelectionImpel<TimeTable> implements Serializable {
     private final int topPercent;
 
     public TruncationSelection(int topPercent){
+        super(SelectionTypes.Truncation);
         if(topPercent <= 0 || topPercent > 100){
             throw new IllegalArgumentException("TopPercent in Truncation selection must be an integer between 1-100");
         }

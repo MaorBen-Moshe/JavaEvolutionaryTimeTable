@@ -19,11 +19,11 @@ public class StartAlgorithmTask extends Task<Void> {
     private double totalFitness;
     private long totalTime;
     private final Object lock;
-    private final DoubleProperty currentFitnessProperty = new SimpleDoubleProperty();
-    private final IntegerProperty currentGenerationProperty = new SimpleIntegerProperty();
-    private final DoubleProperty fitnessProperty = new SimpleDoubleProperty();
-    private final IntegerProperty generationsProperty = new SimpleIntegerProperty();
-    private final LongProperty timeProperty = new SimpleLongProperty();
+    private final DoubleProperty currentFitnessProperty = new SimpleDoubleProperty(0);
+    private final IntegerProperty currentGenerationProperty = new SimpleIntegerProperty(0);
+    private final DoubleProperty fitnessProperty = new SimpleDoubleProperty(0);
+    private final DoubleProperty generationsProperty = new SimpleDoubleProperty(0);
+    private final DoubleProperty timeProperty = new SimpleDoubleProperty(0);
 
     public StartAlgorithmTask(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper, StartSystemInfoDTO info, Consumer<CommandResult<?>> whenFinished) {
         setInitialValues(info);
@@ -46,17 +46,17 @@ public class StartAlgorithmTask extends Task<Void> {
         return currentGenerationProperty;
     }
 
-    public IntegerProperty getGenerationsProperty() {
+    public DoubleProperty getGenerationsProperty() {
         return generationsProperty;
     }
 
-    public LongProperty getTimeProperty() {
+    public DoubleProperty getTimeProperty() {
         return timeProperty;
     }
 
     public void resume(){
         synchronized (lock){
-            notifyAll();
+            lock.notifyAll();
         }
     }
 
@@ -75,11 +75,13 @@ public class StartAlgorithmTask extends Task<Void> {
     }
 
     private void taskProcess(JumpInGenerationsResult result){
-        currentGenerationProperty.setValue(result.getNumberOfGeneration());
-        currentFitnessProperty.setValue(result.getFitness());
-        generationsProperty.setValue((double)result.getNumberOfGeneration() / totalGenerations);
-        fitnessProperty.setValue(result.getFitness() / totalFitness);
-        timeProperty.setValue(result.getTimePassed() / totalTime);
+        Platform.runLater(() -> {
+            currentGenerationProperty.setValue(result.getNumberOfGeneration());
+            currentFitnessProperty.setValue(result.getFitness());
+            generationsProperty.setValue((double)result.getNumberOfGeneration() / totalGenerations);
+            fitnessProperty.setValue(result.getFitness() / totalFitness);
+            timeProperty.setValue(result.getTimePassed() / totalTime);
+        });
     }
 
     private void setInitialValues(StartSystemInfoDTO info){

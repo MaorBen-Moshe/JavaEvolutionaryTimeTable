@@ -118,7 +118,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     }
 
     @Override
-    public void StartAlgorithm(Object lock, Set<TerminateRule> terminateBy, int jumpInGenerations, Consumer<JumpInGenerationsResult> listener){
+    public void StartAlgorithm(Object pauseLock, Set<TerminateRule> terminateBy, int jumpInGenerations, Consumer<JumpInGenerationsResult> listener){
         jumpInGenerations = jumpInGenerations <= 0 ? 1 : jumpInGenerations;
         initialAlgoData();
         try{
@@ -127,11 +127,11 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
             initialAndEvaluatePopulation();
             /* iterative*/
             while(!isTerminate(terminateBy) && !isStopOccurred()){
-                synchronized (lock){
+                synchronized (pauseLock){
                     while(isPauseOccurred()){
                         // stop algorithm for while
                         try{
-                            wait();
+                            pauseLock.wait();
                         }catch (InterruptedException ignored){
                         }
                         // resume
@@ -319,7 +319,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     private void addFitnessItemToHistory(){
         synchronized (fitnessHistoryLock){
             double improvement = generationFitnessHistory.size() == 0 ? 0 : bestItem.getFitness() - generationFitnessHistory.get(generationFitnessHistory.size() - 1).getCurrentGenerationFitness();
-            FitnessHistoryItem<T> item = new FitnessHistoryItem<T>(getBestSolution().getSolution(), getCurrentNumberOfGenerations(),
+            FitnessHistoryItem<T> item = new FitnessHistoryItem<>(getBestSolution().getSolution(), getCurrentNumberOfGenerations(),
                     getBestSolution().getFitness(),
                     improvement);
             generationFitnessHistory.add(item);

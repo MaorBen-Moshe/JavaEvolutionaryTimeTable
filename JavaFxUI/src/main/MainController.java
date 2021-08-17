@@ -31,6 +31,7 @@ public class MainController {
     private EngineWrapper<TimeTable, TimeTableSystemDataSupplier> engineWrapper;
     private LoadCommand loadCommand;
     private StartAlgorithmTask startTask;
+    private boolean paused = false;
 
     @FXML
     private Button loadButton;
@@ -98,7 +99,16 @@ public class MainController {
     @FXML
     public void onPause(ActionEvent event) {
         try {
-            startTask.pause();
+            if(paused){
+                startTask.resume();
+                pauseButton.setText("Pause");
+                paused = false;
+            }
+            else{
+                startTask.pause();
+                pauseButton.setText("Resume");
+                paused = true;
+            }
         } catch (Exception e) {
             AlertUtils.displayAlert(Alert.AlertType.ERROR, "Fail", e.getMessage());
         }
@@ -109,7 +119,10 @@ public class MainController {
         try{
             if(isFileSelected.get()){
                 StartSystemInfoDTO info = createRules();
-                startTask = new StartAlgorithmTask(engineWrapper, info, (result) -> startButton.setDisable(false));
+                startTask = new StartAlgorithmTask(engineWrapper, info, (result) -> {
+                    startButton.setDisable(false);
+                    paused = false;
+                });
 
                 startButton.setDisable(true);
                 generationsRunningLabel.textProperty().bind(Bindings.concat("Generation number: ", startTask.getCurrentGenerationsProperty()));
@@ -123,7 +136,10 @@ public class MainController {
                         startButton.setDisable(false);
                     }
                 });
-                startTask.run();
+
+                generationsRunningLabel.setVisible(true);
+                fitnessRunningLabel.setVisible(true);
+                new Thread(startTask).start();
             }
             else{
                 AlertUtils.displayAlert(Alert.AlertType.INFORMATION, "Note", "Please load a file first!");
@@ -169,9 +185,6 @@ public class MainController {
             // load new css according to newItem
         });
 
-        generationsLabel.textProperty().bind(Bindings.concat("generations ", Bindings.multiply(generationsProgressBar.progressProperty(), 100), "%"));
-        fitnessLabel.textProperty().bind(Bindings.concat("fitness ", Bindings.multiply(fitnessProgressBar.progressProperty(), 100), "%"));
-        timeLabel.textProperty().bind(Bindings.concat("time ", Bindings.multiply(timeProgressBar.progressProperty(), 100), "%"));
         systemInfo.visibleProperty().bind(isFileSelected);
         stopButton.disableProperty().bind(startButton.disableProperty().not());
         pauseButton.disableProperty().bind(startButton.disableProperty().not());
@@ -180,8 +193,17 @@ public class MainController {
         timeTextField.visibleProperty().bind(startButton.disableProperty().not());
         jumpsTextField.visibleProperty().bind(startButton.disableProperty().not());
         loadButton.disableProperty().bind(startButton.disableProperty());
-        generationsRunningLabel.visibleProperty().bind(startButton.disableProperty());
-        fitnessRunningLabel.visibleProperty().bind(startButton.disableProperty());
+        generationsRunningLabel.setVisible(false);
+        fitnessRunningLabel.setVisible(false);
+        generationsLabel.setVisible(false);
+        fitnessLabel.setVisible(false);
+        timeLabel.setVisible(false);
+        generationsProgressBar.setVisible(false);
+        fitnessProgressBar.setVisible(false);
+        timeProgressBar.setVisible(false);
+        generationsLabel.textProperty().bind(Bindings.concat("generations ", Bindings.multiply(generationsProgressBar.progressProperty(), 100), "%"));
+        fitnessLabel.textProperty().bind(Bindings.concat("fitness ", Bindings.multiply(fitnessProgressBar.progressProperty(), 100), "%"));
+        timeLabel.textProperty().bind(Bindings.concat("time ", Bindings.multiply(timeProgressBar.progressProperty(), 100), "%"));
     }
 
     private void setSystemInfo(CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>> infoResult){
@@ -194,9 +216,12 @@ public class MainController {
     }
 
     private StartSystemInfoDTO createRules(){
-        int jumps = 1;
+        int jumps;
         if(!jumpsTextField.getText().trim().isEmpty()){
             jumps = Integer.parseInt(jumpsTextField.getText());
+        }
+        else{
+            throw new IllegalArgumentException("You should pick the jumps in generations");
         }
 
         Set<TerminateRuleDTO> rules = new HashSet<>();
@@ -207,16 +232,34 @@ public class MainController {
             }
 
             rules.add(new GenerationsTerminateRuleDTO(generations));
+            generationsProgressBar.setVisible(true);
+            generationsLabel.setVisible(true);
+        }
+        else{
+            generationsProgressBar.setVisible(false);
+            generationsLabel.setVisible(false);
         }
 
         if(!fitnessTextField.getText().trim().isEmpty()) {
             double fitness = Double.parseDouble(fitnessTextField.getText());
             rules.add(new FitnessTerminateRuleDTO(fitness));
+            fitnessProgressBar.setVisible(true);
+            fitnessLabel.setVisible(true);
+        }
+        else{
+            fitnessProgressBar.setVisible(false);
+            fitnessLabel.setVisible(false);
         }
 
         if(!timeTextField.getText().trim().isEmpty()){
             long time = Long.parseLong(timeTextField.getText());
             rules.add(new TimeTerminateRuleDTO(time));
+            timeProgressBar.setVisible(true);
+            timeLabel.setVisible(true);
+        }
+        else{
+            timeProgressBar.setVisible(false);
+            timeLabel.setVisible(false);
         }
 
         return new StartSystemInfoDTO(rules, jumps);

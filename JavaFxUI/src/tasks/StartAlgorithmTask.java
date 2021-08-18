@@ -15,6 +15,7 @@ public class StartAlgorithmTask extends Task<Void> {
     private final StartSystemCommand startCommand;
     private final PauseCommand pauseCommand;
     private final StopCommand stopCommand;
+    private final ResumeCommand resumeCommad;
     private int totalGenerations;
     private double totalFitness;
     private long totalTime;
@@ -32,6 +33,7 @@ public class StartAlgorithmTask extends Task<Void> {
                 () -> info, () -> info, () -> info, this::taskProcess,(result) -> Platform.runLater(() -> whenFinished.accept(result)));
         pauseCommand = new PauseCommand(wrapper);
         stopCommand = new StopCommand(wrapper);
+        resumeCommad = new ResumeCommand(wrapper);
     }
 
     public DoubleProperty getFitnessProperty() {
@@ -54,8 +56,9 @@ public class StartAlgorithmTask extends Task<Void> {
         return timeProperty;
     }
 
-    public void resume(){
+    public void resume() throws Exception{
         synchronized (lock){
+            resumeCommad.execute();
             lock.notifyAll();
         }
     }

@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 public abstract class MutationImpel<T, S extends DataSupplier> implements Mutation<T, S>, Serializable {
     private final MutationTypes type;
-    protected final double probability;
+    protected double probability;
 
     protected MutationImpel(MutationTypes type, double probability){
         this.probability = probability;
@@ -18,4 +18,12 @@ public abstract class MutationImpel<T, S extends DataSupplier> implements Mutati
     }
 
     public double getProbability() { return probability; }
+
+    public void setProbability(double probability){
+        if(probability < 0 || probability > 1){
+            throw new IllegalArgumentException("probability in " + type + " should be a double between 0 -1");
+        }
+
+        this.probability = probability;
+    }
 }

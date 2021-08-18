@@ -72,11 +72,19 @@ public class MainController {
     @FXML
     private TextField generationsTextField;
     @FXML
+    private Label genTextLabel;
+    @FXML
     private TextField fitnessTextField;
+    @FXML
+    private Label fitTextLabel;
     @FXML
     private TextField timeTextField;
     @FXML
+    private Label timeTextLabel;
+    @FXML
     private TextField jumpsTextField;
+    @FXML
+    private Label jumpsTextLabel;
 
     public MainController(){
         selectedFileProperty = new SimpleStringProperty();
@@ -189,9 +197,13 @@ public class MainController {
         stopButton.disableProperty().bind(startButton.disableProperty().not());
         pauseButton.disableProperty().bind(startButton.disableProperty().not());
         generationsTextField.visibleProperty().bind(startButton.disableProperty().not());
+        genTextLabel.visibleProperty().bind(startButton.disableProperty().not());
         fitnessTextField.visibleProperty().bind(startButton.disableProperty().not());
+        fitTextLabel.visibleProperty().bind(startButton.disableProperty().not());
         timeTextField.visibleProperty().bind(startButton.disableProperty().not());
+        timeTextLabel.visibleProperty().bind(startButton.disableProperty().not());
         jumpsTextField.visibleProperty().bind(startButton.disableProperty().not());
+        jumpsTextLabel.visibleProperty().bind(startButton.disableProperty().not());
         loadButton.disableProperty().bind(startButton.disableProperty());
         generationsRunningLabel.setVisible(false);
         fitnessRunningLabel.setVisible(false);

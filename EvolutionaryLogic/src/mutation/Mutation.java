@@ -10,4 +10,6 @@ public interface Mutation<T, S extends DataSupplier> extends Serializable {
     MutationTypes getType();
 
     double getProbability();
+
+    void setProbability(double probability);
 }

@@ -9,6 +9,7 @@ import selection.Selection;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -31,6 +32,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     private int currentNumberOfGenerations;
     private int elitism;
     private Instant startTime;
+    private Instant blockTime;
     private final CustomLock generationsLock;
     private final CustomLock bestItemLock;
     private final CustomLock stopLock;
@@ -79,6 +81,14 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         }
     }
 
+    @Override
+    public void resumeProcess() {
+        if(!isRunningProcess()){
+            setPauseOccurred(false);
+            setRunning(true);
+        }
+    }
+
     private void incCurrentNumberOfGenerations(){
         synchronized (generationsLock){
             currentNumberOfGenerations++;
@@ -123,7 +133,6 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         initialAlgoData();
         try{
             /* initial*/
-
             initialAndEvaluatePopulation();
             /* iterative*/
             while(!isTerminate(terminateBy) && !isStopOccurred()){
@@ -131,13 +140,15 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
                     while(isPauseOccurred()){
                         // stop algorithm for while
                         try{
+                            blockTime = Instant.now();
                             pauseLock.wait();
                         }catch (InterruptedException ignored){
                         }
-                        // resume
+
+                        long offset = Duration.between(blockTime, Instant.now()).getSeconds();
+                        startTime = startTime.plusSeconds(offset);
                     }
                 }
-
                 incCurrentNumberOfGenerations();
                 createAndEvaluateGeneration();
                 if(getCurrentNumberOfGenerations() % jumpInGenerations == 0){

@@ -44,4 +44,6 @@ public interface EvolutionarySystem<T, S extends DataSupplier> extends Serializa
     void stopProcess();
 
     void pauseProcess();
+
+    void resumeProcess();
 }

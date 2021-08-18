@@ -59,22 +59,11 @@ public class RouletteWheelSelection extends SelectionImpel<TimeTable> implements
         List<TimeTable> selected = new ArrayList<>(population.size());
         IntStream.range(0, solutions.size()).forEach(i -> {
             double randomNumber = RandomUtils.nextDouble() * fitnessArr[fitnessArr.length - 1];
-            int index = getIndexByFitnessOffset(fitnessArr, randomNumber);
+            int index = Arrays.binarySearch(fitnessArr, randomNumber);
+            if(index < 0) index = Math.abs(index + 1);
             selected.add(solutions.get(index).getSolution());
         });
 
         return selected;
-    }
-
-    public int getIndexByFitnessOffset(double[] fitnessArr, double offset){
-
-        for(int i=0; i<fitnessArr.length; i++){
-            if( offset - fitnessArr[i] <= 0){
-                return i;
-            }else {
-                offset-=fitnessArr[i];
-            }
-        }
-        return -1;
     }
 }

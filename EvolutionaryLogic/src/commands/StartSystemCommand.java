@@ -1,9 +1,6 @@
 package commands;
 
-import DTO.FitnessTerminateRuleDTO;
-import DTO.GenerationsTerminateRuleDTO;
-import DTO.TerminateRuleDTO;
-import DTO.StartSystemInfoDTO;
+import DTO.*;
 import models.*;
 
 import java.util.HashSet;
@@ -94,6 +91,10 @@ public class StartSystemCommand extends CommandImpel{
                 case ByFitness:
                     FitnessTerminateRuleDTO currentFit = (FitnessTerminateRuleDTO) rule;
                     toRet.add(new FitnessTerminateRule(currentFit.getFitness()));
+                    break;
+                case ByTime:
+                    TimeTerminateRuleDTO currentTime = (TimeTerminateRuleDTO) rule;
+                    toRet.add(new TimeTerminateRule(currentTime.getTimeInMinutes()));
                     break;
             }
         });

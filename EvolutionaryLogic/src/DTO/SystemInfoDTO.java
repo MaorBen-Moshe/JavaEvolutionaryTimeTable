@@ -17,6 +17,7 @@ public class SystemInfoDTO<T, S extends DataSupplier> {
     private final RulesDTO rules;
     private final int days;
     private final int hours;
+    private final int elitism;
 
     private final int initialSize;
     private final Selection<T> selection;
@@ -25,7 +26,7 @@ public class SystemInfoDTO<T, S extends DataSupplier> {
 
 
     public SystemInfoDTO(int days, int hours, Set<TeacherDTO> teachers, Set<SchoolClassDTO> classes, Set<SubjectDTO> subjects,
-                         RulesDTO rules, int initialSize, Selection<T> selection, Crossover<T, S> crossover, List<Mutation<T, S>> mutations){
+                         RulesDTO rules, int initialSize, int elitism, Selection<T> selection, Crossover<T, S> crossover, List<Mutation<T, S>> mutations){
         this.days = days;
         this.hours = hours;
         this.teachers = new HashSet<>(teachers);
@@ -38,6 +39,7 @@ public class SystemInfoDTO<T, S extends DataSupplier> {
 
         this.initialSize = initialSize;
         this.selection = selection;
+        this.elitism = elitism;
         this.crossover = crossover;
         this.mutations = new ArrayList<>(mutations);
     }
@@ -60,6 +62,10 @@ public class SystemInfoDTO<T, S extends DataSupplier> {
 
     public int getHours() {
         return hours;
+    }
+
+    public int getElitism(){
+        return Math.max(elitism, 0);
     }
 
     public Selection<T> getSelection() {

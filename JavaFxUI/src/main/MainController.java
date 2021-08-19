@@ -1,10 +1,10 @@
 package main;
 
 import DTO.*;
+import changeSystemComponent.ChangeSystemController;
 import commands.CommandResult;
 import commands.EngineWrapper;
 import commands.LoadCommand;
-import commands.SystemInfoCommand;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -64,6 +64,10 @@ public class MainController {
     @FXML
     private SystemInfoController systemInfoController;
     @FXML
+    private ScrollPane changeSystemInfo;
+    @FXML
+    private ChangeSystemController changeSystemInfoController;
+    @FXML
     private BorderPane borderPane;
     @FXML
     private Label fitnessRunningLabel;
@@ -108,6 +112,7 @@ public class MainController {
     public void onPause(ActionEvent event) {
         try {
             if(paused){
+                changeSystemInfo.setVisible(false);
                 startTask.resume();
                 pauseButton.setText("Pause");
                 paused = false;
@@ -116,6 +121,8 @@ public class MainController {
                 startTask.pause();
                 pauseButton.setText("Resume");
                 paused = true;
+                changeSystemInfoController.setView();
+                changeSystemInfo.setVisible(true);
             }
         } catch (Exception e) {
             AlertUtils.displayAlert(Alert.AlertType.ERROR, "Fail", e.getMessage());
@@ -171,7 +178,6 @@ public class MainController {
     private void initialize() {
         filePathLabel.textProperty().bind(selectedFileProperty);
         engineWrapper = new EngineWrapper<>();
-        SystemInfoCommand systemInf = new SystemInfoCommand(engineWrapper, this::setSystemInfo);
         loadCommand = new LoadCommand(engineWrapper, () -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Select evolutionary logic file");
@@ -185,7 +191,6 @@ public class MainController {
         }, (path) -> {
             selectedFileProperty.set(path);
             isFileSelected.set(engineWrapper.isFileLoaded());
-            systemInf.execute();
         }, () -> false);
 
         themesComboBox.getItems().addAll("default", "theme 1", "theme 2");
@@ -193,6 +198,9 @@ public class MainController {
             // load new css according to newItem
         });
 
+        systemInfoController.setEngineWrapper(engineWrapper);
+        changeSystemInfo.setVisible(false);
+        changeSystemInfoController.setWrapper(engineWrapper);
         systemInfo.visibleProperty().bind(isFileSelected);
         stopButton.disableProperty().bind(startButton.disableProperty().not());
         pauseButton.disableProperty().bind(startButton.disableProperty().not());
@@ -216,15 +224,6 @@ public class MainController {
         generationsLabel.textProperty().bind(Bindings.concat("generations ", Bindings.multiply(generationsProgressBar.progressProperty(), 100), "%"));
         fitnessLabel.textProperty().bind(Bindings.concat("fitness ", Bindings.multiply(fitnessProgressBar.progressProperty(), 100), "%"));
         timeLabel.textProperty().bind(Bindings.concat("time ", Bindings.multiply(timeProgressBar.progressProperty(), 100), "%"));
-    }
-
-    private void setSystemInfo(CommandResult<SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier>> infoResult){
-        if(infoResult.isFailed()){
-            AlertUtils.displayAlert(Alert.AlertType.ERROR, "Fail", infoResult.getErrorMessage());
-            return;
-        }
-
-        systemInfoController.setView(infoResult.getResult());
     }
 
     private StartSystemInfoDTO createRules(){

@@ -12,4 +12,6 @@ public interface Crossover<T, S extends DataSupplier> extends Serializable {
     int getCuttingPoints();
 
     CrossoverTypes getType();
+
+    void setCuttingPoints(int cuttingPoints);
 }

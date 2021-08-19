@@ -9,7 +9,6 @@ import selection.Selection;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -26,18 +25,15 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     private int initialPopulationSize;
     private final List<FitnessHistoryItem<T>> generationFitnessHistory; // cell 0: best fitness of generation 1 and so on... (by jump in generations)
     private BestSolutionItem<T, S> bestItem;
-    private boolean isRunning = false;
-    private boolean stopOccurred = false;
-    private boolean pauseOccurred = false;
-    private int currentNumberOfGenerations;
-    private int elitism;
+    private volatile boolean isRunning = false;
+    private volatile boolean stopOccurred = false;
+    private volatile boolean pauseOccurred = false;
+    private volatile int currentNumberOfGenerations;
+    private volatile int elitism;
     private Instant startTime;
     private Instant blockTime;
     private final CustomLock generationsLock;
     private final CustomLock bestItemLock;
-    private final CustomLock stopLock;
-    private final CustomLock pauseLock;
-    private final CustomLock runningLock;
     private final CustomLock fitnessHistoryLock;
 
     protected EvolutionarySystemImpel(){
@@ -46,10 +42,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         generationFitnessHistory = new ArrayList<>();
         generationsLock = new CustomLock();
         bestItemLock = new CustomLock();
-        stopLock = new CustomLock();
-        runningLock = new CustomLock();
         fitnessHistoryLock = new CustomLock();
-        pauseLock = new CustomLock();
     }
 
     @Override
@@ -186,11 +179,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     }
 
     @Override
-    public boolean isRunningProcess() {
-        synchronized (runningLock){
-            return isRunning;
-        }
-    }
+    public boolean isRunningProcess() { return isRunning; }
 
     @Override
     public int getInitialPopulationSize() {
@@ -282,35 +271,15 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
         }
     }
 
-    private boolean isStopOccurred() {
-        synchronized (stopLock){
-            return stopOccurred;
-        }
-    }
+    private boolean isStopOccurred() { return stopOccurred; }
 
-    private boolean isPauseOccurred() {
-        synchronized (pauseLock){
-            return pauseOccurred;
-        }
-    }
+    private boolean isPauseOccurred() { return pauseOccurred; }
 
-    private void setRunning(boolean running) {
-        synchronized (runningLock){
-            isRunning = running;
-        }
-    }
+    private void setRunning(boolean running) { isRunning = running; }
 
-    private void setStopOccurred(boolean stopOccurred) {
-        synchronized (stopLock){
-            this.stopOccurred = stopOccurred;
-        }
-    }
+    private void setStopOccurred(boolean stopOccurred) { this.stopOccurred = stopOccurred; }
 
-    private void setPauseOccurred(boolean pauseOccurred) {
-        synchronized (pauseLock){
-            this.pauseOccurred = pauseOccurred;
-        }
-    }
+    private void setPauseOccurred(boolean pauseOccurred) { this.pauseOccurred = pauseOccurred; }
 
     private void initialAlgoData(){
         setRunning(true);

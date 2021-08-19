@@ -11,10 +11,18 @@ public class AspectOrientedCrossover extends CrossoverImpel<TimeTable, TimeTable
         CLASS, TEACHER
     }
 
-    private final Orientation orientation;
+    private Orientation orientation;
 
     public AspectOrientedCrossover(int cuttingPoints, Orientation orientation){
         super(CrossoverTypes.AspectOriented, cuttingPoints);
+        setOrientation(orientation);
+    }
+
+    public Orientation getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(Orientation orientation) {
         this.orientation = orientation;
     }
 

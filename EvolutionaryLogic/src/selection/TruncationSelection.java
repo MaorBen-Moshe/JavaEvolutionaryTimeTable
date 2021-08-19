@@ -8,10 +8,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TruncationSelection extends SelectionImpel<TimeTable> implements Serializable {
-    private final int topPercent;
+    private int topPercent;
 
     public TruncationSelection(int topPercent){
         super(SelectionTypes.Truncation);
+        setTopPercent(topPercent);
+    }
+
+    public int getTopPercent() {
+        return topPercent;
+    }
+
+    public void setTopPercent(int topPercent) {
         if(topPercent <= 0 || topPercent > 100){
             throw new IllegalArgumentException("TopPercent in Truncation selection must be an integer between 1-100");
         }

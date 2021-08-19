@@ -3,3 +3,27 @@
     -fx-font-size: 16px;
     -fx-font-weight: bold;
 }
+
+.text-field{
+    -fx-border-color: Gray;
+}
+
+.label{
+    -fx-underline: true;
+    -fx-font-size: 14px;
+}
+
+.sub {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+.button{
+    -fx-border-color: Red;
+    -fx-pref-width: 80px;
+    -fx-pref-height: 40px;
+    -fx-font-weight: bold;
+}
+
+.vBox {
+    -fx-spacing: 10px;
+}

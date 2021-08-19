@@ -15,5 +15,13 @@ public abstract class CrossoverImpel<T, S extends DataSupplier> implements Cross
 
     public int getCuttingPoints() { return cuttingPoints; }
 
+    public void setCuttingPoints(int cuttingPoints) {
+        if(cuttingPoints < 0){
+            throw new IllegalArgumentException("Cutting point should be positive");
+        }
+
+        this.cuttingPoints = cuttingPoints;
+    }
+
     public CrossoverTypes getType() { return type; }
 }

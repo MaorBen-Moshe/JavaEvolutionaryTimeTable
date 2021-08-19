@@ -25,6 +25,10 @@ public interface EvolutionarySystem<T, S extends DataSupplier> extends Serializa
 
     Selection<T> getSelection();
 
+    void setSelection(Selection<T> selection);
+
+    void setCrossover(Crossover<T, S> crossover);
+
     Crossover<T, S> getCrossover();
 
     List<Mutation<T, S>> getMutations();

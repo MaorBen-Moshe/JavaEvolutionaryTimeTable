@@ -46,6 +46,7 @@ public class SystemInfoCommand extends CommandImpel{
                 converter.createSubjectsFromMap(system.getSubjects()),
                 converter.createRulesObjectDTO(system.getRules()),
                 system.getInitialPopulationSize(),
+                system.getElitism(),
                 system.getSelection(),
                 system.getCrossover(),
                 system.getMutations());

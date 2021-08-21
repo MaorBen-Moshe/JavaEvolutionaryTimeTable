@@ -1,6 +1,6 @@
 package commands;
 
-import DTO.FitnessHistoryItemDTO;
+import DTO.*;
 import models.FitnessHistoryItem;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
@@ -12,17 +12,17 @@ import java.util.stream.Collectors;
 
 public class ProcessCommand extends CommandImpel{
 
-    private final Consumer<CommandResult<List<FitnessHistoryItemDTO<TimeTable>>>> action;
+    private final Consumer<CommandResult<List<FitnessHistoryItemDTO<TimeTableDTO>>>> action;
 
     public ProcessCommand(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper,
-                          Consumer<CommandResult<List<FitnessHistoryItemDTO<TimeTable>>>> o) {
+                          Consumer<CommandResult<List<FitnessHistoryItemDTO<TimeTableDTO>>>> o) {
         super(wrapper);
         this.action = o;
     }
 
     @Override
     public void execute() {
-        CommandResult<List<FitnessHistoryItemDTO<TimeTable>>> result = new CommandResult<>();
+        CommandResult<List<FitnessHistoryItemDTO<TimeTableDTO>>> result = new CommandResult<>();
         if(getEngineWrapper().isFileLoaded()){
             List<FitnessHistoryItem<TimeTable>> process = getEngineWrapper().getEngine().getGenerationFitnessHistory();
             if(getEngineWrapper().getEngine().isRunningProcess()){
@@ -54,10 +54,18 @@ public class ProcessCommand extends CommandImpel{
         return "System process details";
     }
 
-    private List<FitnessHistoryItemDTO<TimeTable>> createAnswer(List<FitnessHistoryItem<TimeTable>> old){
-        List<FitnessHistoryItemDTO<TimeTable>> ret = new ArrayList<>();
-        old.forEach(item -> ret.add(new FitnessHistoryItemDTO<>(item.getSolution(), item.getGenerationNumber(), item.getCurrentGenerationFitness(), item.getImprovementFromLastGeneration())));
+    private List<FitnessHistoryItemDTO<TimeTableDTO>> createAnswer(List<FitnessHistoryItem<TimeTable>> old){
+        List<FitnessHistoryItemDTO<TimeTableDTO>> ret = new ArrayList<>();
+        old.forEach(item -> ret.add(new FitnessHistoryItemDTO<>(createDTOTable(item.getSolution()), item.getGenerationNumber(), item.getCurrentGenerationFitness(), item.getImprovementFromLastGeneration())));
         ret.sort(FitnessHistoryItemDTO::compareTo);
         return ret;
+    }
+
+    private TimeTableDTO createDTOTable(TimeTable old){
+        ModelToDTOConverter converter = new ModelToDTOConverter();
+        Set<TimeTableItemDTO> items = new HashSet<>();
+        old.getSortedItems().forEach(item -> items.add(new TimeTableItemDTO(item.getDay(), item.getHour(), converter.createClassDTO(item.getSchoolClass()), converter.createSubjectDTO(item.getSubject()), converter.createTeacherDTO(item.getTeacher()))));
+        Map<RuleDTO, Double> rules = converter.createRuleMapDTO(old.getRulesScore());
+        return new TimeTableDTO(items, rules, old.getHardRulesAvg(), old.getSoftRulesAvg());
     }
 }

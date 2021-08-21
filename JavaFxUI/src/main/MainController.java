@@ -1,6 +1,7 @@
 package main;
 
 import DTO.*;
+import bestItemComponent.BestItemController;
 import changeSystemComponent.ChangeSystemController;
 import commands.CommandResult;
 import commands.EngineWrapper;
@@ -63,6 +64,10 @@ public class MainController {
     private ScrollPane systemInfo;
     @FXML
     private SystemInfoController systemInfoController;
+    @FXML
+    private ScrollPane bestItem;
+    @FXML
+    private BestItemController bestItemController;
     @FXML
     private ScrollPane changeSystemInfo;
     @FXML
@@ -137,9 +142,12 @@ public class MainController {
                 startTask = new StartAlgorithmTask(engineWrapper, info, (result) -> {
                     startButton.setDisable(false);
                     paused = false;
+                    bestItemController.setView();
+                    bestItem.setVisible(true);
                 });
 
                 startButton.setDisable(true);
+                bestItem.setVisible(false);
                 generationsRunningLabel.textProperty().bind(Bindings.concat("Generation number: ", startTask.getCurrentGenerationsProperty()));
                 fitnessRunningLabel.textProperty().bind(Bindings.concat("Fitness number: ", startTask.getCurrentFitnessProperty()));
                 generationsProgressBar.progressProperty().bind(startTask.getGenerationsProperty());
@@ -169,6 +177,8 @@ public class MainController {
         try {
             startTask.stop();
             startTask.cancel();
+            bestItemController.setView();
+            bestItem.setVisible(true);
         } catch (Exception e) {
             AlertUtils.displayAlert(Alert.AlertType.ERROR, "Failure", e.getMessage());
         }
@@ -198,6 +208,8 @@ public class MainController {
             // load new css according to newItem
         });
 
+        bestItemController.setWrapper(engineWrapper);
+        bestItem.setVisible(false);
         systemInfoController.setEngineWrapper(engineWrapper);
         changeSystemInfo.setVisible(false);
         changeSystemInfoController.setWrapper(engineWrapper);

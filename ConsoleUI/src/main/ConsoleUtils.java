@@ -433,13 +433,13 @@ public class ConsoleUtils {
         System.out.println("Soft rules average: " + (softAvg >= 0 ? softAvg : "No soft rules were found."));
     }
 
-    private static void displayProcess(CommandResult<List<FitnessHistoryItemDTO<TimeTable>>> result){
+    private static void displayProcess(CommandResult<List<FitnessHistoryItemDTO<TimeTableDTO>>> result){
         if(result.isFailed()){
             System.out.println(result.getErrorMessage());
             return;
         }
 
-        List<FitnessHistoryItemDTO<TimeTable>> generation = result.getResult();
+        List<FitnessHistoryItemDTO<TimeTableDTO>> generation = result.getResult();
         generation.forEach(current -> {
             String improvement = current.getGenerationNumber() != 0 ? ", improvement: " + String.format ("%.2f", current.getImprovementFromLastGeneration()) : "";
             System.out.println("Generation number: " + current.getGenerationNumber() + String.format(" with fitness: %.2f", current.getCurrentGenerationFitness()) + improvement);

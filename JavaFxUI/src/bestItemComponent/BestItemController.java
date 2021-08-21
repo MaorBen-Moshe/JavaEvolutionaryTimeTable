@@ -155,6 +155,9 @@ public class BestItemController {
                 case TEACHER: setItemsComboBox(wrapper.getEngine().getSystemInfo().getTeachers()); break;
             }
         });
+        itemComboBox.getSelectionModel().selectedItemProperty().addListener((item) -> {
+            displayTable(history.get(currentDisplayItemIndex).getSolution());
+        });
     }
 
     private void setItemsComboBox(Map<Integer, ? extends SerialItem> items){

@@ -9,14 +9,16 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import models.SerialItem;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
@@ -34,7 +36,6 @@ public class BestItemController {
             this.id = id;
             this.name = name;
         }
-
 
         @Override
         public boolean equals(Object o) {
@@ -62,9 +63,12 @@ public class BestItemController {
     private int days;
     private int hours;
     private final IntegerProperty currentDisplayItemIndex;
+    private final IntegerProperty jumpProperty;
     private EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper;
-    private enum Aspect {CLASS, TEACHER}
+    private enum Aspect {CLASS, TEACHER, RAW}
 
+    @FXML
+    private ScrollPane tableSplitPane;
     @FXML
     private ComboBox<Aspect> aspectComboBox;
 
@@ -79,6 +83,8 @@ public class BestItemController {
 
     @FXML
     private Button nextButton;
+    @FXML
+    private TextField jumpTF;
 
     @FXML
     private LineChart<NumberAxis, NumberAxis> fitnessChart;
@@ -101,7 +107,8 @@ public class BestItemController {
     private Label mainTitleLabel;
 
     public BestItemController(){
-        currentDisplayItemIndex = new SimpleIntegerProperty();
+        currentDisplayItemIndex = new SimpleIntegerProperty(-1);
+        jumpProperty = new SimpleIntegerProperty(1);
     }
 
     public void setWrapper(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper){
@@ -139,8 +146,35 @@ public class BestItemController {
         hardRulesLabel = new Label();
         itemComboBox.setVisible(false);
         itemLabel.setVisible(false);
+        jumpTF.textProperty().setValue(String.valueOf(jumpProperty.get()));
+        jumpTF.textProperty().addListener((item, old, newVal) -> {
+            try{
+                if(newVal.trim().isEmpty())
+                {
+                    return;
+                }
+
+                int num = Integer.parseInt(newVal);
+                if(num < 0 || num >= history.size()){
+                    jumpTF.setText(old);
+                }
+                else{
+                    jumpProperty.setValue(num);
+                }
+            }catch (NumberFormatException e){
+                jumpTF.setText(old);
+            }
+        });
         aspectComboBox.getItems().addAll(Aspect.values());
         aspectComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldVal, newVal) -> {
+            if(newVal.equals(Aspect.RAW)){
+                displayRaw();
+                itemComboBox.setVisible(false);
+                itemComboBox.setValue(null);
+                itemLabel.setVisible(false);
+                return;
+            }
+
             itemComboBox.setVisible(true);
             itemLabel.setVisible(true);
             itemComboBox.getItems().clear();
@@ -152,8 +186,13 @@ public class BestItemController {
         itemComboBox.getSelectionModel().selectedItemProperty().addListener((item, old, newVal) -> displayTable(history.get(currentDisplayItemIndex.get()).getSolution(), newVal));
 
         currentDisplayItemIndex.addListener((item, old, newVal) -> {
-            nextButton.disableProperty().set(currentDisplayItemIndex.get() >= history.size() - 1);
-            prevButton.disableProperty().set(currentDisplayItemIndex.get() <= 0);
+            nextButton.disableProperty().set(currentDisplayItemIndex.get() + jumpProperty.get() > history.size() - 1);
+            prevButton.disableProperty().set(currentDisplayItemIndex.get() - jumpProperty.get() < 0);
+        });
+
+        jumpProperty.addListener((item, old, newVal) -> {
+            nextButton.disableProperty().set(currentDisplayItemIndex.get() + jumpProperty.get() > history.size() - 1);
+            prevButton.disableProperty().set(currentDisplayItemIndex.get() - jumpProperty.get() < 0);
         });
     }
 
@@ -182,19 +221,6 @@ public class BestItemController {
         displayRules(solution.getGenerationCreated(), solution.getFitness(), solution.getSolution().getSoftRulesAvg(), solution.getSolution().getHardRulesAvg(), solution.getSolution().getRulesScore());
     }
 
-    private void createInitialGrid() {
-        tablePos.getChildren().clear();
-        tablePos.setGridLinesVisible(true);
-        tablePos.add(new Label("days\\hours"), 0, 0);
-        for(int i = 1; i <= hours; i++){
-            tablePos.add(new Label(String.valueOf(i)), i, 0);
-        }
-
-        for(int j = 1; j <= days; j++){
-            tablePos.add(new Label(String.valueOf(j)), 0, j);
-        }
-    }
-
     private void fillChart(List<FitnessHistoryItemDTO<TimeTableDTO>> result) {
         fitnessChart.setTitle("Fitness by generation");
         Series series = new Series();
@@ -220,6 +246,46 @@ public class BestItemController {
         });
     }
 
+    private void createInitialGrid() {
+        tablePos.getChildren().clear();
+        tablePos.setGridLinesVisible(true);
+        tablePos.add(new Label("days\\hours"), 0, 0);
+        for(int i = 1; i <= hours; i++){
+            tablePos.add(new Label(String.valueOf(i)), i, 0);
+        }
+
+        for(int j = 1; j <= days; j++){
+            tablePos.add(new Label(String.valueOf(j)), 0, j);
+        }
+    }
+
+    private void setRowColConstraints(){
+        tablePos.getRowConstraints().clear();
+        tablePos.getColumnConstraints().clear();
+        RowConstraints firstR = new RowConstraints(100);
+        firstR.setFillHeight(true);
+        firstR.setValignment(VPos.CENTER);
+        tablePos.getRowConstraints().add(firstR);
+        ColumnConstraints firstC = new ColumnConstraints(100);
+        firstC.setFillWidth(true);
+        firstC.setHalignment(HPos.CENTER);
+        tablePos.getColumnConstraints().add(firstC);
+        for(int i = 1; i <= hours; i++){
+            ColumnConstraints col = new ColumnConstraints(1000d / hours);
+            col.setFillWidth(true);
+            col.setHalignment(HPos.CENTER);
+            tablePos.getColumnConstraints().add(col);
+
+        }
+
+        for(int j = 1; j <= days; j++){
+            RowConstraints row = new RowConstraints(500d / days);
+            row.setFillHeight(true);
+            row.setValignment(VPos.CENTER);
+            tablePos.getRowConstraints().add(row);
+        }
+    }
+
     private void displayTable(TimeTableDTO table, ComboItem currentChoice){
         tablePos.getChildren().clear();
         Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map = new HashMap<>();
@@ -229,16 +295,30 @@ public class BestItemController {
         }
 
         createInitialGrid();
-        for(int i=1; i<=days; i++){
-            for(int j=1;j<=hours; j++){
-                ScrollPane scroll = new ScrollPane();
-                VBox vBox = new VBox();
-                List<Label> cellLabels = getCellLabels(map.get(i).get(j), aspectComboBox.getValue());
-                if(cellLabels.size() > 0) vBox.getChildren().addAll(cellLabels);
-                scroll.setContent(vBox);
-                tablePos.add(scroll, j, i);
+        for(int row=1; row<=days; row++){
+            for(int col=1;col<=hours; col++){
+                List<Label> cellLabels = getCellLabels(map.get(row).get(col), aspectComboBox.getValue());
+                ScrollPane cell = createCell(cellLabels);
+                tablePos.add(cell, col, row);
+                GridPane.setHgrow(cell, Priority.ALWAYS);
+                GridPane.setVgrow(cell, Priority.ALWAYS);
             }
         }
+
+        setRowColConstraints();
+
+        if(!(tableSplitPane.getContent() instanceof GridPane)) tableSplitPane.setContent(tablePos);
+    }
+
+    private ScrollPane createCell(List<Label> items){
+        ScrollPane scroll = new ScrollPane();
+        scroll.setFitToHeight(true);
+        VBox vBox = new VBox();
+        vBox.setPadding(new Insets(2));
+        vBox.setAlignment(Pos.TOP_LEFT);
+        if(items.size() > 0) vBox.getChildren().addAll(items);
+        scroll.setContent(vBox);
+        return scroll;
     }
 
     private List<Label> getCellLabels(List<TimeTableItemDTO> items, Aspect aspect){
@@ -292,10 +372,24 @@ public class BestItemController {
         return dayHourTable;
     }
 
+    private void displayRaw(){
+        tableSplitPane.setContent(null);
+        VBox vBox = new VBox();
+        vBox.setPadding(new Insets(2));
+        vBox.setAlignment(Pos.TOP_LEFT);
+        history.get(currentDisplayItemIndex.get()).getSolution().getItems().forEach(item -> vBox.getChildren().add(new Label("<" + item.getDay() + ", "
+                + item.getHour() + ", "
+                + item.getSchoolClass().getName() + ", "
+                + item.getTeacher().getName() + ", "
+                + item.getSubject().getName() + ">")));
+
+        tableSplitPane.setContent(vBox);
+    }
+
     @FXML
     void onNext(ActionEvent event) {
-        if(currentDisplayItemIndex.get() < history.size() - 1){
-            currentDisplayItemIndex.set(currentDisplayItemIndex.get() + 1);
+        if(currentDisplayItemIndex.get() + jumpProperty.get() <= history.size() - 1){
+            currentDisplayItemIndex.set(currentDisplayItemIndex.get() + jumpProperty.get());
             FitnessHistoryItemDTO<TimeTableDTO> current = history.get(currentDisplayItemIndex.get());
             displayRules(current.getGenerationNumber(), current.getCurrentGenerationFitness(), current.getSolution().getSoftRulesAvg(), current.getSolution().getHardRulesAvg(), current.getSolution().getRulesScore());
             displayTable(current.getSolution(), itemComboBox.getValue());
@@ -304,8 +398,8 @@ public class BestItemController {
 
     @FXML
     void onPrev(ActionEvent event) {
-        if(currentDisplayItemIndex.get() > 0){
-            currentDisplayItemIndex.set(currentDisplayItemIndex.get() - 1);
+        if(currentDisplayItemIndex.get() - jumpProperty.get() >= 0){
+            currentDisplayItemIndex.set(currentDisplayItemIndex.get() - jumpProperty.get());
             FitnessHistoryItemDTO<TimeTableDTO> current = history.get(currentDisplayItemIndex.get());
             displayRules(current.getGenerationNumber(), current.getCurrentGenerationFitness(), current.getSolution().getSoftRulesAvg(), current.getSolution().getHardRulesAvg(), current.getSolution().getRulesScore());
             displayTable(current.getSolution(), itemComboBox.getValue());

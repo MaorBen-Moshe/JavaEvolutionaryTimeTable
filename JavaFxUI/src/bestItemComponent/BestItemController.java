@@ -5,6 +5,8 @@ import commands.BestSolutionCommand;
 import commands.CommandResult;
 import commands.EngineWrapper;
 import commands.ProcessCommand;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
@@ -13,14 +15,15 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import models.SerialItem;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
 import utils.AlertUtils;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+
+import java.util.*;
+import java.util.stream.IntStream;
 
 public class BestItemController {
     private static class ComboItem{
@@ -58,7 +61,7 @@ public class BestItemController {
     private List<FitnessHistoryItemDTO<TimeTableDTO>> history;
     private int days;
     private int hours;
-    private int currentDisplayItemIndex;
+    private final IntegerProperty currentDisplayItemIndex;
     private EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper;
     private enum Aspect {CLASS, TEACHER}
 
@@ -67,9 +70,6 @@ public class BestItemController {
 
     @FXML
     private ComboBox<ComboItem> itemComboBox;
-
-    @FXML
-    private Label displayLabel;
 
     @FXML
     private Label itemLabel;
@@ -82,13 +82,6 @@ public class BestItemController {
 
     @FXML
     private LineChart<NumberAxis, NumberAxis> fitnessChart;
-
-    @FXML
-    private NumberAxis xAxis ;
-
-    @FXML
-    private NumberAxis yAxis ;
-
     @FXML
     private VBox rulesVBox;
 
@@ -108,6 +101,7 @@ public class BestItemController {
     private Label mainTitleLabel;
 
     public BestItemController(){
+        currentDisplayItemIndex = new SimpleIntegerProperty();
     }
 
     public void setWrapper(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper){
@@ -155,8 +149,11 @@ public class BestItemController {
                 case TEACHER: setItemsComboBox(wrapper.getEngine().getSystemInfo().getTeachers()); break;
             }
         });
-        itemComboBox.getSelectionModel().selectedItemProperty().addListener((item) -> {
-            displayTable(history.get(currentDisplayItemIndex).getSolution());
+        itemComboBox.getSelectionModel().selectedItemProperty().addListener((item, old, newVal) -> displayTable(history.get(currentDisplayItemIndex.get()).getSolution(), newVal));
+
+        currentDisplayItemIndex.addListener((item, old, newVal) -> {
+            nextButton.disableProperty().set(currentDisplayItemIndex.get() >= history.size() - 1);
+            prevButton.disableProperty().set(currentDisplayItemIndex.get() <= 0);
         });
     }
 
@@ -170,7 +167,7 @@ public class BestItemController {
         }
 
         history = result.getResult();
-        currentDisplayItemIndex = history.size() - 1;
+        currentDisplayItemIndex.setValue(history.size() - 1);
         fillChart(result.getResult());
     }
 
@@ -182,11 +179,20 @@ public class BestItemController {
         BestSolutionDTO solution = result.getResult();
         days = solution.getSupplier().getDays();
         hours = solution.getSupplier().getHours();
-        createInitialGrid();
         displayRules(solution.getGenerationCreated(), solution.getFitness(), solution.getSolution().getSoftRulesAvg(), solution.getSolution().getHardRulesAvg(), solution.getSolution().getRulesScore());
     }
 
     private void createInitialGrid() {
+        tablePos.getChildren().clear();
+        tablePos.setGridLinesVisible(true);
+        tablePos.add(new Label("days\\hours"), 0, 0);
+        for(int i = 1; i <= hours; i++){
+            tablePos.add(new Label(String.valueOf(i)), i, 0);
+        }
+
+        for(int j = 1; j <= days; j++){
+            tablePos.add(new Label(String.valueOf(j)), 0, j);
+        }
     }
 
     private void fillChart(List<FitnessHistoryItemDTO<TimeTableDTO>> result) {
@@ -214,26 +220,95 @@ public class BestItemController {
         });
     }
 
-    private void displayTable(TimeTableDTO table){
+    private void displayTable(TimeTableDTO table, ComboItem currentChoice){
         tablePos.getChildren().clear();
-        ComboItem currentChoice = itemComboBox.getValue();
+        Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map = new HashMap<>();
+        switch (aspectComboBox.getValue()){
+            case CLASS: map = getClassMap(table, currentChoice.id); break;
+            case TEACHER: map = getTeacherMap(table, currentChoice.id); break;
+        }
+
+        createInitialGrid();
+        for(int i=1; i<=days; i++){
+            for(int j=1;j<=hours; j++){
+                ScrollPane scroll = new ScrollPane();
+                VBox vBox = new VBox();
+                List<Label> cellLabels = getCellLabels(map.get(i).get(j), aspectComboBox.getValue());
+                if(cellLabels.size() > 0) vBox.getChildren().addAll(cellLabels);
+                scroll.setContent(vBox);
+                tablePos.add(scroll, j, i);
+            }
+        }
+    }
+
+    private List<Label> getCellLabels(List<TimeTableItemDTO> items, Aspect aspect){
+        List<Label> labels = new ArrayList<>();
+        items.forEach(item -> {
+            Label label = new Label();
+            switch (aspect){
+                case TEACHER: label.setText("Class: " + item.getSchoolClass().getName() + " " + item.getSchoolClass().getId() + ",  Subject: " + item.getSubject());
+                              break;
+                case CLASS: label.setText("Teacher: " + item.getTeacher().getName() + " " + item.getTeacher().getId() + ",  Subject: " + item.getSubject());
+                     break;
+            }
+
+            labels.add(label);
+        });
+
+        return labels;
+    }
+
+    private Map<Integer, Map<Integer, List<TimeTableItemDTO>>> getClassMap(TimeTableDTO table, int classId){
+        TimeTableSystemDataSupplier info = wrapper.getEngine().getSystemInfo();
+        Map<Integer, Map<Integer, List<TimeTableItemDTO>>> dayHourTable = initializeTableView(info);
+        table.getItems().forEach(item -> {
+            if(item.getSchoolClass().getId() == classId){
+                dayHourTable.get(item.getDay()).get(item.getHour()).add(item);
+            }
+        });
+
+        return dayHourTable;
+    }
+
+    private Map<Integer, Map<Integer, List<TimeTableItemDTO>>> getTeacherMap(TimeTableDTO table, int teacherId){
+        TimeTableSystemDataSupplier info = wrapper.getEngine().getSystemInfo();
+        Map<Integer, Map<Integer, List<TimeTableItemDTO>>> dayHourTable = initializeTableView(info);
+        table.getItems().forEach(item -> {
+            if(item.getTeacher().getId() == teacherId){
+                dayHourTable.get(item.getDay()).get(item.getHour()).add(item);
+            }
+        });
+
+        return dayHourTable;
+    }
+
+    private Map<Integer, Map<Integer, List<TimeTableItemDTO>>> initializeTableView(TimeTableSystemDataSupplier supplier){
+        Map<Integer, Map<Integer, List<TimeTableItemDTO>>> dayHourTable = new HashMap<>();
+        IntStream.range(1, supplier.getDays() + 1).forEach(i -> {
+            dayHourTable.put(i, new HashMap<>());
+            IntStream.range(1, supplier.getHours() + 1).forEach(j -> dayHourTable.get(i).put(j, new ArrayList<>()));
+        });
+
+        return dayHourTable;
     }
 
     @FXML
     void onNext(ActionEvent event) {
-        if(currentDisplayItemIndex < history.size() - 1){
-            FitnessHistoryItemDTO<TimeTableDTO> current = history.get(++currentDisplayItemIndex);
+        if(currentDisplayItemIndex.get() < history.size() - 1){
+            currentDisplayItemIndex.set(currentDisplayItemIndex.get() + 1);
+            FitnessHistoryItemDTO<TimeTableDTO> current = history.get(currentDisplayItemIndex.get());
             displayRules(current.getGenerationNumber(), current.getCurrentGenerationFitness(), current.getSolution().getSoftRulesAvg(), current.getSolution().getHardRulesAvg(), current.getSolution().getRulesScore());
-            displayTable(current.getSolution());
+            displayTable(current.getSolution(), itemComboBox.getValue());
         }
     }
 
     @FXML
     void onPrev(ActionEvent event) {
-        if(currentDisplayItemIndex > 0){
-            FitnessHistoryItemDTO<TimeTableDTO> current = history.get(--currentDisplayItemIndex);
+        if(currentDisplayItemIndex.get() > 0){
+            currentDisplayItemIndex.set(currentDisplayItemIndex.get() - 1);
+            FitnessHistoryItemDTO<TimeTableDTO> current = history.get(currentDisplayItemIndex.get());
             displayRules(current.getGenerationNumber(), current.getCurrentGenerationFitness(), current.getSolution().getSoftRulesAvg(), current.getSolution().getHardRulesAvg(), current.getSolution().getRulesScore());
-            displayTable(current.getSolution());
+            displayTable(current.getSolution(), itemComboBox.getValue());
         }
     }
 }

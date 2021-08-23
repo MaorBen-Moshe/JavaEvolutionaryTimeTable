@@ -213,6 +213,7 @@ public class MainController {
         systemInfoController.setEngineWrapper(engineWrapper);
         changeSystemInfo.setVisible(false);
         changeSystemInfoController.setWrapper(engineWrapper);
+        changeSystemInfoController.setAfterSubmit(x -> systemInfoController.refreshView());
         systemInfo.visibleProperty().bind(isFileSelected);
         stopButton.disableProperty().bind(startButton.disableProperty().not());
         pauseButton.disableProperty().bind(startButton.disableProperty().not());

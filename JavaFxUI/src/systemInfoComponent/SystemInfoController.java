@@ -90,47 +90,13 @@ public class SystemInfoController {
         mainTitle.setVisible(false);
     }
 
-    public <T extends SerialItemDTO> List<Label> setSerialItems(Label title, Set<T> items){
-        List<Label> labels = new ArrayList<>();
-        labels.add(title);
-        items.stream().sorted(Comparator.comparing(T::getId)).forEach(item ->{
-            Label label = new Label();
-            label.setVisible(true);
-            label.setText(item.toString());
-            labels.add(label);
-        });
-
-        return labels;
-    }
-
-    public List<Label> setRulesComponent(RulesDTO rules){
-        List<Label> labels = new ArrayList<>();
-        labels.add(rulesTitle);
-        for(RuleDTO rule : rules.getRules()){
-            Label label = new Label();
-            label.setVisible(true);
-            String configurations = rule.getConfigurations().size() > 0 ? ", configurations: " + rule.getConfigurations().toString() : "";
-            label.setText("Rule name: " + rule.getType() + ", rule strength: " + rule.getStrength() + configurations);
-            labels.add(label);
+    public void refreshView(){
+        if(shown){
+            systemInf.execute();
         }
-
-        return labels;
     }
 
-    public <T extends Mutation<TimeTable, TimeTableSystemDataSupplier>> List<Label> setMutations(List<T> items){
-        List<Label> labels = new ArrayList<>();
-        labels.add(mutationsTitle);
-        items.forEach(item ->{
-            Label label = new Label();
-            label.setVisible(true);
-            label.setText(item.toString());
-            labels.add(label);
-        });
-
-        return labels;
-    }
-
-    public void setView(SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier> result) {
+    private void setView(SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier> result) {
         setTimeTableInfo(result);
         setEngineInfo(result);
     }
@@ -196,5 +162,45 @@ public class SystemInfoController {
         Label serialTitle = new Label(text);
         serialTitle.getStyleClass().add("title");
         return serialTitle;
+    }
+
+    private <T extends SerialItemDTO> List<Label> setSerialItems(Label title, Set<T> items){
+        List<Label> labels = new ArrayList<>();
+        labels.add(title);
+        items.stream().sorted(Comparator.comparing(T::getId)).forEach(item ->{
+            Label label = new Label();
+            label.setVisible(true);
+            label.setText(item.toString());
+            labels.add(label);
+        });
+
+        return labels;
+    }
+
+    private List<Label> setRulesComponent(RulesDTO rules){
+        List<Label> labels = new ArrayList<>();
+        labels.add(rulesTitle);
+        for(RuleDTO rule : rules.getRules()){
+            Label label = new Label();
+            label.setVisible(true);
+            String configurations = rule.getConfigurations().size() > 0 ? ", configurations: " + rule.getConfigurations().toString() : "";
+            label.setText("Rule name: " + rule.getType() + ", rule strength: " + rule.getStrength() + configurations);
+            labels.add(label);
+        }
+
+        return labels;
+    }
+
+    private <T extends Mutation<TimeTable, TimeTableSystemDataSupplier>> List<Label> setMutations(List<T> items){
+        List<Label> labels = new ArrayList<>();
+        labels.add(mutationsTitle);
+        items.forEach(item ->{
+            Label label = new Label();
+            label.setVisible(true);
+            label.setText(item.toString());
+            labels.add(label);
+        });
+
+        return labels;
     }
 }

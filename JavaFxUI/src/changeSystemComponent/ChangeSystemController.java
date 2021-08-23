@@ -21,6 +21,7 @@ import utils.AlertUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 public class ChangeSystemController {
@@ -40,9 +41,14 @@ public class ChangeSystemController {
     private Label selectionTitle;
     private Label mutationTitle;
     private Label crossoverTitle;
+    private Consumer<?> after;
 
     public void setWrapper(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper){
         this.wrapper = wrapper;
+    }
+
+    public void setAfterSubmit(Consumer<?> after){
+        this.after = after;
     }
 
     public void initialize(){
@@ -253,6 +259,7 @@ public class ChangeSystemController {
             setSelection();
             setMutations();
             AlertUtils.displayAlert(Alert.AlertType.INFORMATION, "Success", "your changes saved");
+            if(after != null) after.accept(null);
         }catch (NumberFormatException ex){
           AlertUtils.displayAlert(Alert.AlertType.ERROR, "Input failure", "please check the values you inserted");
         } catch (Exception e){

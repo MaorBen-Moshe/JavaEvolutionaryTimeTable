@@ -1,0 +1,23 @@
+#mainTitle {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-underline: false;
+}
+
+.subTitle {
+    -fx-font-size: 14px;
+}
+
+.title{
+    -fx-underline: true;
+}
+
+.label{
+    -fx-padding: 0px 0px 5px 5px;
+    -fx-font-family: "Agency FB";
+    -fx-font-size: 13px;
+}
+
+.container {
+    -fx-spacing: 100px;
+}

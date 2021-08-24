@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fitToHeight="true" fitToWidth="true" stylesheets="@bestItem.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bestItemComponent.BestItemController">
+   <content>
+      <SplitPane dividerPositions="0.3705357142857143" orientation="VERTICAL">
+        <items>
+          <AnchorPane prefHeight="171.0" prefWidth="600.0" SplitPane.resizableWithParent="false">
+               <children>
+                  <ComboBox fx:id="aspectComboBox" layoutX="14.0" layoutY="33.0" prefWidth="150.0" promptText="Display Aspect" AnchorPane.leftAnchor="14.0" />
+                  <ComboBox fx:id="itemComboBox" layoutX="14.0" layoutY="85.0" prefWidth="150.0" promptText="choose item" AnchorPane.leftAnchor="14.0" />
+                  <Label fx:id="displayLabel" layoutX="14.0" layoutY="12.0" text="Choose display aspect" AnchorPane.leftAnchor="14.0" />
+                  <Label fx:id="itemLabel" layoutX="14.0" layoutY="64.0" text="Choose item to display" AnchorPane.leftAnchor="14.0" />
+                  <Button fx:id="prevButton" layoutX="14.0" layoutY="135.0" mnemonicParsing="false" onAction="#onPrev" prefHeight="25.0" prefWidth="43.0" text="Prev" />
+                  <Button fx:id="nextButton" layoutX="123.0" layoutY="135.0" mnemonicParsing="false" onAction="#onNext" prefHeight="25.0" prefWidth="43.0" text="Next" />
+                  <Label layoutX="53.0" layoutY="110.0" text="Trip the history" />
+                  <LineChart id="chart" fx:id="fitnessChart" layoutX="366.0" prefHeight="163.0" prefWidth="430.0" title="Fitness by generation" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="167.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="0.0">
+                      <xAxis>
+                          <NumberAxis label="Generation" side="BOTTOM" fx:id="xAxis" />
+                      </xAxis>
+                      <yAxis>
+                          <NumberAxis fx:id="yAxis" label="Fitness" layoutX="10.0" side="LEFT" />
+                      </yAxis>
+                  </LineChart>
+                  <TextField fx:id="jumpTF" layoutX="68.0" layoutY="135.0" prefHeight="25.0" prefWidth="43.0" promptText="jumps" />
+               </children>
+            </AnchorPane>
+            <SplitPane dividerPositions="0.17666666666666667" prefHeight="271.0" prefWidth="600.0" SplitPane.resizableWithParent="false">
+               <items>
+                  <ScrollPane fitToWidth="true" prefHeight="255.0" prefWidth="113.0" SplitPane.resizableWithParent="false">
+                     <content>
+                        <VBox fx:id="rulesVBox" prefHeight="281.0" prefWidth="90.0" />
+                     </content>
+                  </ScrollPane>
+                  <ScrollPane fx:id="tableSplitPane" prefHeight="349.0" prefWidth="570.0" />
+               </items>
+            </SplitPane>
+        </items>
+      </SplitPane>
+   </content>
+</ScrollPane>

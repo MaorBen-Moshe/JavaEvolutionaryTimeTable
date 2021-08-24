@@ -117,17 +117,10 @@ public class MainController {
     public void onPause(ActionEvent event) {
         try {
             if(paused){
-                changeSystemInfo.setVisible(false);
-                startTask.resume();
-                pauseButton.setText("Pause");
-                paused = false;
+                resume(true);
             }
             else{
-                startTask.pause();
-                pauseButton.setText("Resume");
-                paused = true;
-                changeSystemInfoController.setView();
-                changeSystemInfo.setVisible(true);
+                pause();
             }
         } catch (Exception e) {
             AlertUtils.displayAlert(Alert.AlertType.ERROR, "Fail", e.getMessage());
@@ -179,10 +172,27 @@ public class MainController {
             startTask.cancel();
             bestItemController.setView();
             bestItem.setVisible(true);
+            if(paused) resume(false);
         } catch (Exception e) {
             AlertUtils.displayAlert(Alert.AlertType.ERROR, "Failure", e.getMessage());
         }
     }
+
+    private void resume(boolean run) throws Exception{
+        changeSystemInfo.setVisible(false);
+        if(run) startTask.resume();
+        pauseButton.setText("Pause");
+        paused = false;
+    }
+
+    private void pause() throws Exception {
+        startTask.pause();
+        pauseButton.setText("Resume");
+        paused = true;
+        changeSystemInfoController.setView();
+        changeSystemInfo.setVisible(true);
+    }
+
 
     @FXML
     private void initialize() {

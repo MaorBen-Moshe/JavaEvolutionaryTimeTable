@@ -60,9 +60,10 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
 
     @Override
     public void stopProcess() {
-        if(isRunningProcess()){
+        if(isRunningProcess() || isPauseOccurred()){
             setStopOccurred(true);
             setRunning(false);
+            setPauseOccurred(false);
         }
     }
 
@@ -136,6 +137,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
                             blockTime = Instant.now();
                             pauseLock.wait();
                         }catch (InterruptedException ignored){
+                            if(isStopOccurred()) break;
                         }
 
                         long offset = Duration.between(blockTime, Instant.now()).getSeconds();

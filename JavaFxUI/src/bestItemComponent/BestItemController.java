@@ -66,6 +66,7 @@ public class BestItemController {
     private final IntegerProperty jumpProperty;
     private EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper;
     private enum Aspect {CLASS, TEACHER, RAW}
+    private GridPane tablePos;
 
     @FXML
     private ScrollPane tableSplitPane;
@@ -90,9 +91,6 @@ public class BestItemController {
     private LineChart<NumberAxis, NumberAxis> fitnessChart;
     @FXML
     private VBox rulesVBox;
-
-    @FXML
-    private GridPane tablePos;
     @FXML
     private Label fitnessLabel;
     @FXML
@@ -183,6 +181,7 @@ public class BestItemController {
                 case TEACHER: setItemsComboBox(wrapper.getEngine().getSystemInfo().getTeachers()); break;
             }
         });
+
         itemComboBox.getSelectionModel().selectedItemProperty().addListener((item, old, newVal) -> displayTable(history.get(currentDisplayItemIndex.get()).getSolution(), newVal));
 
         currentDisplayItemIndex.addListener((item, old, newVal) -> {
@@ -247,7 +246,7 @@ public class BestItemController {
     }
 
     private void createInitialGrid() {
-        tablePos.getChildren().clear();
+        tablePos = new GridPane();
         tablePos.setGridLinesVisible(true);
         tablePos.add(new Label("days\\hours"), 0, 0);
         for(int i = 1; i <= hours; i++){
@@ -257,6 +256,8 @@ public class BestItemController {
         for(int j = 1; j <= days; j++){
             tablePos.add(new Label(String.valueOf(j)), 0, j);
         }
+
+        setRowColConstraints();
     }
 
     private void setRowColConstraints(){
@@ -287,27 +288,28 @@ public class BestItemController {
     }
 
     private void displayTable(TimeTableDTO table, ComboItem currentChoice){
-        tablePos.getChildren().clear();
         Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map = new HashMap<>();
         switch (aspectComboBox.getValue()){
             case CLASS: map = getClassMap(table, currentChoice.id); break;
             case TEACHER: map = getTeacherMap(table, currentChoice.id); break;
         }
 
-        createInitialGrid();
+        if(tablePos == null){
+            createInitialGrid();
+        }
+
         for(int row=1; row<=days; row++){
             for(int col=1;col<=hours; col++){
                 List<Label> cellLabels = getCellLabels(map.get(row).get(col), aspectComboBox.getValue());
                 ScrollPane cell = createCell(cellLabels);
+                cell.setStyle("-fx-background-color:black;");
                 tablePos.add(cell, col, row);
                 GridPane.setHgrow(cell, Priority.ALWAYS);
                 GridPane.setVgrow(cell, Priority.ALWAYS);
             }
         }
 
-        setRowColConstraints();
-
-        if(!(tableSplitPane.getContent() instanceof GridPane)) tableSplitPane.setContent(tablePos);
+        tableSplitPane.setContent(tablePos);
     }
 
     private ScrollPane createCell(List<Label> items){

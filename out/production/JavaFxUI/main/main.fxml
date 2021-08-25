@@ -20,7 +20,7 @@
                <children>
                   <Button fx:id="loadButton" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#onLoadFile" prefHeight="25.0" prefWidth="97.0" text="Load xml file" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="15.0" />
                   <Label layoutX="14.0" layoutY="48.0" text="File path: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="48.0" />
-                  <Label fx:id="filePathLabel" layoutX="66.0" layoutY="48.0" text="file path here" textFill="#eb0808" AnchorPane.leftAnchor="66.0" AnchorPane.topAnchor="48.0" />
+                  <Label fx:id="filePathLabel" layoutX="66.0" layoutY="48.0" text="file path here" textFill="#00a80e" AnchorPane.leftAnchor="66.0" AnchorPane.topAnchor="48.0" />
                   <ComboBox fx:id="themesComboBox" layoutX="200.0" layoutY="15.0" prefHeight="25.0" prefWidth="107.0" promptText="Themes" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="15.0" />
                   <CheckBox fx:id="animationsCheckBox" layoutX="117.0" layoutY="19.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="83.0" text="animations" AnchorPane.leftAnchor="117.0" AnchorPane.topAnchor="19.0" />
                   <Label fx:id="errorLabel" layoutX="14.0" layoutY="68.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="68.0" />

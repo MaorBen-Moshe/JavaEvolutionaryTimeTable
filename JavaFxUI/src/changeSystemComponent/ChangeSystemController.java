@@ -22,6 +22,7 @@ import utils.AlertUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 public class ChangeSystemController {
@@ -71,6 +72,18 @@ public class ChangeSystemController {
                 TextField current = new TextField();
                 current.setPromptText("probability");
                 current.setText(String.valueOf(mutation.getProbability()));
+                current.textProperty().addListener((item, old, newVal) -> {
+                    if(newVal.trim().isEmpty()){
+                        return;
+                    }
+                    Pattern pattern = Pattern.compile("[0]\\.?[0-9]*");
+                    if(pattern.matcher(newVal).matches()){
+                        return;
+                    }
+                    else{
+                        current.setText(old);
+                    }
+                });
                 currentV.getChildren().add(label);
                 currentV.getChildren().add(current);
                 VBox.setMargin(current, new Insets(5, 10,10,10));
@@ -134,6 +147,27 @@ public class ChangeSystemController {
         vBox.getChildren().add(submit);
         vBox.setAlignment(Pos.CENTER);
         vBox.getStyleClass().add("vBox");
+
+        textFieldsListeners();
+    }
+
+    private void textFieldsListeners(){
+        elita.textProperty().addListener((item, old, newVal) ->{
+            try{
+                int elita = Integer.parseInt(newVal);
+                if(elita < 0 || elita > wrapper.getEngine().getSystemInfo().getPopulationSize()){
+                    this.elita.setText(old);
+                }
+            }catch (NumberFormatException e){
+                this.elita.setText(old);
+            }
+        });
+
+        cuttingTextField.textProperty().addListener((item, old, newVal) ->{
+            Pattern pattern = Pattern.compile("[0-9]*");
+            if(pattern.matcher(newVal).matches()) return;
+            this.cuttingTextField.setText(old);
+        });
     }
 
     private void showSelection(SelectionTypes chosen){

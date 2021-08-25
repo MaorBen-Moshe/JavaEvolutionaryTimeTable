@@ -6,15 +6,23 @@ import changeSystemComponent.ChangeSystemController;
 import commands.CommandResult;
 import commands.EngineWrapper;
 import commands.LoadCommand;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.transform.Rotate;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
 import systemInfoComponent.SystemInfoController;
@@ -94,6 +102,8 @@ public class MainController {
     private TextField jumpsTextField;
     @FXML
     private Label jumpsTextLabel;
+    @FXML
+    private ImageView startImage;
 
     public MainController(){
         selectedFileProperty = new SimpleStringProperty();
@@ -247,6 +257,34 @@ public class MainController {
         generationsLabel.textProperty().bind(Bindings.concat("generations ", Bindings.multiply(generationsProgressBar.progressProperty(), 100), "%"));
         fitnessLabel.textProperty().bind(Bindings.concat("fitness ", Bindings.multiply(fitnessProgressBar.progressProperty(), 100), "%"));
         timeLabel.textProperty().bind(Bindings.concat("time ", Bindings.multiply(timeProgressBar.progressProperty(), 100), "%"));
+        startImage.visibleProperty().bind(animationsCheckBox.selectedProperty());
+        setSandAnimation();
+    }
+
+    private void setSandAnimation(){
+        startImage.setImage(new Image("https://image.flaticon.com/icons/png/512/3448/3448543.png"));
+        startImage.setFitHeight(35);
+        startImage.setFitWidth(35);
+        startImage.setMouseTransparent(true);
+        startImage.setTranslateZ(150);
+        startImage.setOpacity(0.7);
+        final Rotate rotationTransform = new Rotate(0, 0, 20);
+        startImage.getTransforms().add(rotationTransform);
+        // rotate a square using timeline attached to the rotation transform's angle property.
+        final Timeline rotationAnimation = new Timeline();
+        rotationAnimation.getKeyFrames()
+                .add(
+                        new KeyFrame(
+                                Duration.seconds(5),
+                                new KeyValue(
+                                        rotationTransform.angleProperty(),
+                                        360
+                                )
+                        )
+                );
+        rotationTransform.setAxis(Rotate.X_AXIS);
+        rotationAnimation.setCycleCount(Animation.INDEFINITE);
+        rotationAnimation.play();
     }
 
     private StartSystemInfoDTO createRules(){

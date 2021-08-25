@@ -1,3 +1,30 @@
 #chart{
     -fx-stroke-width: 2px;
 }
+
+.title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-underline: false;
+}
+
+.subTitle{
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-underline: true;
+}
+
+#rulesVBox .label{
+    -fx-padding: 0px 0px 5px 5px;
+    -fx-font-family: "Agency FB";
+    -fx-font-size: 13px;
+}
+
+#daysHours {
+    -fx-font-weight: bold;
+}
+
+.tableHead{
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+}

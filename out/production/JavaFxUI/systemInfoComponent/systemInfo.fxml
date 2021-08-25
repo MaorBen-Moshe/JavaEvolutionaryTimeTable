@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fitToHeight="true" prefHeight="113.0" prefWidth="202.0" stylesheets="@systemInfoStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="systemInfoComponent.SystemInfoController">
+   <content>
+      <VBox fx:id="vBox" fillWidth="false">
+         <children>
+            <AnchorPane prefHeight="48.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="showButton" layoutX="66.0" layoutY="14.0" mnemonicParsing="false" onAction="#onShowInfo" prefHeight="19.0" prefWidth="69.0" text="Show info" />
+                  <Label id="mainTitle" fx:id="mainTitle" alignment="CENTER" layoutX="64.0" layoutY="51.0" styleClass="title" text="System info:" />
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>

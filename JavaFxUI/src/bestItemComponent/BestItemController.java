@@ -7,6 +7,7 @@ import commands.EngineWrapper;
 import commands.ProcessCommand;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
@@ -18,6 +19,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import models.SerialItem;
 import models.TimeTable;
@@ -67,6 +69,8 @@ public class BestItemController {
     private EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper;
     private enum Aspect {CLASS, TEACHER, RAW}
     private GridPane tablePos;
+    private VBox rawVBox;
+    private TableView<RawTableItem> rawTable;
 
     @FXML
     private ScrollPane tableSplitPane;
@@ -137,7 +141,9 @@ public class BestItemController {
     @FXML
     private void initialize(){
         mainTitleLabel = new Label("Solution Info:");
+        mainTitleLabel.getStyleClass().add("title");
         rulesTitleLabel = new Label("Rules Score:");
+        rulesTitleLabel.getStyleClass().add("subTitle");
         generationLabel = new Label();
         fitnessLabel = new Label();
         softRulesLabel = new Label();
@@ -237,24 +243,34 @@ public class BestItemController {
         hardRulesLabel.setText("Hard Rules: " + (hardAvg < 0 ? "no hard rules" : hardAvg));
 
         rulesVBox.getChildren().addAll(mainTitleLabel, generationLabel, fitnessLabel, softRulesLabel, hardRulesLabel, rulesTitleLabel);
+        final int[] i = {1};
         rules.forEach((rule, ruleScore) -> {
+            Label title = new Label("Rule " + "#" + i[0] + ": ");
+            title.getStyleClass().add("subTitle");
             Label name = new Label("Rule name: " + rule.getType());
             Label strength = new Label("Rule strength: " + rule.getStrength());
             Label scoreLabel = new Label("Rule score: " + ruleScore);
-            rulesVBox.getChildren().addAll(name, strength, scoreLabel);
+            rulesVBox.getChildren().addAll(title, name, strength, scoreLabel);
+            i[0]++;
         });
     }
 
     private void createInitialGrid() {
         tablePos = new GridPane();
         tablePos.setGridLinesVisible(true);
-        tablePos.add(new Label("days\\hours"), 0, 0);
+        Label daysHours = new Label("days\\hours");
+        daysHours.setId("daysHours");
+        tablePos.add(daysHours, 0, 0);
         for(int i = 1; i <= hours; i++){
-            tablePos.add(new Label(String.valueOf(i)), i, 0);
+            Label curr = new Label(String.valueOf(i));
+            curr.getStyleClass().add("tableHead");
+            tablePos.add(curr, i, 0);
         }
 
         for(int j = 1; j <= days; j++){
-            tablePos.add(new Label(String.valueOf(j)), 0, j);
+            Label curr = new Label(String.valueOf(j));
+            curr.getStyleClass().add("tableHead");
+            tablePos.add(curr, 0, j);
         }
 
         setRowColConstraints();
@@ -263,16 +279,18 @@ public class BestItemController {
     private void setRowColConstraints(){
         tablePos.getRowConstraints().clear();
         tablePos.getColumnConstraints().clear();
-        RowConstraints firstR = new RowConstraints(100);
+        RowConstraints firstR = new RowConstraints(75);
         firstR.setFillHeight(true);
         firstR.setValignment(VPos.CENTER);
         tablePos.getRowConstraints().add(firstR);
-        ColumnConstraints firstC = new ColumnConstraints(100);
+        ColumnConstraints firstC = new ColumnConstraints(75);
         firstC.setFillWidth(true);
         firstC.setHalignment(HPos.CENTER);
         tablePos.getColumnConstraints().add(firstC);
+        double width = hours > days ? 700d : 500d;
+        double height = days > hours ? 700d : 500d;
         for(int i = 1; i <= hours; i++){
-            ColumnConstraints col = new ColumnConstraints(1000d / hours);
+            ColumnConstraints col = new ColumnConstraints(width / hours);
             col.setFillWidth(true);
             col.setHalignment(HPos.CENTER);
             tablePos.getColumnConstraints().add(col);
@@ -280,7 +298,7 @@ public class BestItemController {
         }
 
         for(int j = 1; j <= days; j++){
-            RowConstraints row = new RowConstraints(500d / days);
+            RowConstraints row = new RowConstraints(height / days);
             row.setFillHeight(true);
             row.setValignment(VPos.CENTER);
             tablePos.getRowConstraints().add(row);
@@ -300,8 +318,8 @@ public class BestItemController {
 
         for(int row=1; row<=days; row++){
             for(int col=1;col<=hours; col++){
-                List<Label> cellLabels = getCellLabels(map.get(row).get(col), aspectComboBox.getValue());
-                ScrollPane cell = createCell(cellLabels);
+                List<CellItem> cellLabels = getCellItems(map.get(row).get(col), aspectComboBox.getValue());
+                ScrollPane cell = createCell(cellLabels, aspectComboBox.getValue());
                 cell.setStyle("-fx-background-color:black;");
                 tablePos.add(cell, col, row);
                 GridPane.setHgrow(cell, Priority.ALWAYS);
@@ -312,32 +330,46 @@ public class BestItemController {
         tableSplitPane.setContent(tablePos);
     }
 
-    private ScrollPane createCell(List<Label> items){
+    private ScrollPane createCell(List<CellItem> items, Aspect aspect){
         ScrollPane scroll = new ScrollPane();
         scroll.setFitToHeight(true);
-        VBox vBox = new VBox();
-        vBox.setPadding(new Insets(2));
-        vBox.setAlignment(Pos.TOP_LEFT);
-        if(items.size() > 0) vBox.getChildren().addAll(items);
-        scroll.setContent(vBox);
+        VBox vbox = new VBox();
+        vbox.setSpacing(5);
+        vbox.setPadding(new Insets(5));
+        if(items != null && items.size() > 0){
+            TableView<CellItem> table = new TableView<>();
+            TableColumn<CellItem,String> itemCol = new TableColumn<>(aspect.equals(Aspect.CLASS) ? "Teacher" : "Class");
+            TableColumn<CellItem,String> subjectCol = new TableColumn<>("Subject");
+            itemCol.setCellValueFactory(
+                    new PropertyValueFactory<>("serialItem")
+            );
+            subjectCol.setCellValueFactory(
+                    new PropertyValueFactory<>("subject")
+            );
+
+            table.setItems(FXCollections.observableArrayList(items));
+            table.getColumns().addAll(itemCol, subjectCol);
+            vbox.getChildren().add(table);
+        }
+
+        scroll.setContent(vbox);
         return scroll;
     }
 
-    private List<Label> getCellLabels(List<TimeTableItemDTO> items, Aspect aspect){
-        List<Label> labels = new ArrayList<>();
+    private List<CellItem> getCellItems(List<TimeTableItemDTO> items, Aspect aspect){
+        List<CellItem> cellItems = new ArrayList<>();
         items.forEach(item -> {
-            Label label = new Label();
             switch (aspect){
-                case TEACHER: label.setText("Class: " + item.getSchoolClass().getName() + " " + item.getSchoolClass().getId() + ",  Subject: " + item.getSubject());
+                case TEACHER: CellItem currentT = new CellItem(item.getSchoolClass().getName() + ", " + item.getSchoolClass().getId(), item.getSubject().toString());
+                              cellItems.add(currentT);
                               break;
-                case CLASS: label.setText("Teacher: " + item.getTeacher().getName() + " " + item.getTeacher().getId() + ",  Subject: " + item.getSubject());
-                     break;
+                case CLASS: CellItem currentC = new CellItem(item.getTeacher().getName() + ", " + item.getTeacher().getId(), item.getSubject().toString());
+                            cellItems.add(currentC);
+                            break;
             }
-
-            labels.add(label);
         });
 
-        return labels;
+        return cellItems;
     }
 
     private Map<Integer, Map<Integer, List<TimeTableItemDTO>>> getClassMap(TimeTableDTO table, int classId){
@@ -375,26 +407,51 @@ public class BestItemController {
     }
 
     private void displayRaw(){
-        tableSplitPane.setContent(null);
-        VBox vBox = new VBox();
-        vBox.setPadding(new Insets(2));
-        vBox.setAlignment(Pos.TOP_LEFT);
-        history.get(currentDisplayItemIndex.get()).getSolution().getItems().forEach(item -> vBox.getChildren().add(new Label("<" + item.getDay() + ", "
-                + item.getHour() + ", "
-                + item.getSchoolClass().getName() + ", "
-                + item.getTeacher().getName() + ", "
-                + item.getSubject().getName() + ">")));
+        if(rawVBox == null){
+            rawVBox = new VBox();
+            rawVBox.setSpacing(5);
+            rawVBox.setPadding(new Insets(10));
+            rawVBox.setAlignment(Pos.TOP_LEFT);
+            rawTable = new TableView<>();
+            TableColumn<RawTableItem,String> dayCol = new TableColumn<>("Day");
+            TableColumn<RawTableItem,String> hourCol = new TableColumn<>("Hour");
+            TableColumn<RawTableItem,Integer> classCol = new TableColumn<>("Class");
+            TableColumn<RawTableItem,String> teacherCol = new TableColumn<>("Teacher");
+            TableColumn<RawTableItem,String> subjectCol = new TableColumn<>("Subject");
+            dayCol.setCellValueFactory(
+                    new PropertyValueFactory<>("day")
+            );
+            hourCol.setCellValueFactory(
+                    new PropertyValueFactory<>("hour")
+            );
+            classCol.setCellValueFactory(
+                    new PropertyValueFactory<>("klass")
+            );
+            teacherCol.setCellValueFactory(
+                    new PropertyValueFactory<>("teacher")
+            );
+            subjectCol.setCellValueFactory(
+                    new PropertyValueFactory<>("subject")
+            );
 
-        tableSplitPane.setContent(vBox);
+            rawTable.getColumns().addAll(dayCol, hourCol, classCol, teacherCol, subjectCol);
+            rawVBox.getChildren().add(rawTable);
+        }
+
+        List<RawTableItem> items = new ArrayList<>();
+        history.get(currentDisplayItemIndex.get()).getSolution().getItems().forEach(item -> items.add(new RawTableItem(item.getDay(),item.getHour(),
+                item.getTeacher().getName(),
+                item.getSchoolClass().getName(),
+                item.getSubject().getName())));
+        rawTable.setItems(FXCollections.observableArrayList(items));
+        tableSplitPane.setContent(rawTable);
     }
 
     @FXML
     void onNext(ActionEvent event) {
         if(currentDisplayItemIndex.get() + jumpProperty.get() <= history.size() - 1){
             currentDisplayItemIndex.set(currentDisplayItemIndex.get() + jumpProperty.get());
-            FitnessHistoryItemDTO<TimeTableDTO> current = history.get(currentDisplayItemIndex.get());
-            displayRules(current.getGenerationNumber(), current.getCurrentGenerationFitness(), current.getSolution().getSoftRulesAvg(), current.getSolution().getHardRulesAvg(), current.getSolution().getRulesScore());
-            displayTable(current.getSolution(), itemComboBox.getValue());
+            tripHelper();
         }
     }
 
@@ -402,8 +459,17 @@ public class BestItemController {
     void onPrev(ActionEvent event) {
         if(currentDisplayItemIndex.get() - jumpProperty.get() >= 0){
             currentDisplayItemIndex.set(currentDisplayItemIndex.get() - jumpProperty.get());
-            FitnessHistoryItemDTO<TimeTableDTO> current = history.get(currentDisplayItemIndex.get());
-            displayRules(current.getGenerationNumber(), current.getCurrentGenerationFitness(), current.getSolution().getSoftRulesAvg(), current.getSolution().getHardRulesAvg(), current.getSolution().getRulesScore());
+            tripHelper();
+        }
+    }
+
+    private void tripHelper(){
+        FitnessHistoryItemDTO<TimeTableDTO> current = history.get(currentDisplayItemIndex.get());
+        displayRules(current.getGenerationNumber(), current.getCurrentGenerationFitness(), current.getSolution().getSoftRulesAvg(), current.getSolution().getHardRulesAvg(), current.getSolution().getRulesScore());
+        if(aspectComboBox.getValue().equals(Aspect.RAW)){
+            displayRaw();
+        }
+        else{
             displayTable(current.getSolution(), itemComboBox.getValue());
         }
     }

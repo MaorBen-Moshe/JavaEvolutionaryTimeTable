@@ -326,6 +326,7 @@ public class BestItemController {
     }
 
     private void displayTable(TimeTableDTO table, ComboItem currentChoice){
+        if(currentChoice == null) return;
         Map<Integer, Map<Integer, List<TimeTableItemDTO>>> map = new HashMap<>();
         switch (aspectComboBox.getValue()){
             case CLASS: map = getClassMap(table, currentChoice.id); break;

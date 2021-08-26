@@ -27,3 +27,7 @@
 .vBox {
     -fx-spacing: 10px;
 }
+
+#right{
+    -fx-background-color: #66B2FF;
+}

@@ -6,10 +6,12 @@
 
 .subTitle {
     -fx-font-size: 14px;
+    -fx-font-weight: bold;
 }
 
 .title{
     -fx-underline: true;
+    -fx-font-weight: bold;
 }
 
 .label{
@@ -20,4 +22,8 @@
 
 .container {
     -fx-spacing: 100px;
+}
+
+#left{
+    -fx-background-color: #66B2FF;
 }

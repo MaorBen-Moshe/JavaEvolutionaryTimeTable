@@ -28,3 +28,11 @@
     -fx-font-weight: bold;
     -fx-font-size: 15px;
 }
+
+.button{
+    -fx-text-fill: black;
+}
+
+#center{
+    -fx-background-color: #66B2FF;
+}

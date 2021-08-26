@@ -1,0 +1,26 @@
+#border {
+    -fx-background-color: #66B2FF;
+}
+
+#top {
+    -fx-background-color: #868181;
+}
+
+#bottom{
+    -fx-background-color: #66B2FF;
+}
+
+.scroll-pane {
+    -fx-background-color: #868181;
+}
+
+.button{
+    -fx-text-fill: White;
+    -fx-background-color: transparent;
+    -fx-border-color: black;
+    -fx-border-radius: 10px;
+}
+
+.text-field{
+    -fx-border-color: white;
+}

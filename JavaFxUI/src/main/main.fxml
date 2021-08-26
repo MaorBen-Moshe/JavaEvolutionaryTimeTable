@@ -16,11 +16,11 @@
    <top>
       <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="98.0" prefWidth="600.0" BorderPane.alignment="CENTER">
         <content>
-          <AnchorPane minHeight="102.0" minWidth="557.0" prefHeight="123.0" prefWidth="604.0">
+          <AnchorPane id="top" minHeight="102.0" minWidth="557.0" prefHeight="123.0" prefWidth="604.0">
                <children>
                   <Button fx:id="loadButton" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#onLoadFile" prefHeight="25.0" prefWidth="97.0" text="Load xml file" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="15.0" />
                   <Label layoutX="14.0" layoutY="48.0" text="File path: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="48.0" />
-                  <Label fx:id="filePathLabel" layoutX="66.0" layoutY="48.0" text="file path here" textFill="#00a80e" AnchorPane.leftAnchor="66.0" AnchorPane.topAnchor="48.0" />
+                  <Label fx:id="filePathLabel" layoutX="66.0" layoutY="48.0" text="file path here" textFill="#0023a6" AnchorPane.leftAnchor="66.0" AnchorPane.topAnchor="48.0" />
                   <ComboBox fx:id="themesComboBox" layoutX="200.0" layoutY="15.0" prefHeight="25.0" prefWidth="107.0" promptText="Themes" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="15.0" />
                   <CheckBox fx:id="animationsCheckBox" layoutX="117.0" layoutY="19.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="83.0" text="animations" AnchorPane.leftAnchor="117.0" AnchorPane.topAnchor="19.0" />
                   <Label fx:id="errorLabel" layoutX="14.0" layoutY="68.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="68.0" />
@@ -51,9 +51,9 @@
       <fx:include fx:id="bestItem" source="../bestItemComponent/bestItem.fxml" />
    </center>
    <bottom>
-      <ScrollPane fitToWidth="true" prefHeight="88.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+      <ScrollPane fitToWidth="true" prefHeight="88.0" prefWidth="600.0" styleClass="buttom" BorderPane.alignment="CENTER">
          <content>
-            <VBox prefHeight="93.0" prefWidth="604.0">
+            <VBox id="bottom" prefHeight="93.0" prefWidth="604.0">
                <children>
                   <AnchorPane prefHeight="27.0" prefWidth="317.0">
                      <children>

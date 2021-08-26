@@ -23,11 +23,11 @@ public class MainApp extends Application {
         loader.setLocation(mainFXML);
         BorderPane root = loader.load();
 
-        MainController controller = loader.getController();
-        controller.setPrimaryStage(primaryStage);
         primaryStage.setTitle("Evolutionary system - javaFX");
         Scene scene = new Scene(root, 600, 400);
         primaryStage.setScene(scene);
+        MainController controller = loader.getController();
+        controller.setPrimaryStage(primaryStage);
         primaryStage.show();
     }
 }

@@ -75,7 +75,7 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
 
     @Override
     public TimeTableSystemDataSupplier getSystemInfo() {
-        return new TimeTableSystemDataSupplier(days, hours, new HashMap<>(teachers), new HashMap<>(subjects), new HashMap<>(classes), getInitialPopulationSize());
+        return new TimeTableSystemDataSupplier(days, hours, new HashMap<>(teachers), new HashMap<>(subjects), new HashMap<>(classes));
     }
 
     @Override

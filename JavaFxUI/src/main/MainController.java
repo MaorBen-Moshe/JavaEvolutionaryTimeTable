@@ -3,7 +3,6 @@ package main;
 import DTO.*;
 import bestItemComponent.BestItemController;
 import changeSystemComponent.ChangeSystemController;
-import commands.CommandResult;
 import commands.EngineWrapper;
 import commands.LoadCommand;
 import javafx.animation.Animation;
@@ -22,6 +21,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.transform.Rotate;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
@@ -32,6 +32,7 @@ import utils.AlertUtils;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class MainController {
     private Stage primaryStage;
@@ -41,6 +42,8 @@ public class MainController {
     private LoadCommand loadCommand;
     private StartAlgorithmTask startTask;
     private boolean paused = false;
+    private final Pattern numberPattern;
+    private final Pattern fitnessPattern;
 
     @FXML
     private Button loadButton;
@@ -108,10 +111,21 @@ public class MainController {
     public MainController(){
         selectedFileProperty = new SimpleStringProperty();
         isFileSelected = new SimpleBooleanProperty(false);
+        numberPattern = Pattern.compile("[0-9]*");
+        fitnessPattern = Pattern.compile("^[1-9]?[0-9]?$|^100$");
     }
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
+        this.primaryStage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, (event) ->{
+            try {
+                if(startTask != null){
+                    startTask.stop();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @FXML
@@ -179,7 +193,6 @@ public class MainController {
     public void onStop(ActionEvent event) {
         try {
             startTask.stop();
-            startTask.cancel();
             bestItemController.setView();
             bestItem.setVisible(true);
             if(paused) resume(false);
@@ -222,7 +235,6 @@ public class MainController {
             selectedFileProperty.set(path);
             isFileSelected.set(engineWrapper.isFileLoaded());
         }, () -> false);
-
         themesComboBox.getItems().addAll("default", "theme 1", "theme 2");
         themesComboBox.valueProperty().addListener((obs, oldItem, newItem) -> {
             // load new css according to newItem
@@ -258,7 +270,29 @@ public class MainController {
         fitnessLabel.textProperty().bind(Bindings.concat("fitness ", Bindings.multiply(fitnessProgressBar.progressProperty(), 100), "%"));
         timeLabel.textProperty().bind(Bindings.concat("time ", Bindings.multiply(timeProgressBar.progressProperty(), 100), "%"));
         startImage.visibleProperty().bind(animationsCheckBox.selectedProperty());
+        bestItemController.getAnimationProperty().bind(animationsCheckBox.selectedProperty());
         setSandAnimation();
+        setTextFieldListeners();
+    }
+
+    private void setTextFieldListeners(){
+        generationsTextField.textProperty().addListener((item, old, newVal) -> textFieldHelper(generationsTextField, newVal, old));
+
+        fitnessTextField.textProperty().addListener((item, old, newVal) ->{
+            if(!fitnessPattern.matcher(newVal).matches()){
+                fitnessTextField.setText(old);
+            }
+        });
+
+        timeTextField.textProperty().addListener((item, old, newVal) -> textFieldHelper(timeTextField, newVal, old));
+
+        jumpsTextField.textProperty().addListener((item, old, newVal) -> textFieldHelper(jumpsTextField, newVal, old));
+    }
+
+    private void textFieldHelper(TextField field, String val, String old){
+        if(!numberPattern.matcher(val).matches()){
+            field.setText(old);
+        }
     }
 
     private void setSandAnimation(){

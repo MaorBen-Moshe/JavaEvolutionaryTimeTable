@@ -5,7 +5,11 @@ import commands.BestSolutionCommand;
 import commands.CommandResult;
 import commands.EngineWrapper;
 import commands.ProcessCommand;
+import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -21,12 +25,14 @@ import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
+import javafx.util.Duration;
 import models.SerialItem;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
 import utils.AlertUtils;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 public class BestItemController {
@@ -71,6 +77,9 @@ public class BestItemController {
     private GridPane tablePos;
     private VBox rawVBox;
     private TableView<RawTableItem> rawTable;
+    private final Pattern jumpPattern;
+
+    private BooleanProperty animationProperty;
 
     @FXML
     private ScrollPane tableSplitPane;
@@ -111,6 +120,18 @@ public class BestItemController {
     public BestItemController(){
         currentDisplayItemIndex = new SimpleIntegerProperty(-1);
         jumpProperty = new SimpleIntegerProperty(1);
+        jumpPattern = Pattern.compile("[0-9]*");
+        animationProperty = new SimpleBooleanProperty(false);
+
+        /*fadein = new FadeTransition(Duration.millis(2000));*/
+        /*fadeout.setFromValue(0);
+        fadeout.setToValue(1);
+        fadeout.setCycleCount(1);
+        fadeout.setAutoReverse(false);*/
+    }
+
+    public BooleanProperty getAnimationProperty() {
+        return animationProperty;
     }
 
     public void setWrapper(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper){
@@ -152,20 +173,19 @@ public class BestItemController {
         itemLabel.setVisible(false);
         jumpTF.textProperty().setValue(String.valueOf(jumpProperty.get()));
         jumpTF.textProperty().addListener((item, old, newVal) -> {
-            try{
-                if(newVal.trim().isEmpty())
-                {
-                    return;
-                }
+            if (jumpPattern.matcher(newVal).matches()) {
+                try {
+                    int num = Integer.parseInt(newVal);
+                    if (num < 0 || num >= history.size()) {
+                        jumpTF.setText(old);
+                        return;
+                    }
 
-                int num = Integer.parseInt(newVal);
-                if(num < 0 || num >= history.size()){
-                    jumpTF.setText(old);
-                }
-                else{
                     jumpProperty.setValue(num);
+                } catch (NumberFormatException e) {
+                    jumpProperty.setValue(0);
                 }
-            }catch (NumberFormatException e){
+            } else {
                 jumpTF.setText(old);
             }
         });
@@ -316,12 +336,40 @@ public class BestItemController {
             createInitialGrid();
         }
 
+        if(animationProperty.get()){
+            tablePos.getChildren().forEach(item -> {
+                if(item instanceof ScrollPane){
+                    item.setOpacity(1);
+                    FadeTransition fadeout = new FadeTransition(Duration.millis(2_000));
+                    fadeout.setFromValue(1);
+                    fadeout.setToValue(0);
+                    fadeout.setCycleCount(1);
+                    fadeout.setAutoReverse(false);
+                    fadeout.setNode(item);
+                    fadeout.play();
+                }
+            });
+        }
+
         for(int row=1; row<=days; row++){
             for(int col=1;col<=hours; col++){
                 List<CellItem> cellLabels = getCellItems(map.get(row).get(col), aspectComboBox.getValue());
                 ScrollPane cell = createCell(cellLabels, aspectComboBox.getValue());
                 cell.setStyle("-fx-background-color:black;");
-                tablePos.add(cell, col, row);
+                if(animationProperty.get()){
+                    FadeTransition fadein = new FadeTransition(Duration.millis(2_000));
+                    fadein.setFromValue(0);
+                    fadein.setToValue(1);
+                    fadein.setCycleCount(1);
+                    fadein.setAutoReverse(false);
+                    cell.setOpacity(0);
+                    fadein.setNode(cell);
+                    tablePos.add(cell, col, row);
+                    fadein.play();
+                }else{
+                    tablePos.add(cell, col, row);
+                }
+
                 GridPane.setHgrow(cell, Priority.ALWAYS);
                 GridPane.setVgrow(cell, Priority.ALWAYS);
             }

@@ -43,6 +43,13 @@ public class ChangeSystemController {
     private Label mutationTitle;
     private Label crossoverTitle;
     private Consumer<?> after;
+    private final Pattern floatPattern;
+    private final Pattern numberPattern;
+
+    public ChangeSystemController(){
+        floatPattern = Pattern.compile("[0](\\.[0-9]*)?|[1]?");
+        numberPattern = Pattern.compile("[0-9]*");
+    }
 
     public void setWrapper(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper){
         this.wrapper = wrapper;
@@ -76,11 +83,8 @@ public class ChangeSystemController {
                     if(newVal.trim().isEmpty()){
                         return;
                     }
-                    Pattern pattern = Pattern.compile("[0]\\.?[0-9]*");
-                    if(pattern.matcher(newVal).matches()){
-                        return;
-                    }
-                    else{
+
+                    if(!floatPattern.matcher(newVal).matches()){
                         current.setText(old);
                     }
                 });
@@ -154,8 +158,9 @@ public class ChangeSystemController {
     private void textFieldsListeners(){
         elita.textProperty().addListener((item, old, newVal) ->{
             try{
+                if(newVal.trim().isEmpty()) return;
                 int elita = Integer.parseInt(newVal);
-                if(elita < 0 || elita > wrapper.getEngine().getSystemInfo().getPopulationSize()){
+                if(elita < 0 || elita > wrapper.getEngine().getInitialPopulationSize()){
                     this.elita.setText(old);
                 }
             }catch (NumberFormatException e){
@@ -164,8 +169,7 @@ public class ChangeSystemController {
         });
 
         cuttingTextField.textProperty().addListener((item, old, newVal) ->{
-            Pattern pattern = Pattern.compile("[0-9]*");
-            if(pattern.matcher(newVal).matches()) return;
+            if(numberPattern.matcher(newVal).matches()) return;
             this.cuttingTextField.setText(old);
         });
     }

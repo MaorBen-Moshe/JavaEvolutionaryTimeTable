@@ -10,7 +10,11 @@ public class StopCommand extends CommandImpel{
 
     @Override
     public void execute() throws Exception {
-        getEngineWrapper().getEngine().stopProcess();
+        if(getEngineWrapper().isFileLoaded()){
+           if(getEngineWrapper().getEngine().isRunningProcess() || getEngineWrapper().getEngine().isPauseOccurred()){
+               getEngineWrapper().getEngine().stopProcess();
+           }
+        }
     }
 
     @Override

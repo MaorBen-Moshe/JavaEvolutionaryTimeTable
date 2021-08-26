@@ -23,7 +23,6 @@ public class ExitCommand extends CommandImpel{
             if(ifRunning.get()){
                 getEngineWrapper().getEngine().stopProcess();
                 exitRun.run();
-                Thread.currentThread().interrupt();
             }
         }
         else{

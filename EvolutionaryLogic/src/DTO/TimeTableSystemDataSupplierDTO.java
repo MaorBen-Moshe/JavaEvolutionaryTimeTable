@@ -15,17 +15,14 @@ public class TimeTableSystemDataSupplierDTO implements DataSupplier {
     private final Map<Integer, SchoolClassDTO> unModifiedClasses;
     private final int days;
     private final int hours;
-    private final int populationSize;
 
     public TimeTableSystemDataSupplierDTO(int days,
                                           int hours,
                                           Map<Integer, TeacherDTO> teachers,
                                           Map<Integer, SubjectDTO> subjects,
-                                          Map<Integer, SchoolClassDTO> classes,
-                                          int popSize){
+                                          Map<Integer, SchoolClassDTO> classes){
         this.days = days;
         this.hours = hours;
-        this.populationSize = popSize;
         this.teachers = new HashMap<>(teachers);
         this.subjects = new HashMap<>(subjects);
         this.classes = new HashMap<>(classes);

@@ -65,7 +65,7 @@ public class ModelToDTOConverter {
 
     public TimeTableSystemDataSupplierDTO createDataSupplierDTO(TimeTableSystemDataSupplier old){
         return new TimeTableSystemDataSupplierDTO(old.getDays(), old.getHours(), createTeacherMap(old.getTeachers()),
-                                                  createSubjectsMap(old.getSubjects()), createClassMap(old.getClasses()), old.getPopulationSize());
+                                                  createSubjectsMap(old.getSubjects()), createClassMap(old.getClasses()));
     }
 
     private Map<Integer, TeacherDTO> createTeacherMap(Map<Integer, Teacher> old){

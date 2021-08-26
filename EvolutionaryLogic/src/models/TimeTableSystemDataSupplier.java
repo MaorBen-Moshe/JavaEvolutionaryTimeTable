@@ -17,16 +17,13 @@ public class TimeTableSystemDataSupplier implements DataSupplier, Serializable {
     private final Map<Integer, SchoolClass> unModifiedClasses;
     private final int days;
     private final int hours;
-    private final int populationSize;
 
     public TimeTableSystemDataSupplier(int days,
                                        int hours,
                                        Map<Integer, Teacher> teachers,
-                                       Map<Integer, Subject> subjects, Map<Integer, SchoolClass> classes,
-                                       int popSize){
+                                       Map<Integer, Subject> subjects, Map<Integer, SchoolClass> classes){
         this.days = days;
         this.hours = hours;
-        this.populationSize = popSize;
         this.teachers = new HashMap<>(teachers);
         this.subjects = new HashMap<>(subjects);
         this.classes = new HashMap<>(classes);
@@ -54,11 +51,6 @@ public class TimeTableSystemDataSupplier implements DataSupplier, Serializable {
     public int getHours() {
         return hours;
     }
-
-    public int getPopulationSize() {
-        return populationSize;
-    }
-
 
     @Override
     public boolean equals(Object o) {

@@ -21,6 +21,8 @@ public interface EvolutionarySystem<T, S extends DataSupplier> extends Serializa
 
     boolean isRunningProcess();
 
+    boolean isPauseOccurred();
+
     int getInitialPopulationSize();
 
     Selection<T> getSelection();

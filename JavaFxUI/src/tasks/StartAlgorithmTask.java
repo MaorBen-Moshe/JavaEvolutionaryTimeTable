@@ -68,7 +68,10 @@ public class StartAlgorithmTask extends Task<Void> {
     }
 
     public void stop() throws Exception {
-        stopCommand.execute();
+        synchronized (lock){
+            stopCommand.execute();
+            lock.notifyAll();
+        }
     }
 
     @Override

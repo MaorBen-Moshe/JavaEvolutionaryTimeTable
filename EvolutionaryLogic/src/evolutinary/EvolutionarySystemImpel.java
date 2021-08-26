@@ -137,9 +137,9 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
                             blockTime = Instant.now();
                             pauseLock.wait();
                         }catch (InterruptedException ignored){
-                            if(isStopOccurred()) break;
                         }
 
+                        if(isStopOccurred()) break;
                         long offset = Duration.between(blockTime, Instant.now()).getSeconds();
                         startTime = startTime.plusSeconds(offset);
                     }
@@ -182,6 +182,9 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
 
     @Override
     public boolean isRunningProcess() { return isRunning; }
+
+    @Override
+    public boolean isPauseOccurred() { return pauseOccurred; }
 
     @Override
     public int getInitialPopulationSize() {
@@ -274,8 +277,6 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     }
 
     private boolean isStopOccurred() { return stopOccurred; }
-
-    private boolean isPauseOccurred() { return pauseOccurred; }
 
     private void setRunning(boolean running) { isRunning = running; }
 

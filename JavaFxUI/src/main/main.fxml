@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane id="border" fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="1.0" minWidth="1.0" prefHeight="400.0" prefWidth="619.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.MainController">
+<BorderPane id="border" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="1.0" minWidth="1.0" prefHeight="400.0" prefWidth="619.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.MainController">
    <top>
       <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="98.0" prefWidth="600.0" BorderPane.alignment="CENTER">
         <content>
@@ -23,7 +23,7 @@
                   <Label fx:id="filePathLabel" layoutX="66.0" layoutY="48.0" text="file path here" textFill="#0023a6" AnchorPane.leftAnchor="66.0" AnchorPane.topAnchor="48.0" />
                   <ComboBox fx:id="themesComboBox" layoutX="200.0" layoutY="15.0" prefHeight="25.0" prefWidth="107.0" promptText="Themes" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="15.0" />
                   <CheckBox fx:id="animationsCheckBox" layoutX="117.0" layoutY="19.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="83.0" text="animations" AnchorPane.leftAnchor="117.0" AnchorPane.topAnchor="19.0" />
-                  <Label fx:id="errorLabel" layoutX="14.0" layoutY="68.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="68.0" />
+                  <Label layoutX="14.0" layoutY="68.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="68.0" />
                   <Button fx:id="pauseButton" layoutX="455.0" layoutY="15.0" mnemonicParsing="false" onAction="#onPause" prefHeight="25.0" prefWidth="64.0" text="Pause" AnchorPane.rightAnchor="85.0" AnchorPane.topAnchor="15.0" />
                   <Button fx:id="stopButton" layoutX="524.0" layoutY="15.0" mnemonicParsing="false" onAction="#onStop" prefHeight="25.0" prefWidth="59.0" text="Stop" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="15.0" />
                   <Button fx:id="startButton" layoutX="386.0" layoutY="15.0" mnemonicParsing="false" onAction="#onStart" prefHeight="25.0" prefWidth="65.0" text="Start" AnchorPane.rightAnchor="153.0" AnchorPane.topAnchor="15.0" />
@@ -51,7 +51,7 @@
       <fx:include fx:id="bestItem" source="../bestItemComponent/bestItem.fxml" />
    </center>
    <bottom>
-      <ScrollPane fitToWidth="true" prefHeight="88.0" prefWidth="600.0" styleClass="buttom" BorderPane.alignment="CENTER">
+      <ScrollPane fitToWidth="true" prefHeight="88.0" prefWidth="600.0" styleClass="bottom" BorderPane.alignment="CENTER">
          <content>
             <VBox id="bottom" prefHeight="93.0" prefWidth="604.0">
                <children>

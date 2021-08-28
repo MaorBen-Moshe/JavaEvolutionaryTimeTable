@@ -15,11 +15,11 @@ public class StartAlgorithmTask extends Task<Void> {
     private final StartSystemCommand startCommand;
     private final PauseCommand pauseCommand;
     private final StopCommand stopCommand;
-    private final ResumeCommand resumeCommad;
+    private final ResumeCommand resumeCommand;
     private int totalGenerations;
     private double totalFitness;
     private long totalTime;
-    private final Object lock;
+    private final Object algorithmLock;
     private final DoubleProperty currentFitnessProperty = new SimpleDoubleProperty(0);
     private final IntegerProperty currentGenerationProperty = new SimpleIntegerProperty(0);
     private final DoubleProperty fitnessProperty = new SimpleDoubleProperty(0);
@@ -28,12 +28,12 @@ public class StartAlgorithmTask extends Task<Void> {
 
     public StartAlgorithmTask(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper, StartSystemInfoDTO info, Consumer<CommandResult<?>> whenFinished) {
         setInitialValues(info);
-        lock = new Object();
-        startCommand = new StartSystemCommand(wrapper, lock,
+        algorithmLock = new Object();
+        startCommand = new StartSystemCommand(wrapper, algorithmLock,
                 () -> info, () -> info, () -> info, this::taskProcess,(result) -> Platform.runLater(() -> whenFinished.accept(result)));
         pauseCommand = new PauseCommand(wrapper);
         stopCommand = new StopCommand(wrapper);
-        resumeCommad = new ResumeCommand(wrapper);
+        resumeCommand = new ResumeCommand(wrapper);
     }
 
     public DoubleProperty getFitnessProperty() {
@@ -57,9 +57,9 @@ public class StartAlgorithmTask extends Task<Void> {
     }
 
     public void resume() throws Exception{
-        synchronized (lock){
-            resumeCommad.execute();
-            lock.notifyAll();
+        synchronized (algorithmLock){
+            resumeCommand.execute();
+            algorithmLock.notifyAll();
         }
     }
 
@@ -68,9 +68,9 @@ public class StartAlgorithmTask extends Task<Void> {
     }
 
     public void stop() throws Exception {
-        synchronized (lock){
+        synchronized (algorithmLock){
             stopCommand.execute();
-            lock.notifyAll();
+            algorithmLock.notifyAll();
         }
     }
 

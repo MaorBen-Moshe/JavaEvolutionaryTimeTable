@@ -5,7 +5,6 @@ import commands.BestSolutionCommand;
 import commands.CommandResult;
 import commands.EngineWrapper;
 import commands.ProcessCommand;
-import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -37,8 +36,8 @@ import java.util.stream.IntStream;
 
 public class BestItemController {
     private static class ComboItem{
-        private int id;
-        private String name;
+        private final int id;
+        private final String name;
 
         private ComboItem(int id, String name){
             this.id = id;
@@ -79,27 +78,22 @@ public class BestItemController {
     private TableView<RawTableItem> rawTable;
     private final Pattern jumpPattern;
 
-    private BooleanProperty animationProperty;
+    private final BooleanProperty animationProperty;
 
     @FXML
     private ScrollPane tableSplitPane;
     @FXML
     private ComboBox<Aspect> aspectComboBox;
-
     @FXML
     private ComboBox<ComboItem> itemComboBox;
-
     @FXML
     private Label itemLabel;
-
     @FXML
     private Button prevButton;
-
     @FXML
     private Button nextButton;
     @FXML
     private TextField jumpTF;
-
     @FXML
     private LineChart<NumberAxis, NumberAxis> fitnessChart;
     @FXML
@@ -122,16 +116,10 @@ public class BestItemController {
         jumpProperty = new SimpleIntegerProperty(1);
         jumpPattern = Pattern.compile("[0-9]*");
         animationProperty = new SimpleBooleanProperty(false);
-
-        /*fadein = new FadeTransition(Duration.millis(2000));*/
-        /*fadeout.setFromValue(0);
-        fadeout.setToValue(1);
-        fadeout.setCycleCount(1);
-        fadeout.setAutoReverse(false);*/
     }
 
-    public BooleanProperty getAnimationProperty() {
-        return animationProperty;
+    public void bindAnimationProperty(BooleanProperty toBind){
+        animationProperty.bind(toBind);
     }
 
     public void setWrapper(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper){
@@ -172,6 +160,11 @@ public class BestItemController {
         itemComboBox.setVisible(false);
         itemLabel.setVisible(false);
         jumpTF.textProperty().setValue(String.valueOf(jumpProperty.get()));
+        aspectComboBox.getItems().addAll(Aspect.values());
+        setListeners();
+    }
+
+    private void setListeners(){
         jumpTF.textProperty().addListener((item, old, newVal) -> {
             if (jumpPattern.matcher(newVal).matches()) {
                 try {
@@ -189,7 +182,7 @@ public class BestItemController {
                 jumpTF.setText(old);
             }
         });
-        aspectComboBox.getItems().addAll(Aspect.values());
+
         aspectComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldVal, newVal) -> {
             if(newVal.equals(Aspect.RAW)){
                 displayRaw();
@@ -209,7 +202,6 @@ public class BestItemController {
         });
 
         itemComboBox.getSelectionModel().selectedItemProperty().addListener((item, old, newVal) -> displayTable(history.get(currentDisplayItemIndex.get()).getSolution(), newVal));
-
         currentDisplayItemIndex.addListener((item, old, newVal) -> {
             nextButton.disableProperty().set(currentDisplayItemIndex.get() + jumpProperty.get() > history.size() - 1);
             prevButton.disableProperty().set(currentDisplayItemIndex.get() - jumpProperty.get() < 0);
@@ -250,7 +242,6 @@ public class BestItemController {
         fitnessChart.setTitle("Fitness by generation");
         Series series = new Series();
         result.forEach(item -> series.getData().add(new XYChart.Data<>(item.getGenerationNumber(), item.getCurrentGenerationFitness())));
-
         fitnessChart.getData().clear();
         fitnessChart.getData().addAll(series);
     }
@@ -314,7 +305,6 @@ public class BestItemController {
             col.setFillWidth(true);
             col.setHalignment(HPos.CENTER);
             tablePos.getColumnConstraints().add(col);
-
         }
 
         for(int j = 1; j <= days; j++){
@@ -457,34 +447,7 @@ public class BestItemController {
 
     private void displayRaw(){
         if(rawVBox == null){
-            rawVBox = new VBox();
-            rawVBox.setSpacing(5);
-            rawVBox.setPadding(new Insets(10));
-            rawVBox.setAlignment(Pos.TOP_LEFT);
-            rawTable = new TableView<>();
-            TableColumn<RawTableItem,String> dayCol = new TableColumn<>("Day");
-            TableColumn<RawTableItem,String> hourCol = new TableColumn<>("Hour");
-            TableColumn<RawTableItem,Integer> classCol = new TableColumn<>("Class");
-            TableColumn<RawTableItem,String> teacherCol = new TableColumn<>("Teacher");
-            TableColumn<RawTableItem,String> subjectCol = new TableColumn<>("Subject");
-            dayCol.setCellValueFactory(
-                    new PropertyValueFactory<>("day")
-            );
-            hourCol.setCellValueFactory(
-                    new PropertyValueFactory<>("hour")
-            );
-            classCol.setCellValueFactory(
-                    new PropertyValueFactory<>("klass")
-            );
-            teacherCol.setCellValueFactory(
-                    new PropertyValueFactory<>("teacher")
-            );
-            subjectCol.setCellValueFactory(
-                    new PropertyValueFactory<>("subject")
-            );
-
-            rawTable.getColumns().addAll(dayCol, hourCol, classCol, teacherCol, subjectCol);
-            rawVBox.getChildren().add(rawTable);
+            initialRawVBox();
         }
 
         List<RawTableItem> items = new ArrayList<>();
@@ -496,8 +459,40 @@ public class BestItemController {
         tableSplitPane.setContent(rawTable);
     }
 
+    private void initialRawVBox(){
+        rawVBox = new VBox();
+        rawVBox.setSpacing(5);
+        rawVBox.setPadding(new Insets(10));
+        rawVBox.setAlignment(Pos.TOP_LEFT);
+        rawTable = new TableView<>();
+        TableColumn<RawTableItem,String> dayCol = new TableColumn<>("Day");
+        TableColumn<RawTableItem,String> hourCol = new TableColumn<>("Hour");
+        TableColumn<RawTableItem,Integer> classCol = new TableColumn<>("Class");
+        TableColumn<RawTableItem,String> teacherCol = new TableColumn<>("Teacher");
+        TableColumn<RawTableItem,String> subjectCol = new TableColumn<>("Subject");
+        dayCol.setCellValueFactory(
+                new PropertyValueFactory<>("day")
+        );
+        hourCol.setCellValueFactory(
+                new PropertyValueFactory<>("hour")
+        );
+        classCol.setCellValueFactory(
+                new PropertyValueFactory<>("klass")
+        );
+        teacherCol.setCellValueFactory(
+                new PropertyValueFactory<>("teacher")
+        );
+        subjectCol.setCellValueFactory(
+                new PropertyValueFactory<>("subject")
+        );
+
+        rawTable.getColumns().addAll(dayCol, hourCol, classCol, teacherCol, subjectCol);
+        rawVBox.getChildren().add(rawTable);
+    }
+
     @FXML
     void onNext(ActionEvent event) {
+        if(currentDisplayItemIndex.get() == -1) return;
         if(currentDisplayItemIndex.get() + jumpProperty.get() <= history.size() - 1){
             currentDisplayItemIndex.set(currentDisplayItemIndex.get() + jumpProperty.get());
             tripHelper();
@@ -506,6 +501,7 @@ public class BestItemController {
 
     @FXML
     void onPrev(ActionEvent event) {
+        if(currentDisplayItemIndex.get() == -1) return;
         if(currentDisplayItemIndex.get() - jumpProperty.get() >= 0){
             currentDisplayItemIndex.set(currentDisplayItemIndex.get() - jumpProperty.get());
             tripHelper();

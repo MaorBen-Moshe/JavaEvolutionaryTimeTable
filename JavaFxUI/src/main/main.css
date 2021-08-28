@@ -24,3 +24,7 @@
 .text-field{
     -fx-border-color: white;
 }
+
+.label{
+    -fx-padding-left: 0px, 5px, 0px, 5px;
+}

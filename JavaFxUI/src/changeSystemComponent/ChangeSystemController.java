@@ -39,16 +39,12 @@ public class ChangeSystemController {
     private TextField elita;
     private List<VBox> mutations;
     private Button submit;
-    private Label selectionTitle;
     private Label mutationTitle;
-    private Label crossoverTitle;
     private Consumer<?> after;
-    private final Pattern floatPattern;
-    private final Pattern numberPattern;
+    private final Pattern floatPattern = Pattern.compile("[0](\\.[0-9]*)?|[1]?");
+    private final Pattern numberPattern = Pattern.compile("[0-9]*");
 
     public ChangeSystemController(){
-        floatPattern = Pattern.compile("[0](\\.[0-9]*)?|[1]?");
-        numberPattern = Pattern.compile("[0-9]*");
     }
 
     public void setWrapper(EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper){
@@ -133,9 +129,10 @@ public class ChangeSystemController {
 
         mutationTitle = new Label("Mutations");
         mutationTitle.getStyleClass().add("sub");
-        selectionTitle = new Label("Selection");
+
+        Label selectionTitle = new Label("Selection");
         selectionTitle.getStyleClass().add("sub");
-        crossoverTitle = new Label("Crossover");
+        Label crossoverTitle = new Label("Crossover");
         crossoverTitle.getStyleClass().add("sub");
 
         vBox.getChildren().add(elitaLabel);
@@ -217,7 +214,6 @@ public class ChangeSystemController {
             cuttingTextField.setText(String.valueOf(wrapper.getEngine().getCrossover().getCuttingPoints()));
         }
     }
-
 
     private void setElitism(){
         try{

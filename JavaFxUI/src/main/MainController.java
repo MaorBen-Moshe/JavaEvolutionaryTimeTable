@@ -12,12 +12,10 @@ import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.transform.Rotate;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -35,6 +33,18 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 public class MainController {
+    private enum Themes { Default, Theme_1 {
+        @Override
+        public String toString() {
+            return super.toString().replace("_", " ");
+        }
+    }, Theme_2 {
+        @Override
+        public String toString() {
+            return super.toString().replace("_", " ");
+        }
+    }}
+
     private Stage primaryStage;
     private final SimpleStringProperty selectedFileProperty;
     private final SimpleBooleanProperty isFileSelected;
@@ -50,7 +60,7 @@ public class MainController {
     @FXML
     private Label filePathLabel;
     @FXML
-    private ComboBox<String> themesComboBox;
+    private ComboBox<Themes> themesComboBox;
     @FXML
     private CheckBox animationsCheckBox;
     @FXML
@@ -83,8 +93,6 @@ public class MainController {
     private ScrollPane changeSystemInfo;
     @FXML
     private ChangeSystemController changeSystemInfoController;
-    @FXML
-    private BorderPane borderPane;
     @FXML
     private Label fitnessRunningLabel;
     @FXML
@@ -129,7 +137,7 @@ public class MainController {
     }
 
     @FXML
-    public  void onLoadFile(ActionEvent event){
+    public  void onLoadFile(){
         try{
             loadCommand.execute();
         } catch (Exception e){
@@ -138,7 +146,7 @@ public class MainController {
     }
 
     @FXML
-    public void onPause(ActionEvent event) {
+    public void onPause() {
         try {
             if(paused){
                 resume(true);
@@ -152,7 +160,7 @@ public class MainController {
     }
 
     @FXML
-    public void onStart(ActionEvent event) {
+    public void onStart() {
         try{
             if(isFileSelected.get()){
                 StartSystemInfoDTO info = createRules();
@@ -165,11 +173,7 @@ public class MainController {
 
                 startButton.setDisable(true);
                 bestItem.setVisible(false);
-                generationsRunningLabel.textProperty().bind(Bindings.concat("Generation number: ", startTask.getCurrentGenerationsProperty()));
-                fitnessRunningLabel.textProperty().bind(Bindings.concat("Fitness number: ", startTask.getCurrentFitnessProperty()));
-                generationsProgressBar.progressProperty().bind(startTask.getGenerationsProperty());
-                fitnessProgressBar.progressProperty().bind(startTask.getFitnessProperty());
-                timeProgressBar.progressProperty().bind(startTask.getTimeProperty());
+                startBinds();
                 startTask.exceptionProperty().addListener((obs, oldVal, newVal) -> {
                     if(newVal != null){
                         AlertUtils.displayAlert(Alert.AlertType.ERROR, "Failure", newVal.getMessage());
@@ -189,8 +193,16 @@ public class MainController {
         }
     }
 
+    private void startBinds(){
+        generationsRunningLabel.textProperty().bind(Bindings.concat("Generation number: ", startTask.getCurrentGenerationsProperty()));
+        fitnessRunningLabel.textProperty().bind(Bindings.concat("Fitness number: ", startTask.getCurrentFitnessProperty()));
+        generationsProgressBar.progressProperty().bind(startTask.getGenerationsProperty());
+        fitnessProgressBar.progressProperty().bind(startTask.getFitnessProperty());
+        timeProgressBar.progressProperty().bind(startTask.getTimeProperty());
+    }
+
     @FXML
-    public void onStop(ActionEvent event) {
+    public void onStop() {
         try {
             startTask.stop();
             bestItemController.setView();
@@ -216,7 +228,6 @@ public class MainController {
         changeSystemInfo.setVisible(true);
     }
 
-
     @FXML
     private void initialize() {
         filePathLabel.textProperty().bind(selectedFileProperty);
@@ -235,9 +246,9 @@ public class MainController {
             selectedFileProperty.set(path);
             isFileSelected.set(engineWrapper.isFileLoaded());
         }, () -> false);
-        themesComboBox.getItems().addAll("default", "theme 1", "theme 2");
+        themesComboBox.getItems().addAll(Themes.values());
         themesComboBox.valueProperty().addListener((obs, oldItem, newItem) -> {
-            // load new css according to newItem
+            setThemesChangeListener(newItem);
         });
 
         bestItemController.setWrapper(engineWrapper);
@@ -270,8 +281,8 @@ public class MainController {
         fitnessLabel.textProperty().bind(Bindings.concat("fitness ", Bindings.multiply(fitnessProgressBar.progressProperty(), 100), "%"));
         timeLabel.textProperty().bind(Bindings.concat("time ", Bindings.multiply(timeProgressBar.progressProperty(), 100), "%"));
         startImage.visibleProperty().bind(animationsCheckBox.selectedProperty());
-        bestItemController.getAnimationProperty().bind(animationsCheckBox.selectedProperty());
-        setSandAnimation();
+        bestItemController.bindAnimationProperty(animationsCheckBox.selectedProperty());
+        setSandClockAnimation();
         setTextFieldListeners();
     }
 
@@ -295,7 +306,7 @@ public class MainController {
         }
     }
 
-    private void setSandAnimation(){
+    private void setSandClockAnimation(){
         startImage.setImage(new Image("https://image.flaticon.com/icons/png/512/3448/3448543.png"));
         startImage.setFitHeight(35);
         startImage.setFitWidth(35);
@@ -319,6 +330,10 @@ public class MainController {
         rotationTransform.setAxis(Rotate.X_AXIS);
         rotationAnimation.setCycleCount(Animation.INDEFINITE);
         rotationAnimation.play();
+    }
+
+    private void setThemesChangeListener(Themes current){
+
     }
 
     private StartSystemInfoDTO createRules(){

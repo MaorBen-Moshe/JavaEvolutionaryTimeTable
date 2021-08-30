@@ -1,6 +1,7 @@
 package bestItemComponent;
 
 import DTO.*;
+import Interface.ThemesChanger;
 import commands.BestSolutionCommand;
 import commands.CommandResult;
 import commands.EngineWrapper;
@@ -34,7 +35,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-public class BestItemController {
+public class BestItemController implements ThemesChanger {
     private static class ComboItem{
         private final int id;
         private final String name;
@@ -110,6 +111,8 @@ public class BestItemController {
     private Label rulesTitleLabel;
     @FXML
     private Label mainTitleLabel;
+    @FXML
+    private ScrollPane root;
 
     public BestItemController(){
         currentDisplayItemIndex = new SimpleIntegerProperty(-1);
@@ -147,6 +150,19 @@ public class BestItemController {
         processCommand.execute();
     }
 
+    @Override
+    public void setNewTheme(Themes theme) {
+        root.getStylesheets().clear();
+        String sheet;
+        switch(theme){
+            case Theme_1: sheet = "bestItemTheme1.css"; break;
+            case Theme_2: sheet = "bestItemTheme2.css"; break;
+            default: sheet = "bestItem.css"; break;
+        }
+
+        root.getStylesheets().add(Objects.requireNonNull(getClass().getResource(sheet)).toExternalForm());
+    }
+
     @FXML
     private void initialize(){
         mainTitleLabel = new Label("Solution Info:");
@@ -161,6 +177,7 @@ public class BestItemController {
         itemLabel.setVisible(false);
         jumpTF.textProperty().setValue(String.valueOf(jumpProperty.get()));
         aspectComboBox.getItems().addAll(Aspect.values());
+        fitnessChart.setLegendVisible(false);
         setListeners();
     }
 
@@ -399,10 +416,10 @@ public class BestItemController {
         List<CellItem> cellItems = new ArrayList<>();
         items.forEach(item -> {
             switch (aspect){
-                case TEACHER: CellItem currentT = new CellItem(item.getSchoolClass().getName() + ", " + item.getSchoolClass().getId(), item.getSubject().toString());
+                case TEACHER: CellItem currentT = new CellItem(item.getSchoolClass().getName() + ", id: " + item.getSchoolClass().getId(), item.getSubject().toString());
                               cellItems.add(currentT);
                               break;
-                case CLASS: CellItem currentC = new CellItem(item.getTeacher().getName() + ", " + item.getTeacher().getId(), item.getSubject().toString());
+                case CLASS: CellItem currentC = new CellItem(item.getTeacher().getName() + ", id: " + item.getTeacher().getId(), item.getSubject().toString());
                             cellItems.add(currentC);
                             break;
             }

@@ -6,11 +6,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane fitToHeight="true" prefHeight="113.0" prefWidth="202.0" stylesheets="@systemInfoStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="systemInfoComponent.SystemInfoController">
+<ScrollPane fx:id="root" fitToHeight="true" prefHeight="113.0" prefWidth="202.0" stylesheets="@systemInfoStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="systemInfoComponent.SystemInfoController">
    <content>
       <VBox id="left" fx:id="vBox" fillWidth="false">
          <children>
-            <AnchorPane prefHeight="48.0" prefWidth="200.0">
+            <AnchorPane prefHeight="48.0" prefWidth="200.0" styleClass="anchor">
                <children>
                   <Button fx:id="showButton" layoutX="37.0" layoutY="14.0" mnemonicParsing="false" onAction="#onShowInfo" prefHeight="25.0" prefWidth="127.0" text="Show info" />
                   <Label id="mainTitle" fx:id="mainTitle" alignment="CENTER" layoutX="64.0" layoutY="51.0" styleClass="title" text="System info:" />

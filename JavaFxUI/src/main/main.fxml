@@ -12,29 +12,29 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane id="border" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="1.0" minWidth="1.0" prefHeight="400.0" prefWidth="619.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.MainController">
+<BorderPane id="border" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="1.0" minWidth="1.0" prefHeight="400.0" prefWidth="620.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.MainController">
    <top>
       <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="98.0" prefWidth="600.0" BorderPane.alignment="CENTER">
         <content>
-          <AnchorPane id="top" minHeight="102.0" minWidth="557.0" prefHeight="123.0" prefWidth="604.0">
+          <AnchorPane id="top" minHeight="100.0" minWidth="604.0" prefHeight="123.0" prefWidth="604.0">
                <children>
                   <Button fx:id="loadButton" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#onLoadFile" prefHeight="25.0" prefWidth="97.0" text="Load xml file" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="15.0" />
                   <Label layoutX="14.0" layoutY="48.0" text="File path: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="48.0" />
-                  <Label fx:id="filePathLabel" layoutX="66.0" layoutY="48.0" text="file path here" textFill="#0023a6" AnchorPane.leftAnchor="66.0" AnchorPane.topAnchor="48.0" />
+                  <Label id="filePath" fx:id="filePathLabel" layoutX="76.0" layoutY="48.0" text="file path here" textFill="#0023a6" AnchorPane.leftAnchor="76.0" AnchorPane.topAnchor="48.0" />
                   <ComboBox fx:id="themesComboBox" layoutX="200.0" layoutY="15.0" prefHeight="25.0" prefWidth="107.0" promptText="Themes" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="15.0" />
                   <CheckBox fx:id="animationsCheckBox" layoutX="117.0" layoutY="19.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="83.0" text="animations" AnchorPane.leftAnchor="117.0" AnchorPane.topAnchor="19.0" />
                   <Label layoutX="14.0" layoutY="68.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="68.0" />
                   <Button fx:id="pauseButton" layoutX="455.0" layoutY="15.0" mnemonicParsing="false" onAction="#onPause" prefHeight="25.0" prefWidth="64.0" text="Pause" AnchorPane.rightAnchor="85.0" AnchorPane.topAnchor="15.0" />
                   <Button fx:id="stopButton" layoutX="524.0" layoutY="15.0" mnemonicParsing="false" onAction="#onStop" prefHeight="25.0" prefWidth="59.0" text="Stop" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="15.0" />
                   <Button fx:id="startButton" layoutX="386.0" layoutY="15.0" mnemonicParsing="false" onAction="#onStart" prefHeight="25.0" prefWidth="65.0" text="Start" AnchorPane.rightAnchor="153.0" AnchorPane.topAnchor="15.0" />
-                  <TextField fx:id="generationsTextField" layoutX="119.0" layoutY="64.0" prefHeight="25.0" prefWidth="91.0" promptText="generations" AnchorPane.rightAnchor="394.0" />
-                  <TextField fx:id="fitnessTextField" layoutX="253.0" layoutY="64.0" prefHeight="25.0" prefWidth="90.0" promptText="fitness" AnchorPane.rightAnchor="261.0" />
-                  <TextField fx:id="timeTextField" layoutX="379.0" layoutY="64.0" prefHeight="25.0" prefWidth="98.0" promptText="time in minutes" AnchorPane.rightAnchor="127.0" />
-                  <TextField fx:id="jumpsTextField" layoutX="526.0" layoutY="64.0" prefHeight="25.0" prefWidth="64.0" promptText="jumps" AnchorPane.rightAnchor="14.0" />
-                  <Label fx:id="genTextLabel" layoutX="51.0" layoutY="68.0" text="Generations:" AnchorPane.rightAnchor="486.0" />
-                  <Label fx:id="fitTextLabel" layoutX="214.0" layoutY="68.0" text="Fitness:" AnchorPane.rightAnchor="351.0" />
-                  <Label fx:id="timeTextLabel" layoutX="350.0" layoutY="68.0" text="Time:" AnchorPane.rightAnchor="225.0" />
-                  <Label fx:id="jumpsTextLabel" layoutX="487.0" layoutY="68.0" text="Jumps:" AnchorPane.rightAnchor="80.0" />
+                  <TextField fx:id="generationsTextField" layoutX="88.0" layoutY="67.0" prefHeight="20.0" prefWidth="91.0" promptText="generations" AnchorPane.rightAnchor="425.0" />
+                  <TextField fx:id="fitnessTextField" layoutX="233.0" layoutY="67.0" prefHeight="20.0" prefWidth="91.0" promptText="fitness" AnchorPane.rightAnchor="280.0" />
+                  <TextField fx:id="timeTextField" layoutX="373.0" layoutY="67.0" prefHeight="27.0" prefWidth="98.0" promptText="time in minutes" AnchorPane.rightAnchor="133.0" />
+                  <TextField fx:id="jumpsTextField" layoutX="526.0" layoutY="67.0" prefHeight="20.0" prefWidth="64.0" promptText="jumps" AnchorPane.rightAnchor="14.0" />
+                  <Label fx:id="genTextLabel" layoutX="14.0" layoutY="72.0" text="Generations:" AnchorPane.rightAnchor="523.0" />
+                  <Label fx:id="fitTextLabel" layoutX="188.0" layoutY="72.0" text="Fitness:" AnchorPane.rightAnchor="377.0" />
+                  <Label fx:id="timeTextLabel" layoutX="332.0" layoutY="72.0" text="Time:" AnchorPane.rightAnchor="243.0" />
+                  <Label fx:id="jumpsTextLabel" layoutX="482.0" layoutY="72.0" text="Jumps:" AnchorPane.rightAnchor="85.0" />
                   <ImageView fx:id="startImage" fitHeight="46.0" fitWidth="70.0" layoutX="311.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="223.0" AnchorPane.topAnchor="10.0" />
                </children>
             </AnchorPane>

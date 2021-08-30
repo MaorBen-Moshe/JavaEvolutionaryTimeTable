@@ -1,6 +1,7 @@
 #chart{
     -fx-stroke-width: 2px;
-    -fx-text-fill: #8FBC8F;
+    -fx-text-fill: #9E00C6;
+    -fx-effect: null;
 }
 
 .chart-plot-background{
@@ -12,12 +13,12 @@
     -fx-effect: null;
 }
 
-.default-color0.chart-series-line { -fx-stroke: #8FBC8F; }
+.default-color0.chart-series-line { -fx-stroke: #9E00C6; }
 
-.default-color0.chart-line-symbol { -fx-background-color: #8FBC8F, white; }
+.default-color0.chart-line-symbol { -fx-background-color: #9E00C6, white; }
 
 .label{
-    -fx-text-fill: #8FBC8F;
+    -fx-text-fill: #9E00C6;
 }
 
 .title {
@@ -46,7 +47,6 @@
     -fx-padding: 0px 0px 5px 5px;
     -fx-font-family: "Agency FB";
     -fx-font-size: 13px;
-    -fx-font-weight: bold;
 }
 
 #daysHours {
@@ -75,6 +75,5 @@
     -fx-border-color: black;
     -fx-text-fill: black;
     -fx-prompt-text-fill: black;
-    -fx-background-color: transparent;
-    -fx-border-radius: 6px;
+    -fx-background-color: #E0E0E0;
 }

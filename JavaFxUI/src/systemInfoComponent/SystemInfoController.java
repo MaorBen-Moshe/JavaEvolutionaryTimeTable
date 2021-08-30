@@ -1,35 +1,33 @@
 package systemInfoComponent;
 
-import DTO.*;
+import DTO.RuleDTO;
+import DTO.RulesDTO;
+import DTO.SerialItemDTO;
+import DTO.SystemInfoDTO;
+import Interface.ThemesChanger;
 import commands.CommandResult;
 import commands.EngineWrapper;
 import commands.SystemInfoCommand;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
 import mutation.Mutation;
 import utils.AlertUtils;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class SystemInfoController {
+public class SystemInfoController implements ThemesChanger {
     @FXML
     private Button showButton;
     @FXML
     private VBox vBox;
     @FXML
     private Label mainTitle;
+    @FXML
+    private ScrollPane root;
     private Label timeTableLabel;
     private Label daysLabel;
     private Label hoursLabel;
@@ -80,10 +78,12 @@ public class SystemInfoController {
 
         timeTableVBox = new VBox();
         timeTable = new TitledPane("Time Table info", timeTableVBox);
+        timeTable.getStyleClass().add("infoContainer");
         timeTable.setVisible(false);
         timeTable.setExpanded(false);
         engineVBox = new VBox();
         engine = new TitledPane("Engine Info", engineVBox);
+        engine.getStyleClass().add("infoContainer");
         engine.setExpanded(false);
         engine.setVisible(false);
         vBox.getChildren().addAll(timeTable, engine);
@@ -94,6 +94,19 @@ public class SystemInfoController {
         if(shown){
             systemInf.execute();
         }
+    }
+
+    @Override
+    public void setNewTheme(Themes theme) {
+        root.getStylesheets().clear();
+        String sheet;
+        switch(theme){
+            case Theme_1: sheet = "systemInfoTheme1.css"; break;
+            case Theme_2: sheet = "systemInfoTheme2.css"; break;
+            default: sheet = "systemInfoStyle.css"; break;
+        }
+
+        root.getStylesheets().add(Objects.requireNonNull(getClass().getResource(sheet)).toExternalForm());
     }
 
     private void setView(SystemInfoDTO<TimeTable, TimeTableSystemDataSupplier> result) {

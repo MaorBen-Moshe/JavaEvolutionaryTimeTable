@@ -22,7 +22,7 @@ public class MainApp extends Application {
         BorderPane root = loader.load();
 
         primaryStage.setTitle("Evolutionary system - javaFX");
-        Scene scene = new Scene(root, 600, 400);
+        Scene scene = new Scene(root, 620, 400);
         primaryStage.setScene(scene);
         MainController controller = loader.getController();
         controller.setPrimaryStage(primaryStage);

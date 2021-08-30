@@ -1,6 +1,7 @@
 package main;
 
 import DTO.*;
+import Interface.ThemesChanger;
 import bestItemComponent.BestItemController;
 import changeSystemComponent.ChangeSystemController;
 import commands.EngineWrapper;
@@ -16,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.transform.Rotate;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -29,22 +31,11 @@ import utils.AlertUtils;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-public class MainController {
-    private enum Themes { Default, Theme_1 {
-        @Override
-        public String toString() {
-            return super.toString().replace("_", " ");
-        }
-    }, Theme_2 {
-        @Override
-        public String toString() {
-            return super.toString().replace("_", " ");
-        }
-    }}
-
+public class MainController implements ThemesChanger {
     private Stage primaryStage;
     private final SimpleStringProperty selectedFileProperty;
     private final SimpleBooleanProperty isFileSelected;
@@ -60,7 +51,7 @@ public class MainController {
     @FXML
     private Label filePathLabel;
     @FXML
-    private ComboBox<Themes> themesComboBox;
+    private ComboBox<ThemesChanger.Themes> themesComboBox;
     @FXML
     private CheckBox animationsCheckBox;
     @FXML
@@ -115,12 +106,27 @@ public class MainController {
     private Label jumpsTextLabel;
     @FXML
     private ImageView startImage;
+    @FXML
+    private BorderPane root;
 
     public MainController(){
         selectedFileProperty = new SimpleStringProperty();
         isFileSelected = new SimpleBooleanProperty(false);
         numberPattern = Pattern.compile("[0-9]*");
         fitnessPattern = Pattern.compile("^[1-9]?[0-9]?$|^100$");
+    }
+
+    @Override
+    public void setNewTheme(Themes theme) {
+        root.getStylesheets().clear();
+        String sheet;
+        switch(theme){
+            case Theme_1: sheet = "mainTheme1.css"; break;
+            case Theme_2: sheet = "mainTheme2.css"; break;
+            default: sheet = "main.css"; break;
+        }
+
+        root.getStylesheets().add(Objects.requireNonNull(getClass().getResource(sheet)).toExternalForm());
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -245,11 +251,14 @@ public class MainController {
         }, (path) -> {
             selectedFileProperty.set(path);
             isFileSelected.set(engineWrapper.isFileLoaded());
-        }, () -> false);
-        themesComboBox.getItems().addAll(Themes.values());
-        themesComboBox.valueProperty().addListener((obs, oldItem, newItem) -> {
-            setThemesChangeListener(newItem);
+            systemInfoController.refreshView();
+        }, () ->  {
+            AlertUtils.displayAlert(Alert.AlertType.INFORMATION, "Note", "please stop the algorithm first");
+            return false;
         });
+        themesComboBox.getItems().addAll(Themes.values());
+        themesComboBox.setValue(Themes.Default);
+        themesComboBox.valueProperty().addListener((obs, oldItem, newItem) -> setThemesChangeListener(newItem));
 
         bestItemController.setWrapper(engineWrapper);
         bestItem.setVisible(false);
@@ -333,7 +342,10 @@ public class MainController {
     }
 
     private void setThemesChangeListener(Themes current){
-
+        setNewTheme(current);
+        changeSystemInfoController.setNewTheme(current);
+        bestItemController.setNewTheme(current);
+        systemInfoController.setNewTheme(current);
     }
 
     private StartSystemInfoDTO createRules(){

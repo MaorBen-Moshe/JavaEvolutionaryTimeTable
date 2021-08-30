@@ -1,5 +1,6 @@
 package changeSystemComponent;
 
+import Interface.ThemesChanger;
 import commands.EngineWrapper;
 import crossover.AspectOrientedCrossover;
 import crossover.CrossoverTypes;
@@ -21,14 +22,17 @@ import utils.AlertUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-public class ChangeSystemController {
+public class ChangeSystemController implements ThemesChanger {
     private EngineWrapper<TimeTable, TimeTableSystemDataSupplier> wrapper;
     @FXML
     private VBox vBox;
+    @FXML
+    private ScrollPane root;
     private Label elitaLabel;
     private ComboBox<SelectionTypes> selections;
     private ComboBox<CrossoverTypes> crossovers;
@@ -99,6 +103,19 @@ public class ChangeSystemController {
                 current.setText(String.valueOf(mutationInEngine.get(i).getProbability()));
             });
         }
+    }
+
+    @Override
+    public void setNewTheme(Themes theme) {
+        root.getStylesheets().clear();
+        String sheet;
+        switch(theme){
+            case Theme_1: sheet = "changeInfoTheme1.css"; break;
+            case Theme_2: sheet = "changeInfoTheme2.css"; break;
+            default: sheet = "changeInfo.css"; break;
+        }
+
+        root.getStylesheets().add(Objects.requireNonNull(getClass().getResource(sheet)).toExternalForm());
     }
 
     private void initial(){

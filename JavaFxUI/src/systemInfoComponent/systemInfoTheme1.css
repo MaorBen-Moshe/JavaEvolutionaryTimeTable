@@ -1,11 +1,11 @@
 #mainTitle {
-    -fx-font-size: 18px;
+    -fx-font-size: 16px;
     -fx-font-weight: bold;
     -fx-underline: false;
 }
 
 .subTitle {
-    -fx-font-size: 16px;
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
 }
 
@@ -17,23 +17,13 @@
 .label{
     -fx-padding: 0px 0px 5px 5px;
     -fx-font-family: "Agency FB";
-    -fx-font-size: 14px;
-    -fx-text-fill: #8FBC8F;
-    -fx-font-weight: bold;
+    -fx-font-size: 13px;
 }
 
 .container {
     -fx-spacing: 100px;
 }
 
-.infoContainer{
-    -fx-background-color: white;
-}
-
 #left{
-    -fx-background-color: white;
-}
-
-.anchor{
-    -fx-background-color: white;
+    -fx-background-color: #66B2FF;
 }

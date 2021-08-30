@@ -3,15 +3,11 @@
 }
 
 #top {
-    -fx-background-color: #8FBC8F;
+    -fx-background-color: #A93DC4;
 }
 
 #bottom{
-    -fx-background-color: white;
-}
-
-#top .button{
-    -fx-text-fill: White;
+    -fx-background-color: #C9EE64;
 }
 
 #filePath{
@@ -19,15 +15,16 @@
 }
 
 .button{
-    -fx-background-color: transparent;
-    -fx-border-radius: 6px;
+    -fx-background-color: #E0E0E0;
     -fx-border-color: black;
+    -fx-text-fill: black;
 }
 
 #top .text-field{
     -fx-border-color: white;
     -fx-background-color: transparent;
-    -fx-prompt-text-fill: gray;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #F4F3F5;
 }
 
 #top .combo-box {
@@ -36,6 +33,7 @@
 
 #top .label{
     -fx-text-fill: white;
+    -fx-font-family: "Open Sans";
 }
 
 .check-box{
@@ -46,11 +44,11 @@
     -fx-border-insets: 0px, 5px, 0px, 5px;
     -fx-padding: 0px, 5px, 0px, 5px;
     -fx-font-size: 13px;
-    -fx-text-fill: #8FBC8F;
+    -fx-text-fill: #9E00C6;
 }
 
 .progress-bar{
     -fx-border-color: black;
-    -fx-background-color: transparent;
-    -fx-accent: #8FBC8F;
+    -fx-background-color: #C9EE64;
+    -fx-accent: #A93DC4;
 }

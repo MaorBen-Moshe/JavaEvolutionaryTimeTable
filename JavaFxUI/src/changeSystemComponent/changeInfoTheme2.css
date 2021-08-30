@@ -7,14 +7,13 @@
 
 .text-field{
     -fx-border-color: Gray;
-    -fx-border-radius: 6px;
 }
 
 .label{
     -fx-underline: true;
     -fx-padding: 5px;
     -fx-font-size: 14px;
-    -fx-text-fill: #8FBC8F;
+    -fx-text-fill: #9E00C6;
 }
 
 .sub {
@@ -28,6 +27,7 @@
     -fx-pref-height: 40px;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
+    -fx-background-color: transparent;
 }
 
 .vBox {

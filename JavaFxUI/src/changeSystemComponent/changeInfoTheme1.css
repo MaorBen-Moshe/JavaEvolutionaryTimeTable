@@ -2,32 +2,26 @@
     -fx-underline: true;
     -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-text-fill: black;
 }
 
 .text-field{
     -fx-border-color: Gray;
-    -fx-border-radius: 6px;
 }
 
 .label{
     -fx-underline: true;
-    -fx-padding: 5px;
     -fx-font-size: 14px;
-    -fx-text-fill: #8FBC8F;
 }
 
 .sub {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-text-fill: black;
 }
 .button{
     -fx-border-color: Red;
     -fx-pref-width: 80px;
     -fx-pref-height: 40px;
     -fx-font-weight: bold;
-    -fx-font-size: 14px;
 }
 
 .vBox {
@@ -35,14 +29,6 @@
 }
 
 #right{
-    -fx-background-color: white;
+    -fx-background-color: #66B2FF;
     -fx-border-color: gray;
-}
-
-.combo-box{
-    -fx-border-color: black;
-    -fx-text-fill: black;
-    -fx-prompt-text-fill: black;
-    -fx-background-color: transparent;
-    -fx-border-radius: 6px;
 }

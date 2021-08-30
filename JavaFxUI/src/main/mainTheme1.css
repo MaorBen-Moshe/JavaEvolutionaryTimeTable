@@ -1,0 +1,42 @@
+#border {
+    -fx-background-color: #66B2FF;
+}
+
+#top {
+    -fx-background-color: #868181;
+}
+
+#top .combo-box {
+    -fx-background-color: white;
+}
+
+.check-box{
+    -fx-text-fill: white;
+}
+
+#filePath{
+    -fx-text-fill: #0023a6;
+}
+
+#bottom{
+    -fx-background-color: #66B2FF;
+}
+
+.scroll-pane {
+    -fx-background-color: #868181;
+}
+
+.button{
+    -fx-text-fill: White;
+    -fx-background-color: transparent;
+    -fx-border-color: black;
+    -fx-border-radius: 10px;
+}
+
+.text-field{
+    -fx-border-color: white;
+}
+
+.label{
+    -fx-padding: 0px, 5px, 0px, 5px;
+}

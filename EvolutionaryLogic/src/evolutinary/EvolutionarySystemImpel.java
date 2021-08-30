@@ -156,6 +156,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
             throw e;
         }
 
+        listener.accept(new JumpInGenerationsResult(getBestSolution().getFitness(), getCurrentNumberOfGenerations(), Duration.between(startTime, Instant.now()).toMinutes()));
         clearAlgoData();
     }
 

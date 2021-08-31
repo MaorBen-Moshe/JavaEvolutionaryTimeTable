@@ -65,7 +65,7 @@ public class ValidateUtils {
                     try{
                         int top = Integer.parseInt(split[1]);
                         if(!(top >= 1 && top <= 100)){
-                            throw new IllegalArgumentException("selection configuration: + " + split[0] + " with value " + split[1] + " is not valid");
+                            throw new IllegalArgumentException("selection configuration: " + split[0] + " with value " + split[1] + " is not valid");
                         }
                     }catch (NumberFormatException e){
                         throw new IllegalArgumentException("Selection configuration Top percent should be an integer between 1 - 100");
@@ -87,7 +87,7 @@ public class ValidateUtils {
                     try{
                         float top = Float.parseFloat(split[1]);
                         if(!(top >= 0 && top <= 1)){
-                            throw new IllegalArgumentException("selection configuration: + " + split[0] + " with value " + split[1] + " is not valid");
+                            throw new IllegalArgumentException("selection configuration: " + split[0] + " with value " + split[1] + " is not valid");
                         }
                     }catch (NumberFormatException e){
                         throw new IllegalArgumentException("Selection configuration pte should be a number between 0 - 1");
@@ -113,7 +113,7 @@ public class ValidateUtils {
                 }
                 else{
                     if(!(split[1].equalsIgnoreCase("class") || split[1].equalsIgnoreCase("teacher"))){
-                        throw new IllegalArgumentException("crossover configuration: + " + split[0] + " with value " + split[1] + " is not valid");
+                        throw new IllegalArgumentException("crossover configuration: " + split[0] + " with value " + split[1] + " is not valid");
                     }
                 }
             }

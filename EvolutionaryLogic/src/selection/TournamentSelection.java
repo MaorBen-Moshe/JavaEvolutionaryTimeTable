@@ -24,7 +24,7 @@ public class TournamentSelection extends SelectionImpel<TimeTable> implements Se
 
     public void setPte(float pte){
         if(!(pte >= 0 && pte <= 1)){
-            throw new IllegalArgumentException("pte argument in tournament selection must be positive number between 0-1");
+            throw new IllegalArgumentException("pte argument in Tournament selection must be positive number between 0-1");
         }
 
         this.pte = pte;
@@ -37,18 +37,19 @@ public class TournamentSelection extends SelectionImpel<TimeTable> implements Se
             Map.Entry<TimeTable, Double> parent1 = randomizeParent(population);
             Map.Entry<TimeTable, Double> parent2 = randomizeParent(population);
             double randomNum = RandomUtils.nextDouble();
-            TimeTable answer;
-            if(randomNum > this.pte){
-                answer = getMaxParent(parent1, parent2);
-            }
-            else{
-                answer = getMinParent(parent1, parent2);
-            }
-
+            TimeTable answer = randomNum > this.pte ? getMaxParent(parent1, parent2)
+                                                    : getMinParent(parent1, parent2);
             retVal.add(answer);
         });
 
         return retVal;
+    }
+
+    @Override
+    public String toString() {
+        return "Tournament Selection { " +
+                "pte=" + pte +
+                " } ";
     }
 
     private TimeTable getMinParent(Map.Entry<TimeTable, Double> parent1, Map.Entry<TimeTable, Double> parent2) {
@@ -60,15 +61,7 @@ public class TournamentSelection extends SelectionImpel<TimeTable> implements Se
     }
 
     private TimeTable getParentHelper(Map.Entry<TimeTable, Double> parent1, Map.Entry<TimeTable, Double> parent2, Supplier<Boolean> predicate){
-        TimeTable ret;
-        if(predicate.get()){
-            ret = parent1.getKey();
-        }
-        else{
-            ret = parent2.getKey();
-        }
-
-        return ret;
+        return predicate.get() ? parent1.getKey() : parent2.getKey();
     }
 
     private Map.Entry<TimeTable, Double> randomizeParent(Map<TimeTable, Double> population) {
@@ -85,12 +78,5 @@ public class TournamentSelection extends SelectionImpel<TimeTable> implements Se
         }
 
         return ret;
-    }
-
-    @Override
-    public String toString() {
-        return "Tournament Selection { " +
-                "pte=" + pte +
-                " } ";
     }
 }

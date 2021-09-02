@@ -352,6 +352,9 @@ public class MainController implements ThemesChanger {
         int jumps;
         if(!jumpsTextField.getText().trim().isEmpty()){
             jumps = Integer.parseInt(jumpsTextField.getText());
+            if(jumps <= 0){
+                throw new IllegalArgumentException("Jumps in generations must be an integer bigger than 1.");
+            }
         }
         else{
             throw new IllegalArgumentException("You should pick the jumps in generations");

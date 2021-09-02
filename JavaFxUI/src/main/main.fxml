@@ -18,15 +18,15 @@
         <content>
           <AnchorPane id="top" minHeight="100.0" minWidth="604.0" prefHeight="123.0" prefWidth="604.0">
                <children>
-                  <Button fx:id="loadButton" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#onLoadFile" prefHeight="25.0" prefWidth="97.0" text="Load xml file" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="15.0" />
+                  <Button fx:id="loadButton" layoutX="1.0" layoutY="6.0" mnemonicParsing="false" onAction="#onLoadFile" prefHeight="36.0" prefWidth="106.0" text="Load xml file" AnchorPane.leftAnchor="1.0" AnchorPane.topAnchor="6.0" />
                   <Label layoutX="14.0" layoutY="48.0" text="File path: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="48.0" />
                   <Label id="filePath" fx:id="filePathLabel" layoutX="76.0" layoutY="48.0" text="file path here" textFill="#0023a6" AnchorPane.leftAnchor="76.0" AnchorPane.topAnchor="48.0" />
-                  <ComboBox fx:id="themesComboBox" layoutX="200.0" layoutY="15.0" prefHeight="25.0" prefWidth="107.0" promptText="Themes" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="15.0" />
-                  <CheckBox fx:id="animationsCheckBox" layoutX="117.0" layoutY="19.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="83.0" text="animations" AnchorPane.leftAnchor="117.0" AnchorPane.topAnchor="19.0" />
+                  <ComboBox fx:id="themesComboBox" layoutX="218.0" layoutY="16.0" prefHeight="25.0" prefWidth="110.0" promptText="Themes" AnchorPane.leftAnchor="218.0" AnchorPane.topAnchor="16.0" />
+                  <CheckBox fx:id="animationsCheckBox" layoutX="112.0" layoutY="19.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="106.0" text="animations" AnchorPane.leftAnchor="112.0" AnchorPane.topAnchor="19.0" />
                   <Label layoutX="14.0" layoutY="68.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="68.0" />
-                  <Button fx:id="pauseButton" layoutX="455.0" layoutY="15.0" mnemonicParsing="false" onAction="#onPause" prefHeight="25.0" prefWidth="64.0" text="Pause" AnchorPane.rightAnchor="85.0" AnchorPane.topAnchor="15.0" />
-                  <Button fx:id="stopButton" layoutX="524.0" layoutY="15.0" mnemonicParsing="false" onAction="#onStop" prefHeight="25.0" prefWidth="59.0" text="Stop" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="15.0" />
-                  <Button fx:id="startButton" layoutX="386.0" layoutY="15.0" mnemonicParsing="false" onAction="#onStart" prefHeight="25.0" prefWidth="65.0" text="Start" AnchorPane.rightAnchor="153.0" AnchorPane.topAnchor="15.0" />
+                  <Button fx:id="pauseButton" layoutX="469.0" layoutY="15.0" mnemonicParsing="false" onAction="#onPause" prefHeight="25.0" prefWidth="64.0" text="Pause" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="15.0" />
+                  <Button fx:id="stopButton" layoutX="538.0" layoutY="15.0" mnemonicParsing="false" onAction="#onStop" prefHeight="25.0" prefWidth="59.0" text="Stop" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="15.0" />
+                  <Button fx:id="startButton" layoutX="400.0" layoutY="15.0" mnemonicParsing="false" onAction="#onStart" prefHeight="25.0" prefWidth="65.0" text="Start" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="15.0" />
                   <TextField fx:id="generationsTextField" layoutX="88.0" layoutY="67.0" prefHeight="20.0" prefWidth="91.0" promptText="generations" AnchorPane.rightAnchor="425.0" />
                   <TextField fx:id="fitnessTextField" layoutX="233.0" layoutY="67.0" prefHeight="20.0" prefWidth="91.0" promptText="fitness" AnchorPane.rightAnchor="280.0" />
                   <TextField fx:id="timeTextField" layoutX="373.0" layoutY="67.0" prefHeight="27.0" prefWidth="98.0" promptText="time in minutes" AnchorPane.rightAnchor="133.0" />
@@ -35,7 +35,7 @@
                   <Label fx:id="fitTextLabel" layoutX="188.0" layoutY="72.0" text="Fitness:" AnchorPane.rightAnchor="377.0" />
                   <Label fx:id="timeTextLabel" layoutX="332.0" layoutY="72.0" text="Time:" AnchorPane.rightAnchor="243.0" />
                   <Label fx:id="jumpsTextLabel" layoutX="482.0" layoutY="72.0" text="Jumps:" AnchorPane.rightAnchor="85.0" />
-                  <ImageView fx:id="startImage" fitHeight="46.0" fitWidth="70.0" layoutX="311.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="223.0" AnchorPane.topAnchor="10.0" />
+                  <ImageView fx:id="startImage" fitHeight="46.0" fitWidth="65.0" layoutX="327.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="208.0" AnchorPane.topAnchor="13.0" />
                </children>
             </AnchorPane>
         </content>
@@ -58,21 +58,21 @@
                   <AnchorPane prefHeight="27.0" prefWidth="317.0">
                      <children>
                         <ProgressBar fx:id="generationsProgressBar" layoutX="14.0" layoutY="5.0" maxWidth="1.7976931348623157E308" minWidth="50.0" prefHeight="21.0" prefWidth="198.0" progress="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="386.0" />
-                        <Label fx:id="generationsLabel" layoutX="225.0" layoutY="7.0" maxWidth="1.7976931348623157E308" minHeight="17.0" minWidth="100.0" prefHeight="17.0" prefWidth="129.0" text="generations " AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="248.0" AnchorPane.topAnchor="7.0" />
+                        <Label fx:id="generationsLabel" layoutX="225.0" maxWidth="1.7976931348623157E308" minHeight="17.0" minWidth="100.0" prefHeight="29.0" prefWidth="193.0" text="generations " AnchorPane.bottomAnchor="-2.0" AnchorPane.rightAnchor="184.0" AnchorPane.topAnchor="0.0" />
                         <Label fx:id="generationsRunningLabel" layoutX="440.0" layoutY="5.0" text="Generation number:" AnchorPane.rightAnchor="58.0" />
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="22.0" prefWidth="600.0">
                      <children>
                         <ProgressBar fx:id="fitnessProgressBar" layoutX="14.0" layoutY="8.0" maxWidth="1.7976931348623157E308" minWidth="50.0" prefHeight="21.0" prefWidth="198.0" progress="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="386.0" />
-                        <Label fx:id="fitnessLabel" layoutX="240.0" layoutY="10.0" maxWidth="1.7976931348623157E308" minHeight="17.0" minWidth="80.0" prefHeight="17.0" prefWidth="102.0" text="fitness" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="275.0" AnchorPane.topAnchor="10.0" />
+                        <Label fx:id="fitnessLabel" layoutX="240.0" maxWidth="1.7976931348623157E308" minHeight="17.0" minWidth="80.0" prefHeight="29.0" prefWidth="191.0" text="fitness" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="186.0" AnchorPane.topAnchor="0.0" />
                         <Label fx:id="fitnessRunningLabel" layoutX="440.0" layoutY="6.0" text="Fitness:" AnchorPane.rightAnchor="58.0" />
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="32.0" prefWidth="600.0">
                      <children>
                         <ProgressBar fx:id="timeProgressBar" layoutX="14.0" layoutY="5.0" maxWidth="1.7976931348623157E308" minWidth="50.0" prefHeight="21.0" prefWidth="200.0" progress="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="386.0" />
-                        <Label fx:id="timeLabel" layoutX="230.0" layoutY="3.0" maxWidth="1.7976931348623157E308" minHeight="17.0" minWidth="80.0" prefHeight="17.0" prefWidth="33.0" text="time" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="297.0" AnchorPane.topAnchor="3.0" />
+                        <Label fx:id="timeLabel" layoutX="230.0" layoutY="-2.0" maxWidth="1.7976931348623157E308" minHeight="17.0" minWidth="80.0" prefHeight="31.0" prefWidth="199.0" text="time" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="178.0" AnchorPane.topAnchor="-2.0" />
                      </children>
                   </AnchorPane>
                </children>

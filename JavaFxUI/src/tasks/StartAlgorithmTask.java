@@ -85,7 +85,7 @@ public class StartAlgorithmTask extends Task<Void> {
             currentGenerationProperty.setValue(result.getNumberOfGeneration());
             currentFitnessProperty.setValue(result.getFitness());
             generationsProperty.setValue((double)result.getNumberOfGeneration() / totalGenerations);
-            fitnessProperty.setValue(result.getFitness() / totalFitness);
+            fitnessProperty.setValue(totalFitness > 0 ? result.getFitness() / totalFitness : result.getFitness());
             timeProperty.setValue(result.getTimePassed() / totalTime);
         });
     }

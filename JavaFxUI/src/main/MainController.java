@@ -389,6 +389,10 @@ public class MainController implements ThemesChanger {
 
         if(!timeTextField.getText().trim().isEmpty()){
             long time = Long.parseLong(timeTextField.getText());
+            if(time <= 0){
+                throw new IllegalArgumentException("If you want to use time as a terminate rule, you should insert at least 1 minute for the algorithm to run.");
+            }
+
             rules.add(new TimeTerminateRuleDTO(time));
             timeProgressBar.setVisible(true);
             timeLabel.setVisible(true);

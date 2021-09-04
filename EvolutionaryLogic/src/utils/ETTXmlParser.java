@@ -37,7 +37,10 @@ public class ETTXmlParser {
         File file = new File(filePath.trim());
         InputStream inputStream = new FileInputStream(file);
         ETTDescriptor descriptor = deserializeFrom(inputStream);
-        return createTimeTableImpel(descriptor.getETTTimeTable(), descriptor.getETTEvolutionEngine());
+        // for ex1 and ex2 schema
+        //return createTimeTableImpel(descriptor.getETTTimeTable(), descriptor.getETTEvolutionEngine());
+        //for ex3 schema
+        return createTimeTableImpel(descriptor.getETTTimeTable(), null);
     }
 
     private static ETTDescriptor deserializeFrom(InputStream in) throws JAXBException {
@@ -53,17 +56,19 @@ public class ETTXmlParser {
         setDaysHours(ret, timeTable.getDays(), timeTable.getHours());
         ret.setRules(createRules(timeTable.getETTRules()));
         ret.setSubjects(new HashSet<>(createSubjects(timeTable.getETTSubjects())));
-        ret.setTeachers(new HashSet<>(createTeachers(timeTable.getETTTeachers(), ret.getSubjects().values())));
+        ret.setTeachers(new HashSet<>(createTeachers(timeTable.getETTTeachers(), ret.getSubjects().values(), timeTable.getDays(), timeTable.getHours())));
         ret.setClasses(new HashSet<>(createClasses(timeTable.getETTClasses(), ret.getSubjects().values(), ret.getHours() * ret.getDays())));
 
-        // create the engine part
-        int initialPopulation = engine.getETTInitialPopulation().getSize();
-        setInitialPopulation(ret, initialPopulation);
-        ret.setSelection(createSelection(engine.getETTSelection()));
-        Integer optionalElitism = engine.getETTSelection().getETTElitism();
-        ret.setElitism(optionalElitism != null ? optionalElitism : 0);
-        ret.setCrossover(createCrossover(engine.getETTCrossover()));
-        ret.setMutations(createMutations(engine.getETTMutations()));
+        if(engine != null){
+            // create the engine part
+            int initialPopulation = engine.getETTInitialPopulation().getSize();
+            setInitialPopulation(ret, initialPopulation);
+            ret.setSelection(createSelection(engine.getETTSelection()));
+            Integer optionalElitism = engine.getETTSelection().getETTElitism();
+            ret.setElitism(optionalElitism != null ? optionalElitism : 0);
+            ret.setCrossover(createCrossover(engine.getETTCrossover()));
+            ret.setMutations(createMutations(engine.getETTMutations()));
+        }
 
         return ret;
     }
@@ -251,16 +256,22 @@ public class ETTXmlParser {
         return retSubjectsMap;
     }
 
-    private static Set<Teacher> createTeachers(ETTTeachers ettTeachers, Collection<Subject> allSubjectsInSystem) throws Exception {
+    private static Set<Teacher> createTeachers(ETTTeachers ettTeachers, Collection<Subject> allSubjectsInSystem, int days, int hours) throws Exception {
         List<ETTTeacher> ettTeachersList = ettTeachers.getETTTeacher();
         List<Teacher> tempTeachers = new ArrayList<>(ettTeachersList.size());
         for(ETTTeacher teacher : ettTeachersList){
             List<Integer> ids = new ArrayList<>();
             teacher.getETTTeaching().getETTTeaches().forEach(teach -> ids.add(teach.getSubjectId()));
+            int workingHours = teacher.getETTWorkingHours();
+            if(workingHours < 0 || workingHours > days * hours){
+                throw new IllegalArgumentException("Teacher: " + teacher.getETTName() + " with id: "
+                                                   + teacher.getId() + " cannot work negative number or number bigger than " + (days * hours));
+            }
+
             try{
                 tempTeachers.add(new Teacher(teacher.getETTName(),
                                              teacher.getId(),
-                                             getSubjectsById(allSubjectsInSystem, ids), 0));
+                                             getSubjectsById(allSubjectsInSystem, ids), workingHours));
             }catch (Exception e){
                 throw new Exception("In teachers: " + teacher.getETTName() + ", id: " + teacher.getId() + " " + e.getMessage());
             }

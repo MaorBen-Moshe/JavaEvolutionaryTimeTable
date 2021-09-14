@@ -25,50 +25,85 @@
     <link href="problem.css" rel="stylesheet">
 </head>
 <body>
-    <header class="p-3 bg-dark text-white">
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <span class="fs-2" id="nameLabel"></span>
-                <button type="button" class="btn btn-outline-primary me-2" id="logout">Logout</button>
-            </div>
-        </div>
-    </header>
-    <div class="b-example-divider"></div>
-    <div class="row">
-        <div class="col-xs-1">
-            <div class="sidebar">
-                <h4>Users Online:</h4>
-                <div class="clearfix">
-                    <div class="input">
+<!--    <header class="p-3 bg-dark text-white">-->
+<!--        <div class="container">-->
+<!--            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">-->
+<!--                <span class="fs-2" id="nameLabel"></span>-->
+<!--                <button type="button" class="btn btn-outline-primary me-2" id="logout">Logout</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </header>-->
+<!--    <div class="b-example-divider"></div>-->
+<!--    <div class="row">-->
+<!--        <div class="col-xs-1">-->
+<!--            <div class="sidebar">-->
+<!--                <h4>Users Online:</h4>-->
+<!--                <div class="clearfix">-->
+<!--                    <div class="input">-->
 
-                        <!-- place holder to show the users list -->
-                        <ul id="userslist">
-                        </ul>
+<!--                        &lt;!&ndash; place holder to show the users list &ndash;&gt;-->
+<!--                        <ul id="userslist">-->
+<!--                        </ul>-->
 
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--<div class="col-xs-4">
-            <div class="content">
-                <div id="chatwindow">
-                    <h4>Chat</h4>
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 
-                     place holder to hold all the chat lines
-                    <div id="chatarea" class="span6"></div>
-
-                    The actual form through which you send data back to the user
-                    <form id="chatform" method="POST" action="sendChat">
-                        <input type="text" id="userstring" name="userstring"/>
-                        <input type="submit" value="Send"/>
-                    </form>
-
-                </div>
-            </div>
-        </div>-->
+<header>
+    <div class="header-column">
+        <label class="header-label">
+            Welcome
+        </label>
+        <label class="username-logged-in cut-text center-vert"></label>
     </div>
-    <!--<Label id="nameLabel" ></Label>-->
+    <div class="header-column">
+        <label class="simple-blue-button underline-hover" onclick="logout()">
+            Logout
+        </label>
+    </div>
+</header>
+<main>
+    <section class="upload-section">
+        <form id="upload-form" action="upload" enctype="multipart/form-data" method="post">
+            <div class="left-form-side">
+                <input id="file-input" class="hide-input" type="file" accept="text/xml" />
+                <label>Upload Problem:</label>
+                <label for="file-input" class="button">Choose a file</label>
+                <label class="file-path"></label>
+            </div>
+            <div class="right-form-side">
+                <label class="upload-result"></label>
+                <input class="button upload-button" disabled type="submit" value="Upload File" name="upload">
+            </div>
+        </form>
+    </section>
+    <div class="flex-container">
+        <section id="table-container">
+            <table class="problems-table">
+                <thead>
+                <th style="width: 6%">ID</th>
+                <th>Uploader</th>
+                <th>Problem info</th>
+                <th>Rules</th>
+                <th>active users</th>
+                <th>best fitness</th>
+                </thead>
+                <tbody class="problems-table-body">
+                </tbody>
+            </table>
+        </section>
+        <aside id="side-menu">
+            <div class="users-information">
+                <label>Online users: </label>
+                <label class="users-counter"></label>
+                <section id="users-list">
+                </section>
+            </div>
+        </aside>
+    </div>
+</main>
 
-    <!--<button class="btn btn-outline-primary" id="logout" type="button">Logout</button>-->
 </body>
 </html>

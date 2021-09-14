@@ -7,6 +7,7 @@ import utils.UserManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +23,7 @@ public class LoginServlet extends HttpServlet{
         String usernameFromSession = SessionUtils.getUsername(request);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
-        if (usernameFromSession == null || !usernameFromSession.equals(request.getParameter(USERNAME))) { //user is not logged in yet
+        if (usernameFromSession == null) { //user is not logged in yet
             String usernameFromParameter = request.getParameter(USERNAME);
             if (usernameFromParameter == null || usernameFromParameter.isEmpty()) {
                 response.setStatus(409);
@@ -44,7 +45,11 @@ public class LoginServlet extends HttpServlet{
                     }
                 }
             }
-        } else {
+        }else if(!usernameFromSession.equals(request.getParameter(USERNAME))){
+            String errorMessage = "Username " + usernameFromSession + " already logged in. Please ask him to logout first.";
+            response.setStatus(401);
+            response.getOutputStream().println(errorMessage);
+        }else {
             response.setStatus(200);
             response.getOutputStream().println(Constants.Second_Page_URL);
         }

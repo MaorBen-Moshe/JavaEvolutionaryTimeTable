@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name="LogoutServlet", urlPatterns = {"/pages/timeTableProblem/timeTableProblem/logout"})
+@WebServlet(name="LogoutServlet", urlPatterns = {"/pages/timeTableProblem/logout"})
 public class LogoutServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

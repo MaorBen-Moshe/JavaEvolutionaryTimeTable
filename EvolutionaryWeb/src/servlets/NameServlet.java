@@ -1,7 +1,7 @@
 package servlets;
 
-import com.google.gson.Gson;
 import utils.ServletUtils;
+import utils.SessionUtils;
 import utils.UserManager;
 
 import javax.servlet.ServletException;
@@ -10,25 +10,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Set;
 
-@WebServlet(name="UsersServlet", urlPatterns = {"/userslist"})
-public class UsersListServlet extends HttpServlet {
+@WebServlet(name="NameServlet", urlPatterns = {"/pages/timeTableProblem/currentUserName"})
+public class NameServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("application/json");
-        try (PrintWriter out = response.getWriter()) {
-            Gson gson = new Gson();
-            UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            Set<String> usersList = userManager.getUsers();
-            String json = gson.toJson(usersList);
-            out.println(json);
-            out.flush();
+        response.setContentType("text/plain;charset=UTF-8");
+        String usernameFromSession = SessionUtils.getUsername(request);
+        UserManager userManager = ServletUtils.getUserManager(getServletContext());
+
+        if(usernameFromSession != null){
+            response.setStatus(200);
+            response.getOutputStream().println(usernameFromSession);
+        }else{
+            response.setStatus(401);
+            response.getOutputStream().println("No logged in user found");
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -56,14 +55,4 @@ public class UsersListServlet extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 }

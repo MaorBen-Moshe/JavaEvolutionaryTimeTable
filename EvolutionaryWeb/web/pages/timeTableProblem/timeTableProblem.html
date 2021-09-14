@@ -4,13 +4,71 @@
     <meta charset="UTF-8">
     <title>Problem info</title>
     <script src="../../utils/jquery-3.6.0.min.js"></script>
+    <script src="../../utils/context-path-helper.js"></script>
     <script src="problem.js"></script>
     <link rel="stylesheet" href="../../utils/bootstrap.min.css">
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
     <link href="problem.css" rel="stylesheet">
 </head>
 <body>
-  <div>
-      <button class="btn btn-outline-primary" id="logout" type="button">Logout</button>
-  </div>
+    <header class="p-3 bg-dark text-white">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <span class="fs-2" id="nameLabel"></span>
+                <button type="button" class="btn btn-outline-primary me-2" id="logout">Logout</button>
+            </div>
+        </div>
+    </header>
+    <div class="b-example-divider"></div>
+    <div class="row">
+        <div class="col-xs-1">
+            <div class="sidebar">
+                <h4>Users Online:</h4>
+                <div class="clearfix">
+                    <div class="input">
+
+                        <!-- place holder to show the users list -->
+                        <ul id="userslist">
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--<div class="col-xs-4">
+            <div class="content">
+                <div id="chatwindow">
+                    <h4>Chat</h4>
+
+                     place holder to hold all the chat lines
+                    <div id="chatarea" class="span6"></div>
+
+                    The actual form through which you send data back to the user
+                    <form id="chatform" method="POST" action="sendChat">
+                        <input type="text" id="userstring" name="userstring"/>
+                        <input type="submit" value="Send"/>
+                    </form>
+
+                </div>
+            </div>
+        </div>-->
+    </div>
+    <!--<Label id="nameLabel" ></Label>-->
+
+    <!--<button class="btn btn-outline-primary" id="logout" type="button">Logout</button>-->
 </body>
 </html>

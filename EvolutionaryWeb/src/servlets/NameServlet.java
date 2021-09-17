@@ -17,8 +17,6 @@ public class NameServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/plain;charset=UTF-8");
         String usernameFromSession = SessionUtils.getUsername(request);
-        UserManager userManager = ServletUtils.getUserManager(getServletContext());
-
         if(usernameFromSession != null){
             response.setStatus(200);
             response.getOutputStream().println(usernameFromSession);

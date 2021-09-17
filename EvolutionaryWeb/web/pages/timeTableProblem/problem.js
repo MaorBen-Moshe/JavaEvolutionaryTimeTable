@@ -1,97 +1,25 @@
-// function getName(){
-//     $.ajax({
-//         data: null,
-//         url: "currentUserName",
-//         timeout: 2000,
-//         error: function (err){
-//             console.error("Fail to fetch name");
-//         },
-//         success: function (name){
-//             $('#nameLabel').empty().append("Hello, "  + name);
-//         }
-//     });
-// }
-//
-// const refreshRate = 2000;
-// const USER_LIST_URL = buildUrlWithContextPath("userslist");
-//
-// function refreshUsersList(users) {
-//     //clear all current users
-//     $("#userslist").empty();
-//
-//     // rebuild the list of users: scan all users and add them to the list of users
-//     $.each(users || [], function(index, username) {
-//         console.log("Adding user #" + index + ": " + username);
-//
-//         //create a new <li> tag with a value in it and append it to the #userslist (div with id=userslist) element
-//         $('<li>' + username + '</li>')
-//             .appendTo($("#userslist"));
-//     });
-// }
-//
-// function getUserList(){
-//     $.ajax({
-//         url: USER_LIST_URL,
-//         timeout: 2000,
-//         success: function(users) {
-//             refreshUsersList(users);
-//         }
-//     });
-// }
-//
-// $(function () {
-//
-//     setTimeout(getName, 2000);
-//     setInterval(getUserList, refreshRate);
-//
-//     $('#logout').on("click", function () {
-//         $.ajax({
-//             data: null,
-//             url: "logout",
-//             timeout: 2000,
-//             error: function(errorObject) {
-//                 console.error("Failed to logout !");
-//                 alert(errorObject.responseText);
-//             },
-//             success: function(primaryUrl) {
-//                 window.location.replace(primaryUrl);
-//                 console.log(primaryUrl);
-//             }
-//         });
-//
-//         // by default - we'll always return false so it doesn't redirect the user.
-//         return false;
-//     });
-// });
-
 const refreshRate = 2000;
-const USER_LIST_URL = "userslist";
+const USER_LIST_URL = buildUrlWithContextPath("userslist");
 const LOGOUT_URL = "logout";
 const PROBLEMS_URL = "problems";
-const PROBLEMS_LIST_URL = "problemslist";
+const PROBLEMS_LIST_URL = buildUrlWithContextPath("problemslist");
 
 $(function () {
     ajaxLoggedInUsername();
     ajaxUsersList();
     ajaxProblemList();
-
     formUploadFileSetEvents();
 
     setInterval(ajaxUsersList, refreshRate);
     setInterval(ajaxProblemList, refreshRate);
 })
 
-// TODO - Move to different more general js file
 function ajaxUsersList() {
-    $.ajax({
+        $.ajax({
         url: USER_LIST_URL,
-        data: {
-            action: "userList"
-        },
-        success: refreshUsersList,
-        error: function(object) {
-            console.log("Couldn't pull the users from the server. Sent: ");
-            console.log(object);
+        timeout: 2000,
+        success: function(users) {
+            refreshUsersList(users);
         }
     });
 }
@@ -114,20 +42,16 @@ function refreshUsersList(users) {
     });
 }
 
-// TODO - Move to different more general js file
 function ajaxLoggedInUsername() {
-    $.ajax({
-        url: USER_LIST_URL,
-        data: {
-            action: "username"
+        $.ajax({
+        data: null,
+        url: "currentUserName",
+        timeout: 2000,
+        error: function (err){
+            console.error("Fail to fetch name");
         },
-        success: function(username) {
-            $.each($(".username-logged-in") || [], function(index, element) {
-                element.innerHTML = username;
-            });
-        },
-        error: function(relocation) {
-            window.location.href = buildUrlWithContextPath(relocation.responseText);
+        success: function (name){
+            $('#nameLabel').empty().append(name);
         }
     });
 }
@@ -157,12 +81,12 @@ function refreshProblemList(problems) {
         var tdUsers = document.createElement("td");
         var tdBestFitness = document.createElement("td");
 
-        tdID.innerText = problem.problemID;
-        tdUploader.innerText = problem.uploader;
+        tdID.innerText = problem.problemId;
+        tdUploader.innerText = problem.creatorName;
         tdProblemInfo.appendChild(createSectionProblemInfo(problem));
         tdRules.appendChild(createSectionRulesInfo(problem));
-        tdUsers.innerText = problem.users.length;
-        tdBestFitness.innerText = problem.bestFitness;
+        tdUsers.innerText = problem.usersSolveProblem.length;
+        tdBestFitness.innerText = problem.currentBestFitnessOfProblem;
 
         trRow.appendChild(tdID);
         trRow.appendChild(tdUploader);
@@ -184,7 +108,7 @@ function createSectionProblemInfo(problem) {
     var tdHours = $(document.createElement("label")).text("Hours:" + problem.hours)[0];
     var tdTeachers = $(document.createElement("label")).text("Teachers:" + problem.teachers)[0];
     var tdClasses = $(document.createElement("label")).text("Classes:" + problem.classes)[0];
-    var tdCourses = $(document.createElement("label")).text("Courses:" + problem.courses)[0];
+    var tdCourses = $(document.createElement("label")).text("Courses:" + problem.subjects)[0];
 
     sectionInfo.appendChild(tdDays);
     sectionInfo.appendChild(tdHours);
@@ -198,8 +122,8 @@ function createSectionProblemInfo(problem) {
 function createSectionRulesInfo(problem) {
     var sectionInfo = $(document.createElement("section")).addClass("grid")[0];
 
-    var tdHard = $(document.createElement("label")).text("Hard rules:" + problem.hardRules)[0];
-    var tdSoft = $(document.createElement("label")).text("Soft rules:" + problem.softRules)[0];
+    var tdHard = $(document.createElement("label")).text("Hard rules:" + problem.numberOfHardRules)[0];
+    var tdSoft = $(document.createElement("label")).text("Soft rules:" + problem.numberOfSoftRules)[0];
 
     sectionInfo.appendChild(tdSoft);
     sectionInfo.appendChild(tdHard);
@@ -210,7 +134,7 @@ function createSectionRulesInfo(problem) {
 function logout() {
     $.ajax({
             data: null,
-            url: "logout",
+            url: LOGOUT_URL,
             timeout: 2000,
             error: function(errorObject) {
                 console.error("Failed to logout !");
@@ -266,24 +190,19 @@ function formUploadFileSetEvents() {
             processData: false, // Don't process the files
             contentType: false, // Set content type to false as jQuery will tell the server its a query string request
             timeout: 4000,
-            success: validateFile
+            success: function(message) {
+                $(".upload-result")[0].style.color = "limegreen";
+                $(".upload-result")[0].innerText = "Upload the file successfully!";
+                $("#file-input")[0].value = "";
+                $(".file-path").empty();
+                $(".upload-button")[0].disabled = true;
+                alert(message);
+            },
+            error: function (message){
+                $(".upload-result")[0].style.color = "red";
+                $(".upload-result")[0].innerText = message;
+            }
         });
         return false;
     });
-}
-
-function validateFile(json) {
-    // json object:
-    //  isFileCorrupted - indicate if the file successfully loaded or not.
-    //  errorMessage - the message what's the problem in the file.
-    if (json.isFileCorrupted) {
-        $(".upload-result")[0].style.color = "red";
-        $(".upload-result")[0].innerText = json.errorMessage;
-    } else {
-        $(".upload-result")[0].style.color = "limegreen";
-        $(".upload-result")[0].innerText = "Upload the file successfully!";
-        $("#file-input")[0].value = "";
-        $(".file-path").empty();
-        $(".upload-button")[0].disabled = true;
-    }
 }

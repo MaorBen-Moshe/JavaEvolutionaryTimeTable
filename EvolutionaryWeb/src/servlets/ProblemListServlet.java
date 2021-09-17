@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import evolutinary.EvolutionarySystem;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
+import utils.Problem;
 import utils.ProblemManager;
 import utils.ServletUtils;
 import utils.UserManager;
@@ -25,7 +26,7 @@ public class ProblemListServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             Gson gson = new Gson();
             ProblemManager problemManager = ServletUtils.getProblemManager(getServletContext());
-            Set<EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier>> problems = problemManager.getProblems();
+            Set<Problem> problems = problemManager.getProblems();
             String json = gson.toJson(problems);
             out.println(json);
             out.flush();

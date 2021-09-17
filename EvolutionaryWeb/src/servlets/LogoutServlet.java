@@ -34,6 +34,9 @@ public class LogoutServlet extends HttpServlet {
             String path = request.getContextPath() + "/index.html";
             response.setStatus(200);
             response.getOutputStream().println(path);
+        }else{
+            response.setStatus(401);
+            response.getOutputStream().println("No session in the server, please contact us!");
         }
     }
 

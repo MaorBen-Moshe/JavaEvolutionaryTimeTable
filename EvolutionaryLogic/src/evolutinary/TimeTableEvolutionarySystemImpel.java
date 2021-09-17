@@ -65,6 +65,14 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
         return rules;
     }
 
+    public int getNumberOfSoftRules(){
+        return getRulesCounter(Rule.eStrength.Soft);
+    }
+
+    public int getNumberOfHardRules(){
+        return getRulesCounter(Rule.eStrength.Hard);
+    }
+
     public Map<Integer, Teacher> getTeachers() {
         return unModifiedTeachers;
     }
@@ -103,5 +111,16 @@ public class TimeTableEvolutionarySystemImpel extends EvolutionarySystemImpel<Ti
         }
 
         return ret;
+    }
+
+    private int getRulesCounter(Rule.eStrength strength){
+        int[] counter = new int[]{0};
+        rules.getRules().forEach(rule -> {
+            if(rule.getStrength().equals(strength)){
+                counter[0]++;
+            }
+        });
+
+        return counter[0];
     }
 }

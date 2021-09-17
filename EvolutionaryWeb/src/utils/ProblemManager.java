@@ -1,33 +1,30 @@
 package utils;
 
-import evolutinary.EvolutionarySystem;
-import models.TimeTable;
-import models.TimeTableSystemDataSupplier;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class ProblemManager {
-    private final Set<EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier>> problemsList;
+    private final Map<Integer, Problem> problemsList;
 
     public ProblemManager() {
-        problemsList = new HashSet<>();
+        problemsList = new HashMap<>();
     }
 
-    public synchronized void addProblem(EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> evoSystem) {
-        problemsList.add(evoSystem);
+    public synchronized void addProblem(Problem evoSystem) {
+        if(!problemsList.containsKey(evoSystem.getProblemId())){
+            problemsList.put(evoSystem.getProblemId(), evoSystem);
+        }
     }
 
-    public synchronized void removeProblem(EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> evoSystem) {
-        problemsList.remove(evoSystem);
+    public synchronized void removeProblem(Problem evoSystem) {
+        problemsList.remove(evoSystem.getProblemId());
     }
 
-    public synchronized Set<EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier>> getProblems() {
-        return Collections.unmodifiableSet(problemsList);
+    public synchronized Set<Problem> getProblems() {
+        return Collections.unmodifiableSet(new HashSet<>(problemsList.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue).collect(Collectors.toSet())));
     }
 
-    public boolean isProblemExists(EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> evoSystem) {
-        return problemsList.contains(evoSystem);
+    public boolean isProblemExists(Problem evoSystem) {
+        return problemsList.containsKey(evoSystem.getProblemId());
     }
 }

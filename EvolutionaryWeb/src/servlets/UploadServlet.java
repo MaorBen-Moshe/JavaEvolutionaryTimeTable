@@ -59,8 +59,8 @@ public class UploadServlet extends HttpServlet {
             response.setStatus(200);
             out.println("Problem added successfully");
         }catch (Exception e){
-            response.setStatus(401);
-            response.getOutputStream().println(e.getMessage());
+            response.setStatus(500);
+            out.println(e.getMessage());
         }
     }
 }

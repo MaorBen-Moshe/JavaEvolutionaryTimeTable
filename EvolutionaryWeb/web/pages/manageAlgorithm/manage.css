@@ -1,0 +1,283 @@
+html, body {
+    background-color: #56baed;
+}
+
+.cut-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 100%;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+aside {
+    float: right;
+    display: inline-block;
+}
+
+table tr {
+    background-color: white;
+    border-bottom: 1px solid #d6d6d6;
+    transition: background-color 0.3s;
+}
+
+table tr:hover {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    color: #17b2f3;
+}
+table tr:active {
+    background-color: #ebebeb;
+}
+
+table td {
+    padding: 15px 5px;
+}
+
+table th {
+    color: white;
+    padding: 10px;
+    border-bottom: 3px solid #20a6ea;
+    background-color: #17b2f3;
+    width: 19%;
+}
+
+table th:first-child {
+    border-radius: 5px 0 0 0;
+}
+
+table th:last-child {
+    border-radius: 0 5px 0 0;
+}
+
+table {
+    border-collapse: collapse;
+    padding: 5px;
+    width: 100%;
+    text-align: center;
+    border-radius: 6px 6px 0 0;
+    box-shadow: 0 4px 16px -4px #56baed;
+    border-bottom: 3px solid #20a6ea;
+}
+
+#background {
+    background-color: white;
+    margin: 10px 10px 0 10px;
+    border-radius: 10px 10px 0 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+main {
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    overflow: auto;
+}
+
+/* header */
+header {
+    display: flex;
+    border-bottom: 1px solid #dce8f1;
+    padding: 30px;
+    margin-bottom: 5px;
+    align-items: center;
+}
+
+.header-label {
+    padding-right: 8px;
+    font-size: 22px;
+}
+
+.header-column {
+    width: 50%;
+}
+
+.center-vert {
+    vertical-align: bottom;
+}
+
+.username-logged-in {
+    font-size: 22px;
+}
+
+/*Main content styles: center-container and his children*/
+/* upload section */
+.upload-section {
+    display: grid;
+    border-bottom: 2px solid #dce8f1;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    box-shadow: 0 10px 10px -14px #56baed;
+}
+
+.upload-button {
+    float: right;
+}
+
+.right-form-side {
+    display: flex;
+    float: right;
+    align-items: center;
+}
+
+.left-form-side {
+    display: inline-block;
+    float: left;
+    align-items: center;
+}
+
+.hide-input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+/* main content section */
+#center-container {
+    display: flex;
+}
+
+#table-container {
+    display: inline-table;
+    width: 75%;
+    padding-right: 1.5%;
+}
+
+.grid {
+    display: grid;
+    grid-row-gap: 6px;
+}
+
+#side-menu {
+    display: inline-block;
+    width: 15%;
+    float: right;
+}
+
+#rules-menu{
+    display: inline-block;
+    width: 25%;
+    float: left;
+}
+
+.users-information {
+    color: white;
+    background-color: #17b2f3;
+    padding: 5px;
+    border-radius: 6px 6px 0 0;
+    box-shadow: 0 4px 16px -4px #56baed;
+    border-bottom: 3px solid #20a6ea;
+    text-align: center;
+    min-width: 100px;
+}
+
+#users-list {
+    margin: 10px 0 4px 0;
+}
+
+.user {
+    text-align: center;
+    color: black;
+    background-color: white;
+    padding: 15px 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 3px white;
+    transition: 0.2s;
+    margin: 6px;
+}
+
+.user:hover {
+    background-color: #f4f4f4;
+    box-shadow: 0 0 3px #f4f4f4;
+}
+
+.user:active {
+    background-color: #ebebeb;
+    box-shadow: 0 0 3px #ebebeb;
+}
+
+.user-name {
+    font-size: 18px;
+    cursor: default;
+}
+
+.flex-container {
+    display: flex;
+}
+
+/*General styles*/
+.button {
+    background-color: #56baed;
+    border: 2px solid #56baed;
+    color: white;
+    padding: 8px 30px;
+    margin: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 13px;
+    box-shadow: 0 2px 6px 0 rgba(95,186,233,0.6);
+    border-radius: 5px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: white;
+    color: black;
+    border: 2px solid #5AF;
+    transition-duration: 0.15s;
+}
+
+.button:active {
+    background-color: #4ad;
+    color: white;
+}
+
+.button:disabled {
+    background-color: #d1dfe7;
+    border: 2px solid #d1dfe7;
+    color: white;
+    box-shadow: 0 2px 6px 0 rgba(227, 239, 246, 0.6);
+    cursor: default;
+}
+
+.simple-blue-button {
+    float: right;
+    font-size: 18px;
+    color: #74b3ea;
+    display:inline-block;
+    text-decoration: none;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.underline-hover:after {
+    display: block;
+    left: 0;
+    bottom: -10px;
+    width: 0;
+    height: 2px;
+    background-color: #56baed;
+    content: "";
+    transition: width 0.2s;
+}
+
+.underline-hover:hover {
+    color: #0d0d0d;
+}
+
+.underline-hover:hover:after {
+    width: 100%;
+}

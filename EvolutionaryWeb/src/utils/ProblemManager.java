@@ -20,8 +20,10 @@ public final class ProblemManager {
         problemsList.remove(evoSystem.getProblemId());
     }
 
-    public synchronized Set<Problem> getProblems() {
-        return Collections.unmodifiableSet(new HashSet<>(problemsList.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue).collect(Collectors.toSet())));
+    public synchronized List<Problem> getProblems() {
+        List<Problem> x = problemsList.values().stream().sorted(Comparator.comparing(Problem::getProblemId)).collect(Collectors.toList());
+        System.out.println(x);
+        return x;
     }
 
     public boolean isProblemExists(Problem evoSystem) {

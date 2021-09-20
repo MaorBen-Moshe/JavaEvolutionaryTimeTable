@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Set;
 
 @WebServlet(name="ProblemListServlet", urlPatterns = {"/problemslist"})
@@ -26,7 +27,7 @@ public class ProblemListServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             Gson gson = new Gson();
             ProblemManager problemManager = ServletUtils.getProblemManager(getServletContext());
-            Set<Problem> problems = problemManager.getProblems();
+            List<Problem> problems = problemManager.getProblems();
             String json = gson.toJson(problems);
             out.println(json);
             out.flush();

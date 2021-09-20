@@ -99,4 +99,9 @@ public class Problem {
             this.numberOfHardRules = this.system.getNumberOfHardRules();
         }
     }
+
+    @Override
+    public String toString(){
+        return String.valueOf(this.problemId);
+    }
 }

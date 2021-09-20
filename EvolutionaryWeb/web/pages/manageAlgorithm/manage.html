@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Problem</title>
+    <script src="../../utils/jquery-3.6.0.min.js"></script>
+    <script src="../../utils/context-path-helper.js"></script>
+    <script src="manage.js"></script>
+    <link rel="stylesheet" href="../../utils/bootstrap.min.css">
+    <link href="manage.css" type="text/css" rel="stylesheet">
+</head>
+<body id="background">
+<header>
+    <div class="header-column">
+        <label class="header-label">
+            Problem Display
+        </label>
+    </div>
+    <div class="header-column">
+        <label class="simple-blue-button underline-hover" onclick="logout()">
+            Go Back
+        </label>
+    </div>
+</header>
+<main>
+    <section class="upload-section">
+        <form id="upload-form" action="upload" enctype="multipart/form-data" method="post">
+            <div class="left-form-side">
+                <input type="button" class="button" value="Start" />
+                <input type="button" class="button" value="Pause" />
+                <input type="button" class="button" value="Resume" />
+                <input type="button" class="button" value="Stop" />
+            </div>
+            <div class="right-form-side">
+                <label class="upload-result"></label>
+                <input class="button upload-button" type="submit" value="Delete Problem" name="upload">
+            </div>
+        </form>
+    </section>
+    <div class="flex-container">
+        <aside id="rules-menu">
+            <h4>Rules:</h4>
+            <table class="rules-table">
+                <thead>
+                <th>Name</th>
+                <th>Strength</th>
+                <th>Configurations</th>
+                </thead>
+                <tbody class="rules-table-body">
+
+                </tbody>
+            </table>
+        </aside>
+        <section id="table-container">
+            <table class="problems-table">
+                <thead>
+                <th style="width: 6%">ID</th>
+                <th>Uploader</th>
+                <th>Problem info</th>
+                <th>Rules</th>
+                <th>active users</th>
+                <th>best fitness</th>
+                </thead>
+                <tbody class="problems-table-body">
+                </tbody>
+            </table>
+        </section>
+        <aside id="side-menu">
+            <div class="users-information">
+                <label>Online users: </label>
+                <label class="users-counter"></label>
+                <section id="users-list">
+                </section>
+            </div>
+        </aside>
+    </div>
+</main>
+</body>
+</html>

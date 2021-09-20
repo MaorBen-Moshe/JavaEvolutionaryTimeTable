@@ -15,7 +15,7 @@ $(function () {
 })
 
 function ajaxUsersList() {
-        $.ajax({
+    $.ajax({
         url: USER_LIST_URL,
         timeout: 2000,
         success: function(users) {
@@ -43,7 +43,7 @@ function refreshUsersList(users) {
 }
 
 function ajaxLoggedInUsername() {
-        $.ajax({
+    $.ajax({
         data: null,
         url: "currentUserName",
         timeout: 2000,
@@ -133,18 +133,18 @@ function createSectionRulesInfo(problem) {
 
 function logout() {
     $.ajax({
-            data: null,
-            url: LOGOUT_URL,
-            timeout: 2000,
-            error: function(errorObject) {
-                console.error("Failed to logout !");
-                alert(errorObject.responseText);
-            },
-            success: function(primaryUrl) {
-                window.location.replace(primaryUrl);
-                console.log(primaryUrl);
-            }
-        });
+        data: null,
+        url: LOGOUT_URL,
+        timeout: 2000,
+        error: function(errorObject) {
+            console.error("Failed to logout !");
+            alert(errorObject.responseText);
+        },
+        success: function(primaryUrl) {
+            window.location.replace(primaryUrl);
+            console.log(primaryUrl);
+        }
+    });
 }
 
 function createProblemDialog(event) {

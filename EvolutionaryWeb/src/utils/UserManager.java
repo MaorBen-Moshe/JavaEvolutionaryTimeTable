@@ -6,25 +6,29 @@ import java.util.Set;
 
 public class UserManager {
 
-    private final Set<String> usersSet;
+    private final Set<User> usersSet;
 
     public UserManager() {
         usersSet = new HashSet<>();
     }
 
-    public synchronized void addUser(String username) {
-        usersSet.add(username);
+    public synchronized void addUser(User user) {
+        usersSet.add(user);
     }
 
-    public synchronized void removeUser(String username) {
-        usersSet.remove(username);
+    public synchronized void removeUser(User user) {
+        usersSet.remove(user);
     }
 
-    public synchronized Set<String> getUsers() {
+    public synchronized Set<User> getUsers() {
         return Collections.unmodifiableSet(usersSet);
     }
 
     public boolean isUserExists(String username) {
-        return usersSet.contains(username);
+        for(User user : usersSet){
+            if(user.getName().equals(username)) return true;
+        }
+
+        return false;
     }
 }

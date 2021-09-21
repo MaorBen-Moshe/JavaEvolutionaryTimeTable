@@ -7,6 +7,7 @@ import models.TimeTableSystemDataSupplier;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class Problem {
@@ -101,7 +102,15 @@ public class Problem {
     }
 
     @Override
-    public String toString(){
-        return String.valueOf(this.problemId);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Problem problem = (Problem) o;
+        return problemId == problem.problemId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(problemId);
     }
 }

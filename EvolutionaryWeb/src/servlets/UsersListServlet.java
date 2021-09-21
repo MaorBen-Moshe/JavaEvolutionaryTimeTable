@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import utils.ServletUtils;
+import utils.User;
 import utils.UserManager;
 
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @WebServlet(name="UsersListServlet", urlPatterns = {"/userslist"})
 public class UsersListServlet extends HttpServlet {
@@ -21,7 +23,7 @@ public class UsersListServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             Gson gson = new Gson();
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
-            Set<String> usersList = userManager.getUsers();
+            Set<String> usersList = userManager.getUsers().stream().map(User::getName).collect(Collectors.toSet());
             String json = gson.toJson(usersList);
             out.println(json);
             out.flush();

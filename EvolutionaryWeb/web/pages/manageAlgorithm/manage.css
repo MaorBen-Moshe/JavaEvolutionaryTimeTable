@@ -166,7 +166,7 @@ header {
 
 #rules-menu{
     display: inline-block;
-    width: 25%;
+    margin-right: 2%;
     float: left;
 }
 
@@ -181,7 +181,7 @@ header {
     min-width: 100px;
 }
 
-#users-list {
+.users-table {
     margin: 10px 0 4px 0;
 }
 

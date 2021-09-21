@@ -1,19 +1,15 @@
 package servlets;
 
-import utils.Constants;
-import utils.ServletUtils;
-import utils.SessionUtils;
-import utils.UserManager;
+import utils.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static utils.Constants.USERNAME;
+import static utils.Constants.USER;
 
 @WebServlet(name="LoginServlet", urlPatterns = {"/pages/login/login"})
 public class LoginServlet extends HttpServlet{
@@ -24,7 +20,7 @@ public class LoginServlet extends HttpServlet{
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
         if (usernameFromSession == null) { //user is not logged in yet
-            String usernameFromParameter = request.getParameter(USERNAME);
+            String usernameFromParameter = request.getParameter(USER);
             if (usernameFromParameter == null || usernameFromParameter.isEmpty()) {
                 response.setStatus(409);
                 response.getOutputStream().println("Error occurred in server");
@@ -37,15 +33,16 @@ public class LoginServlet extends HttpServlet{
                         response.getOutputStream().println(errorMessage);
                     }
                     else {
-                        userManager.addUser(usernameFromParameter);
-                        request.getSession(true).setAttribute(Constants.USERNAME, usernameFromParameter);
+                        User user = new User(usernameFromParameter);
+                        userManager.addUser(user);
+                        request.getSession(true).setAttribute(Constants.USER, user);
                         System.out.println("On login, request URI is: " + request.getRequestURI());
                         response.setStatus(200);
                         response.getOutputStream().println(Constants.Second_Page_URL);
                     }
                 }
             }
-        }else if(!usernameFromSession.equals(request.getParameter(USERNAME))){
+        }else if(!usernameFromSession.equals(request.getParameter(USER))){
             String errorMessage = "Username " + usernameFromSession + " already logged in. Please ask him to logout first.";
             response.setStatus(401);
             response.getOutputStream().println(errorMessage);

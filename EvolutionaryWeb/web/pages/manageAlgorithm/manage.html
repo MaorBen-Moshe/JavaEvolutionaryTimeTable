@@ -6,6 +6,7 @@
     <script src="../../utils/jquery-3.6.0.min.js"></script>
     <script src="../../utils/context-path-helper.js"></script>
     <script src="manage.js"></script>
+    <script src="manage-buttons.js"></script>
     <link rel="stylesheet" href="../../utils/bootstrap.min.css">
     <link href="manage.css" type="text/css" rel="stylesheet">
 </head>
@@ -17,7 +18,7 @@
         </label>
     </div>
     <div class="header-column">
-        <label class="simple-blue-button underline-hover" onclick="logout()">
+        <label class="simple-blue-button underline-hover" onclick="goBack()">
             Go Back
         </label>
     </div>
@@ -26,14 +27,16 @@
     <section class="upload-section">
         <form id="upload-form" action="upload" enctype="multipart/form-data" method="post">
             <div class="left-form-side">
-                <input type="button" class="button" value="Start" />
-                <input type="button" class="button" value="Pause" />
-                <input type="button" class="button" value="Resume" />
-                <input type="button" class="button" value="Stop" />
+                <input type="button" class="button" value="Start" onclick="startAlgorithm()"/>
+                <input type="button" class="button" value="Pause" onclick="pauseAlgorithm()"/>
+                <input type="button" class="button" value="Resume" onclick="resumeAlgorithm()"/>
+                <input type="button" class="button" value="Stop" onclick="stopAlgorithm()"/>
             </div>
             <div class="right-form-side">
-                <label class="upload-result"></label>
-                <input class="button upload-button" type="submit" value="Delete Problem" name="upload">
+                <div class="right-form-side">
+                    <label class="generation"></label>
+                    <label class="fitness"></label>
+                </div>
             </div>
         </form>
     </section>
@@ -50,36 +53,145 @@
 
                 </tbody>
             </table>
-        </aside>
-        <section id="table-container">
-            <table class="problems-table">
+            <h4>Teachers:</h4>
+            <table class="teachers-table">
                 <thead>
-                <th style="width: 6%">ID</th>
-                <th>Uploader</th>
-                <th>Problem info</th>
-                <th>Rules</th>
-                <th>active users</th>
-                <th>best fitness</th>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Subjects</th>
                 </thead>
-                <tbody class="problems-table-body">
+                <tbody class="teachers-table-body">
+
                 </tbody>
             </table>
-        </section>
-        <aside id="side-menu">
+            <h4>Classes:</h4>
+            <table class="klass-table">
+                <thead>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Subjects</th>
+                </thead>
+                <tbody class="klass-table-body">
 
-            <div class="users-information">
-                <h4>Users: </h4>
-                <table class="users-table">
-                    <thead>
-                    <th>Name</th>
-                    <th>Generation</th>
-                    <th>Fitness</th>
-                    </thead>
-                    <tbody class="users-table-body">
+                </tbody>
+            </table>
+            <h4>Subjects:</h4>
+            <table class="subjects-table">
+                <thead>
+                <th>Id</th>
+                <th>Name</th>
+                </thead>
+                <tbody class="subjects-table-body">
 
+                </tbody>
+            </table>
+            <h4>Engine:</h4>
+            <table class="engine-table">
+                <thead>
+                <th>Property Name</th>
+                <th>Property Value</th>
+                </thead>
+                <tbody class="engine-table-body">
+
+                </tbody>
+            </table>
+        </aside>
+        <section id="table-container">
+            <form id="info-form">
+                <h4>Engine Info Editor:</h4>
+                <diV>
+                    <label for="population">Population:</label>
+                    <input id="population" type="number" min="0"/>
+                </diV>
+                <diV>
+                    <label for="elita">Elitism:</label>
+                    <input id="elita" type="number" min="0"/>
+                </diV>
+                <div>
+                    <label for="selection">Selection:</label>
+                    <select name="selection" id="selection">
+                        <option value="Roulette">Roulette Wheel</option>
+                        <option value="Tournament">Tournament</option>
+                        <option value="Truncation">Truncation</option>
+                    </select>
+                    <div id="selection-input" style="display: none">
+                        <input type="number" id="selection-input-tag" />
+                    </div>
+                </div>
+                <div>
+                    <label for="crossover">Crossover:</label>
+                    <select name="crossover" id="crossover">
+                        <option value="Aspect">Aspect Oriented</option>
+                        <option value="DayTime">Day Time Oriented</option>
+                    </select>
+                    <label for="cutting">cutting points:</label>
+                    <input id="cutting" type="number" />
+                    <div id="orientation" style="display: none">
+                        <select name="aspect" id="aspect">
+                            <option value="Teacher">Teacher</option>
+                            <option value="Class">Class</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <div id="mut-list">
+
+                    </div>
+                    <input value="add mutation" id="mut-add" type="button" onclick="addMutationDisplay()">
+                </div>
+                <div>
+                    <label for="jumps">Jump in generations:</label>
+                    <input id="jumps" type="number" min="1"/>
+                </div>
+                <div>
+                    <h6>Terminate Rules:</h6>
+                    <label for="gens">generations:</label>
+                    <div id="gens">
+                        <input type="checkbox" id="gens-check">
+                        <input type="number" id="gens-input" min="100" />
+                    </div>
+                    <label for="fit">Fitness:</label>
+                    <div id="fit">
+                        <input type="checkbox" id="fit-check">
+                        <input type="number" id="fit-input" min="0" max="100" />
+                    </div>
+                    <label for="time">Time:</label>
+                    <div id="time">
+                        <input type="checkbox" id="time-check">
+                        <input type="number" id="time-input" min="1" />
+                    </div>
+                </div>
+                <input type="submit" value="Submit" />
+            </form>
+            <div id="problem-display" style="display: none">
+                <form>
+                    <select name="orientation-display" id="orientation-display">
+                        <option value="Class">Class</option>
+                        <option value="Teacher">Teacher</option>
+                    </select>
+                    <select name="object-display" id="object-display">
+
+                    </select>
+                    <input type="submit" value="display problem">
+                </form>
+                <table class="problem-table">
+                    <tbody class="problem-table-body">
                     </tbody>
                 </table>
             </div>
+        </section>
+        <aside id="side-menu">
+            <h4>Users: </h4>
+            <table class="users-table">
+                <thead>
+                <th>Name</th>
+                <th>Generation</th>
+                <th>Fitness</th>
+                </thead>
+                <tbody class="users-table-body">
+
+                </tbody>
+            </table>
         </aside>
     </div>
 </main>

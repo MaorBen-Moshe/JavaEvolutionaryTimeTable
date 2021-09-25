@@ -31,4 +31,12 @@ public class UserManager {
 
         return false;
     }
+
+    public synchronized User getUserByName(String name) throws Exception{
+        if(!isUserExists(name)){
+            throw new IllegalArgumentException(name + " is not exist");
+        }
+
+        return usersSet.stream().filter(x -> x.getName().equals(name)).findFirst().orElseThrow(() -> new Exception("Failed to get " + name));
+    }
 }

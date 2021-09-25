@@ -1,22 +1,35 @@
 const refreshRate = 2000;
-const USER_LIST_URL = buildUrlWithContextPath("userslist");
-const LOGOUT_URL = "logout";
-const PROBLEMS_URL = buildUrlWithContextPath("problem");
-const PROBLEMS_LIST_URL = buildUrlWithContextPath("problemslist");
+const USERS_RUN_PROBLEM_LIST_URL = buildUrlWithContextPath("usersRunProblemList");
+const GET_PROBLEM_URL = buildUrlWithContextPath("getProblem");
+var id;
 
 $(function () {
-    ajaxLoggedInUsername();
+    ajaxGetProblemInfo();
     ajaxUsersList();
     ajaxProblemList();
     formUploadFileSetEvents();
 
     setInterval(ajaxUsersList, refreshRate);
-    setInterval(ajaxProblemList, refreshRate);
 })
+
+function ajaxGetProblemInfo(){
+    $.ajax({
+        url: GET_PROBLEM_URL,
+        timeout: 2000,
+        error: function (errObject){
+            alert(errObject.responseText);
+        },
+        success: problemInfoSuccess
+    })
+}
+
+function problemInfoSuccess(probJson){
+
+}
 
 function ajaxUsersList() {
     $.ajax({
-        url: USER_LIST_URL,
+        url: USERS_RUN_PROBLEM_LIST_URL,
         timeout: 2000,
         success: function(users) {
             refreshUsersList(users);
@@ -42,30 +55,6 @@ function refreshUsersList(users) {
     });
 }
 
-function ajaxLoggedInUsername() {
-    $.ajax({
-        data: null,
-        url: "currentUserName",
-        timeout: 2000,
-        error: function (err){
-            console.error("Fail to fetch name");
-        },
-        success: function (name){
-            $('#nameLabel').empty().append(name);
-        }
-    });
-}
-
-function ajaxProblemList() {
-    $.ajax({
-        url: PROBLEMS_LIST_URL,
-        success: refreshProblemList,
-        error: function(object) {
-            console.log("Couldn't pull the problems from the server. Sent: ");
-            console.log(object);
-        }
-    });
-}
 
 function refreshProblemList(problems) {
     var tableBody = $(".problems-table-body")[0];
@@ -131,20 +120,8 @@ function createSectionRulesInfo(problem) {
     return sectionInfo;
 }
 
-function logout() {
-    $.ajax({
-        data: null,
-        url: LOGOUT_URL,
-        timeout: 2000,
-        error: function(errorObject) {
-            console.error("Failed to logout !");
-            alert(errorObject.responseText);
-        },
-        success: function(primaryUrl) {
-            window.location.replace(primaryUrl);
-            console.log(primaryUrl);
-        }
-    });
+function goBack() {
+    window.location.replace("../timeTableProblem/timeTableProblem.html");
 }
 
 function createProblemDialog(event) {

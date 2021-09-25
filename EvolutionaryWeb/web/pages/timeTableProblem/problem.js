@@ -1,7 +1,7 @@
 const refreshRate = 2000;
 const USER_LIST_URL = buildUrlWithContextPath("userslist");
 const LOGOUT_URL = "logout";
-const PROBLEMS_URL = buildUrlWithContextPath("problem");
+const PROBLEM_URL = buildUrlWithContextPath("problem");
 const PROBLEMS_LIST_URL = buildUrlWithContextPath("problemslist");
 
 $(function () {
@@ -148,16 +148,18 @@ function logout() {
 }
 
 function createProblemDialog(event) {
-    // TODO: display a nice dialog if the user want to solve this problem or not.
-
-    var id = this.children[0].innerText;
+    const id = this.children[0].innerText;
+    alert("You are entering to problem with id: " + id);
 
     $.ajax({
-        data: id,
-        url: PROBLEMS_URL,
+        data: {"id" : id},
+        url: PROBLEM_URL,
         timeout: 2000,
         success: function (path) {
-            window.location.replace = path;
+            window.location.replace(path);
+        },
+        error: function (errObject) {
+            alert(errObject.responseText);
         }
     });
 }

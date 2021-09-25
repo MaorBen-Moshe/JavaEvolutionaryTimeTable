@@ -5,17 +5,13 @@ import evolutinary.TimeTableEvolutionarySystemImpel;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Problem {
     private static int idCounter;
     private final int problemId;
     private final String creatorName;
-    private final Set<String> usersSolveProblem;
-    private float currentBestFitnessOfProblem;
+    private final Map<User, ProblemConfigurations> usersSolveProblem;
     private int days;
     private int hours;
     private int teachers;
@@ -29,16 +25,12 @@ public class Problem {
         return problemId;
     }
 
-    public Set<String> getUsersSolveProblem() {
-        return Collections.unmodifiableSet(usersSolveProblem);
+    public Map<User, ProblemConfigurations> getUsersSolveProblem() {
+        return Collections.unmodifiableMap(usersSolveProblem);
     }
 
-    public float getCurrentBestFitnessOfProblem() {
-        return currentBestFitnessOfProblem;
-    }
-
-    public void setCurrentBestFitnessOfProblem(float currentBestFitnessOfProblem) {
-        this.currentBestFitnessOfProblem = currentBestFitnessOfProblem;
+    public double getCurrentBestFitnessOfProblem() {
+        return usersSolveProblem.values().stream().map(ProblemConfigurations::getCurrentBestFitness).max(Comparator.naturalOrder()).orElse((double) 0);
     }
 
     public int getDays() {
@@ -82,7 +74,7 @@ public class Problem {
     }
 
     public Problem(String creatorName){
-        usersSolveProblem = new HashSet<>();
+        usersSolveProblem = new HashMap<>();
         problemId = idCounter++;
         this.creatorName = creatorName;
     }
@@ -101,6 +93,51 @@ public class Problem {
         }
     }
 
+    public void setEngineInfoByUser(User user, EngineInfoObject info){
+        if(usersSolveProblem.containsKey(user)){
+            ProblemConfigurations config = usersSolveProblem.get(user);
+            if(config.getSystem().isRunningProcess()){
+                throw new IllegalArgumentException("Cannot change system engine info while the algorithm is running");
+            }
+
+            createEngine(user, info);
+        }else{
+            usersSolveProblem.put(user, createEngine(info));
+        }
+    }
+
+    public void runProblem(User user){
+        if(!usersSolveProblem.containsKey(user)){
+            throw new IllegalArgumentException("user " + user.getName() + " does not exist");
+        }
+
+        usersSolveProblem.get(user).run();
+    }
+
+    public void pauseProblem(User user){
+        if(!usersSolveProblem.containsKey(user)){
+            throw new IllegalArgumentException("user " + user.getName() + " does not exist");
+        }
+
+        usersSolveProblem.get(user).pause();
+    }
+
+    public void resumeProblem(User user){
+        if(!usersSolveProblem.containsKey(user)){
+            throw new IllegalArgumentException("user " + user.getName() + " does not exist");
+        }
+
+        usersSolveProblem.get(user).resume();
+    }
+
+    public void stopProblem(User user){
+        if(!usersSolveProblem.containsKey(user)){
+            throw new IllegalArgumentException("user " + user.getName() + " does not exist");
+        }
+
+        usersSolveProblem.get(user).stop();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -112,5 +149,37 @@ public class Problem {
     @Override
     public int hashCode() {
         return Objects.hash(problemId);
+    }
+
+    private void createEngine(User user, EngineInfoObject info){
+        ProblemConfigurations config = usersSolveProblem.get(user);
+        TimeTableEvolutionarySystemImpel cloned = (TimeTableEvolutionarySystemImpel) config.getSystem();
+        cloned.setElitism(info.getElitism());
+        cloned.setInitialPopulationSize(info.getPopulation());
+        cloned.setCrossover(info.getCrossover());
+        cloned.setSelection(info.getSelection());
+        cloned.setMutations(info.getMutations());
+
+        config.setTerminateRules(info.getTerminateRules(), info.getJumps());
+    }
+
+    private ProblemConfigurations createEngine(EngineInfoObject info){
+        TimeTableEvolutionarySystemImpel cloned = new TimeTableEvolutionarySystemImpel();
+        cloned.setHours(system.getHours());
+        cloned.setDays(system.getDays());
+        cloned.setClasses(new HashSet<>(system.getClasses().values()));
+        cloned.setRules(system.getRules());
+        cloned.setSubjects(new HashSet<>(system.getSubjects().values()));
+        cloned.setTeachers(new HashSet<>(system.getTeachers().values()));
+
+        cloned.setElitism(info.getElitism());
+        cloned.setInitialPopulationSize(info.getPopulation());
+        cloned.setCrossover(info.getCrossover());
+        cloned.setSelection(info.getSelection());
+        cloned.setMutations(info.getMutations());
+
+        ProblemConfigurations configurations = new ProblemConfigurations(cloned);
+        configurations.setTerminateRules(info.getTerminateRules(), info.getJumps());
+        return configurations;
     }
 }

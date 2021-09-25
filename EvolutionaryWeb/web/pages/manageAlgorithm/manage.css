@@ -160,8 +160,15 @@ header {
 
 #side-menu {
     display: inline-block;
-    width: 15%;
     float: right;
+}
+
+.generation{
+    margin: 5px;
+}
+
+.fitness{
+    margin: 5px;
 }
 
 #rules-menu{

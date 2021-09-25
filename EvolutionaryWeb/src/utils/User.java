@@ -3,12 +3,16 @@ package utils;
 import com.sun.istack.internal.NotNull;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class User {
     private final String name;
     private final Set<Problem> problemsRun;
+    private int lastSeenProblem;
+
 
     public User(String name){
         this.name = name;
@@ -36,6 +40,20 @@ public class User {
                                .filter(x -> x.getProblemId() == id)
                                .findFirst()
                                .orElse(null);
+    }
+
+    public int getLastSeenProblem() {
+        return lastSeenProblem;
+    }
+
+    public void setLastSeenProblem(int lastSeenProblem) {
+        List<Integer> ids = problemsRun.stream().map(Problem::getProblemId).filter(x -> x == lastSeenProblem).collect(Collectors.toList());
+        boolean contains = ids.size() == 1;
+        if(!contains){
+            throw new IllegalArgumentException("Problem id: " + lastSeenProblem + " is not run by " + name);
+        }
+
+        this.lastSeenProblem = lastSeenProblem;
     }
 
     @Override

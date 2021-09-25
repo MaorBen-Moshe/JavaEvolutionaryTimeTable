@@ -26,6 +26,10 @@ public final class ProblemManager {
         return x;
     }
 
+    public synchronized Problem getProblemById(int id){
+        return problemsList.get(id);
+    }
+
     public boolean isProblemExists(Problem evoSystem) {
         return problemsList.containsKey(evoSystem.getProblemId());
     }

@@ -28,6 +28,18 @@ import java.util.*;
 
 public class ETTXmlParser {
 
+    public static EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> parse(InputStream stream) throws Exception{
+        if(stream == null){
+            throw new IllegalArgumentException("Input stream should have content");
+        }
+
+        ETTDescriptor descriptor = deserializeFrom(stream);
+        // for ex1 and ex2 schema
+        //return createTimeTableImpel(descriptor.getETTTimeTable(), descriptor.getETTEvolutionEngine());
+        //for ex3 schema
+        return createTimeTableImpel(descriptor.getETTTimeTable(), null);
+    }
+
     // parse region
     public static EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> parse(String filePath) throws Exception {
         if(filePath == null){

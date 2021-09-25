@@ -1,5 +1,6 @@
 package servlets;
 
+import com.google.gson.Gson;
 import utils.*;
 
 import javax.servlet.ServletException;
@@ -8,21 +9,34 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-@WebServlet(name = "ProblemServlet", urlPatterns = {"/problem"})
-public class ProblemServlet extends HttpServlet {
+@WebServlet(name = "UsersRunProblem", urlPatterns = {"/usersRunProblemList"})
+public class UsersRunProblemList extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
-        response.setContentType("text/plain;charset=UTF-8");
-        int id = Integer.parseInt(request.getParameter("id"));
+        response.setContentType("application/json");
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
         String usernameFromSession = SessionUtils.getUsername(request);
         User user = userManager.getUserByName(usernameFromSession);
         ProblemManager problemManager = ServletUtils.getProblemManager(getServletContext());
-        user.addProblem(problemManager.getProblemById(id));
-        user.setLastSeenProblem(id);
+        Problem problem = problemManager.getProblemById(user.getLastSeenProblem());
+        String json = createJson(problem);
         response.setStatus(200);
-        response.getOutputStream().println(Constants.Third_Page_URL);
+        response.getOutputStream().println(json);
+    }
+
+    private String createJson(Problem problem) {
+        Gson gson = new Gson();
+        List<UserRunProblemObject> usersToJson = new ArrayList<>();
+        Map<User, ProblemConfigurations> problemUsers = problem.getUsersSolveProblem();
+        problemUsers.forEach((key, val) -> {
+            usersToJson.add(new UserRunProblemObject(key.getName(), val.getGenerationNumber(), val.getCurrentBestFitness()));
+        });
+
+        return gson.toJson(usersToJson);
     }
 
     @Override

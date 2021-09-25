@@ -9,20 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "ProblemServlet", urlPatterns = {"/problem"})
-public class ProblemServlet extends HttpServlet {
+@WebServlet(name = "StopProblem", urlPatterns = {"/stopProblem"})
+public class StopProblemServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
-        response.setContentType("text/plain;charset=UTF-8");
-        int id = Integer.parseInt(request.getParameter("id"));
-        UserManager userManager = ServletUtils.getUserManager(getServletContext());
-        String usernameFromSession = SessionUtils.getUsername(request);
-        User user = userManager.getUserByName(usernameFromSession);
-        ProblemManager problemManager = ServletUtils.getProblemManager(getServletContext());
-        user.addProblem(problemManager.getProblemById(id));
-        user.setLastSeenProblem(id);
-        response.setStatus(200);
-        response.getOutputStream().println(Constants.Third_Page_URL);
+        ProblemUtils.ProblemMethodDispatcher(ProblemUtils.ProblemMethod.Stop, request, response, getServletContext());
     }
 
     @Override

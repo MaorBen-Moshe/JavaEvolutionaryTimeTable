@@ -6,6 +6,7 @@
     <script src="../../utils/jquery-3.6.0.min.js"></script>
     <script src="../../utils/context-path-helper.js"></script>
     <script src="manage.js"></script>
+    <script src="formListeners.js"></script>
     <script src="manage-buttons.js"></script>
     <link rel="stylesheet" href="../../utils/bootstrap.min.css">
     <link href="manage.css" type="text/css" rel="stylesheet">
@@ -101,32 +102,34 @@
                 <h4>Engine Info Editor:</h4>
                 <diV>
                     <label for="population">Population:</label>
-                    <input id="population" type="number" min="0"/>
+                    <input id="population" type="number" min="0" name="population"/>
                 </diV>
                 <diV>
                     <label for="elita">Elitism:</label>
-                    <input id="elita" type="number" min="0"/>
+                    <input id="elita" type="number" min="0" name="elitism"/>
                 </diV>
                 <div>
                     <label for="selection">Selection:</label>
                     <select name="selection" id="selection">
-                        <option value="Roulette">Roulette Wheel</option>
+                        <option value="RouletteWheel">Roulette Wheel</option>
                         <option value="Tournament">Tournament</option>
                         <option value="Truncation">Truncation</option>
                     </select>
-                    <div id="selection-input" style="display: none">
-                        <input type="number" id="selection-input-tag" />
+                    <div id="selection-input">
+                        <label for="selection-input-tag" id="selection-input-tag-label"></label>
+                        <input type="number" id="selection-input-tag" name="selectionInput"/>
                     </div>
                 </div>
                 <div>
                     <label for="crossover">Crossover:</label>
                     <select name="crossover" id="crossover">
-                        <option value="Aspect">Aspect Oriented</option>
                         <option value="DayTime">Day Time Oriented</option>
+                        <option value="Aspect">Aspect Oriented</option>
                     </select>
                     <label for="cutting">cutting points:</label>
                     <input id="cutting" type="number" />
-                    <div id="orientation" style="display: none">
+                    <div id="orientation">
+                        <label for="aspect">Crossover aspect:</label>
                         <select name="aspect" id="aspect">
                             <option value="Teacher">Teacher</option>
                             <option value="Class">Class</option>
@@ -134,31 +137,32 @@
                     </div>
                 </div>
                 <div>
+                    <label>Mutations:</label>
                     <div id="mut-list">
 
                     </div>
-                    <input value="add mutation" id="mut-add" type="button" onclick="addMutationDisplay()">
+                    <input value="add mutation" id="mut-add" type="button">
                 </div>
                 <div>
                     <label for="jumps">Jump in generations:</label>
-                    <input id="jumps" type="number" min="1"/>
+                    <input id="jumps" type="number" min="1" name="jumps"/>
                 </div>
                 <div>
                     <h6>Terminate Rules:</h6>
                     <label for="gens">generations:</label>
                     <div id="gens">
-                        <input type="checkbox" id="gens-check">
-                        <input type="number" id="gens-input" min="100" />
+                        <input type="checkbox" id="gens-check" name="gensPicked">
+                        <input type="number" id="gens-input" min="100" name="gens"/>
                     </div>
                     <label for="fit">Fitness:</label>
                     <div id="fit">
-                        <input type="checkbox" id="fit-check">
-                        <input type="number" id="fit-input" min="0" max="100" />
+                        <input type="checkbox" id="fit-check" name="fitPicked">
+                        <input type="number" id="fit-input" min="0" max="100" name="fitness"/>
                     </div>
                     <label for="time">Time:</label>
                     <div id="time">
-                        <input type="checkbox" id="time-check">
-                        <input type="number" id="time-input" min="1" />
+                        <input type="checkbox" id="time-check" name="timePicked">
+                        <input type="number" id="time-input" min="1" name="time"/>
                     </div>
                 </div>
                 <input type="submit" value="Submit" />

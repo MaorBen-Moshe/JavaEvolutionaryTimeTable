@@ -85,7 +85,7 @@ function refreshProblemList(problems) {
         tdUploader.innerText = problem.creatorName;
         tdProblemInfo.appendChild(createSectionProblemInfo(problem));
         tdRules.appendChild(createSectionRulesInfo(problem));
-        tdUsers.innerText = problem.usersSolveProblem.length;
+        tdUsers.innerText = problem.usersSolveProblemSize;
         tdBestFitness.innerText = problem.currentBestFitnessOfProblem;
 
         trRow.appendChild(tdID);

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name="GetProblem", urlPatterns = {"/geProblem"})
+@WebServlet(name="GetProblem", urlPatterns = {"/getProblem"})
 public class GetProblemServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws Exception {

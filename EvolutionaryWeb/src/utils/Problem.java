@@ -12,6 +12,7 @@ public class Problem {
     private final int problemId;
     private final String creatorName;
     private final Map<User, ProblemConfigurations> usersSolveProblem;
+    private int usersSolveProblemSize;
     private int days;
     private int hours;
     private int teachers;
@@ -20,6 +21,7 @@ public class Problem {
     private int numberOfSoftRules;
     private int numberOfHardRules;
     private TimeTableEvolutionarySystemImpel system;
+    private double currentBestFitnessOfProblem;
 
     public int getProblemId() {
         return problemId;
@@ -30,7 +32,13 @@ public class Problem {
     }
 
     public double getCurrentBestFitnessOfProblem() {
-        return usersSolveProblem.values().stream().map(ProblemConfigurations::getCurrentBestFitness).max(Comparator.naturalOrder()).orElse((double) 0);
+        currentBestFitnessOfProblem = usersSolveProblem.values().stream().map(ProblemConfigurations::getCurrentBestFitness).max(Comparator.naturalOrder()).orElse((double) 0);
+        return currentBestFitnessOfProblem;
+    }
+
+    public int getUsersSolveProblemSize(){
+        usersSolveProblemSize = usersSolveProblem.size();
+        return usersSolveProblemSize;
     }
 
     public int getDays() {

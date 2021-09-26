@@ -8,6 +8,13 @@ $(function () {
     ajaxUsersList();
     //ajaxProblemList();
     setInterval(ajaxUsersList, refreshRate);
+    document.getElementById('mut-add').onclick = function (event){
+        addMutationCell();
+    };
+
+    setInfoFormListener();
+    setSelectionListener();
+    setCrossoverListener();
 })
 
 

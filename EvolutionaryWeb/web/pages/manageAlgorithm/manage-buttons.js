@@ -17,7 +17,7 @@ function stopAlgorithm(){
 }
 
 var x = 1;
-function addMutationDisplay(){
+function addMutationCell(){
     var div = document.createElement("div");
     div.id = "mut" + x;
     $("#mut-list").appendChild(div);
@@ -84,10 +84,3 @@ function addMutationDisplay(){
 
     x = x + 1;
 }
-
-$(function (){
-    $("#mut-add").click(function () {
-        alert("clicked");
-       addMutationDisplay();
-    });
-})

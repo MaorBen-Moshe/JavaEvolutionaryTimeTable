@@ -1,4 +1,4 @@
-package utils;
+package utils.models;
 
 import com.sun.istack.internal.NotNull;
 

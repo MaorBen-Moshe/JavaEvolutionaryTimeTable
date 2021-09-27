@@ -2,6 +2,8 @@ package servlets;
 
 import com.google.gson.Gson;
 import utils.*;
+import utils.models.Problem;
+import utils.models.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,8 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @WebServlet(name="CurrentRunningInfoServlet", urlPatterns = {"/runningInfo"})
 public class CurrentRunningInfoServlet extends HttpServlet {

@@ -2,7 +2,7 @@ package servlets;
 
 import evolutinary.TimeTableEvolutionarySystemImpel;
 import utils.ETTXmlParser;
-import utils.Problem;
+import utils.models.Problem;
 import utils.ServletUtils;
 import utils.SessionUtils;
 

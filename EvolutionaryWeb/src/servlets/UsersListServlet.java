@@ -2,7 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import utils.ServletUtils;
-import utils.User;
+import utils.models.User;
 import utils.UserManager;
 
 import javax.servlet.ServletException;

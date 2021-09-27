@@ -1,4 +1,4 @@
-package utils;
+package utils.infoModels;
 
 import crossover.Crossover;
 import models.TerminateRule;

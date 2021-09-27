@@ -1,6 +1,8 @@
 package servlets;
 
 import utils.*;
+import utils.models.Problem;
+import utils.models.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

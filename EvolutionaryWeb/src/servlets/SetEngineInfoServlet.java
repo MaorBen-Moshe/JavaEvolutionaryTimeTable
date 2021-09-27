@@ -2,19 +2,16 @@ package servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import crossover.Crossover;
-import models.*;
-import mutation.FlippingMutation;
+import evolutinary.EvolutionarySystem;
+import models.TimeTable;
+import models.TimeTableSystemDataSupplier;
 import mutation.Mutation;
-import mutation.SizerMutation;
-import selection.RouletteWheelSelection;
-import selection.Selection;
-import selection.TournamentSelection;
-import selection.TruncationSelection;
 import utils.*;
 import utils.infoModels.Info;
 import utils.infoModels.InfoDeserializer;
-import utils.infoModels.MutationInfo;
+import utils.infoModels.PropertyInfoObject;
+import utils.models.Problem;
+import utils.models.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,7 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.*;
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 
 @WebServlet(name = "SetEngineInfo", urlPatterns = {"/setEngineInfo"})
 public class SetEngineInfoServlet extends HttpServlet {
@@ -31,7 +31,7 @@ public class SetEngineInfoServlet extends HttpServlet {
             throws Exception {
         try{
             // get Engine info from data of request
-            response.setContentType("text/plain;charset=UTF-8");
+            response.setContentType("application/json");
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             String usernameFromSession = SessionUtils.getUsername(request);
             User user = userManager.getUserByName(usernameFromSession);
@@ -40,9 +40,10 @@ public class SetEngineInfoServlet extends HttpServlet {
             String json = request.getParameter(Constants.JSON_PARAM);
             Gson gson = new GsonBuilder().registerTypeAdapter(Info.class, new InfoDeserializer()).create();
             Info info = gson.fromJson(new StringReader(json), Info.class);
-            problem.setEngineInfoByUser(user, parseInfo(info));
+            problem.setEngineInfoByUser(user, ParseUtils.parseInfo(info));
             response.setStatus(200);
-            response.getOutputStream().println("Info added successfully");
+            String retJson = new Gson().toJson(createEngineInfo(problem.getSystemByUser(user), info));
+            response.getOutputStream().println(retJson);
         }catch (Exception e){
             response.setStatus(500);
             response.getOutputStream().println(e.getMessage());
@@ -71,45 +72,30 @@ public class SetEngineInfoServlet extends HttpServlet {
         }
     }
 
-    private EngineInfoObject parseInfo(Info info) throws Exception {
-        Selection<TimeTable> selection = ETTXmlParser.createSelection(info.getSelectionType(), info.getSelectionInput());
-        Crossover<TimeTable, TimeTableSystemDataSupplier> crossover = ETTXmlParser.createCrossover(info.getCrossoverType() + "Oriented", info.getCrossoverCutting(), info.getCrossoverAspect().toUpperCase(Locale.ROOT));
-        List<Mutation<TimeTable, TimeTableSystemDataSupplier>> mutations = createMutations(info.getMutations());
-        Set<TerminateRule> terminate = createTerminates(info.getGensChecked(), info.getGensInput(), info.getFitnessChecked(), info.getFitnessInput(), info.getTimeChecked(), info.getTimeInput());
-        return new EngineInfoObject(info.getPopulation(), info.getElitism(), info.getJumps(), terminate,selection,crossover, mutations);
-    }
+    private List<PropertyInfoObject> createEngineInfo(EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> system, Info info){
+        List<PropertyInfoObject> ret = new ArrayList<>();
+        ret.add(new PropertyInfoObject("Population", String.valueOf(system.getInitialPopulationSize())));
+        ret.add(new PropertyInfoObject("Elitism", String.valueOf(system.getElitism())));
+        ret.add(new PropertyInfoObject("Selection", system.getSelection().toString()));
+        ret.add(new PropertyInfoObject("Crossover", system.getCrossover().toString()));
+        ret.add(new PropertyInfoObject("Mutations", ""));
+        List<Mutation<TimeTable, TimeTableSystemDataSupplier>> mutations = system.getMutations();
+        IntStream.range(0, mutations.size()).forEach(i -> {
+            ret.add(new PropertyInfoObject("Mutation " + (i + 1), mutations.get(i).toString()));
+        });
 
-    private List<Mutation<TimeTable, TimeTableSystemDataSupplier>> createMutations(List<MutationInfo> mutations) {
-        List<Mutation<TimeTable, TimeTableSystemDataSupplier>> ret = new ArrayList<>();
-        for(MutationInfo curr : mutations){
-            double prob = curr.getProbability();
-            int tupples = curr.getTupples();
-            switch (curr.getType()){
-                case "Flipping":
-                    ret.add(new FlippingMutation(prob, tupples, FlippingMutation.Component.valueOf(curr.getComponent())));
-                    break;
-                case "Sizer":
-                    ret.add(new SizerMutation(prob, tupples));
-                    break;
-                default: throw new IllegalArgumentException(curr.getType() + " is not a valid mutation");
-            }
+        ret.add(new PropertyInfoObject("Jumps", String.valueOf(info.getJumps())));
+        ret.add(new PropertyInfoObject("Terminate By:", ""));
+        if(info.getGensChecked()){
+            ret.add(new PropertyInfoObject("Generations ", String.valueOf(info.getGensInput())));
         }
 
-        return ret;
-    }
-
-    private Set<TerminateRule> createTerminates(boolean gensChecked, int gensInput, boolean fitnessChecked, int fitnessInput, boolean timeChecked, long timeInput) {
-        Set<TerminateRule> ret = new HashSet<>();
-        if(gensChecked){
-            ret.add(new GenerationTerminateRule(gensInput));
+        if(info.getFitnessChecked()){
+            ret.add(new PropertyInfoObject("Fitness ", String.valueOf(info.getFitnessInput())));
         }
 
-        if(fitnessChecked){
-            ret.add(new FitnessTerminateRule(fitnessInput));
-        }
-
-        if(timeChecked){
-            ret.add(new TimeTerminateRule(timeInput));
+        if(info.getTimeChecked()){
+            ret.add(new PropertyInfoObject("Time ", String.valueOf(info.getTimeInput())));
         }
 
         return ret;

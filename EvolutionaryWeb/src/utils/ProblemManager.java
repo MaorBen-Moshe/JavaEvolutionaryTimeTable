@@ -1,5 +1,7 @@
 package utils;
 
+import utils.models.Problem;
+
 import java.util.*;
 import java.util.stream.Collectors;
 

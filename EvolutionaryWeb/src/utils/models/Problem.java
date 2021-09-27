@@ -1,9 +1,10 @@
-package utils;
+package utils.models;
 
 import evolutinary.EvolutionarySystem;
 import evolutinary.TimeTableEvolutionarySystemImpel;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
+import utils.infoModels.EngineInfoObject;
 
 import java.util.*;
 
@@ -101,6 +102,14 @@ public class Problem {
         }
     }
 
+    public EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> getSystemByUser(User user){
+        if(!usersSolveProblem.containsKey(user)){
+            throw new IllegalArgumentException(user.getName() + " does not run this problem");
+        }
+
+        return usersSolveProblem.get(user).getSystem();
+    }
+
     public void setEngineInfoByUser(User user, EngineInfoObject info){
         if(usersSolveProblem.containsKey(user)){
             ProblemConfigurations config = usersSolveProblem.get(user);
@@ -164,12 +173,7 @@ public class Problem {
     private void createEngine(User user, EngineInfoObject info){
         ProblemConfigurations config = usersSolveProblem.get(user);
         TimeTableEvolutionarySystemImpel cloned = (TimeTableEvolutionarySystemImpel) config.getSystem();
-        cloned.setElitism(info.getElitism());
-        cloned.setInitialPopulationSize(info.getPopulation());
-        cloned.setCrossover(info.getCrossover());
-        cloned.setSelection(info.getSelection());
-        cloned.setMutations(info.getMutations());
-
+        setEngineInfoHelper(cloned, info);
         config.setTerminateRules(info.getTerminateRules(), info.getJumps());
     }
 
@@ -182,14 +186,17 @@ public class Problem {
         cloned.setSubjects(new HashSet<>(system.getSubjects().values()));
         cloned.setTeachers(new HashSet<>(system.getTeachers().values()));
 
-        cloned.setElitism(info.getElitism());
-        cloned.setInitialPopulationSize(info.getPopulation());
-        cloned.setCrossover(info.getCrossover());
-        cloned.setSelection(info.getSelection());
-        cloned.setMutations(info.getMutations());
-
+        setEngineInfoHelper(cloned, info);
         ProblemConfigurations configurations = new ProblemConfigurations(cloned);
         configurations.setTerminateRules(info.getTerminateRules(), info.getJumps());
         return configurations;
+    }
+
+    private void setEngineInfoHelper(TimeTableEvolutionarySystemImpel cloned, EngineInfoObject info){
+        cloned.setInitialPopulationSize(info.getPopulation());
+        cloned.setElitism(info.getElitism());
+        cloned.setCrossover(info.getCrossover());
+        cloned.setSelection(info.getSelection());
+        cloned.setMutations(info.getMutations());
     }
 }

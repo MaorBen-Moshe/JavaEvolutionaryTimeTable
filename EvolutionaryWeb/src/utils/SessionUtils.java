@@ -1,5 +1,7 @@
 package utils;
 
+import utils.models.User;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 

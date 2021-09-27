@@ -1,4 +1,4 @@
-package utils;
+package utils.models;
 
 public class UserRunProblemObject {
     private final String name;

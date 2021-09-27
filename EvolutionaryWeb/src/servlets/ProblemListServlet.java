@@ -1,13 +1,9 @@
 package servlets;
 
 import com.google.gson.Gson;
-import evolutinary.EvolutionarySystem;
-import models.TimeTable;
-import models.TimeTableSystemDataSupplier;
-import utils.Problem;
+import utils.models.Problem;
 import utils.ProblemManager;
 import utils.ServletUtils;
-import utils.UserManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.Set;
 
 @WebServlet(name="ProblemListServlet", urlPatterns = {"/problemslist"})
 public class ProblemListServlet extends HttpServlet {

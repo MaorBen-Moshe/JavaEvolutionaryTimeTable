@@ -1,4 +1,4 @@
-package utils;
+package utils.models;
 
 import evolutinary.EvolutionarySystem;
 import evolutinary.TimeTableEvolutionarySystemImpel;

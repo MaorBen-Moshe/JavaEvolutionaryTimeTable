@@ -55,6 +55,22 @@ public class ETTXmlParser {
         return createTimeTableImpel(descriptor.getETTTimeTable(), null);
     }
 
+    public static Selection<TimeTable> createSelection(String type, String input) throws Exception {
+        ETTSelection selection = new ETTSelection();
+        String prefix = type.equals("Truncation") ? "TopPercent=" : "PTE=";
+        selection.setConfiguration(prefix + input);
+        selection.setType(type);
+        return createSelection(selection);
+    }
+
+    public static Crossover<TimeTable, TimeTableSystemDataSupplier> createCrossover(String type, int cutting, String aspect) throws Exception {
+        ETTCrossover crossover = new ETTCrossover();
+        crossover.setName(type);
+        crossover.setCuttingPoints(cutting);
+        crossover.setConfiguration("Orientation=" + aspect);
+        return createCrossover(crossover);
+    }
+
     private static ETTDescriptor deserializeFrom(InputStream in) throws JAXBException {
         JAXBContext jc = JAXBContext.newInstance("generated");
         Unmarshaller unMarshaller = jc.createUnmarshaller();

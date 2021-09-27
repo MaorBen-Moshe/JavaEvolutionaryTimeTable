@@ -9,7 +9,7 @@ public abstract class MutationImpel<T, S extends DataSupplier> implements Mutati
     protected double probability;
 
     protected MutationImpel(MutationTypes type, double probability){
-        this.probability = probability;
+        setProbability(probability);
         this.type = type;
     }
 

@@ -1,22 +1,39 @@
 const refreshRate = 2000;
 const USERS_RUN_PROBLEM_LIST_URL = buildUrlWithContextPath("usersRunProblemList");
 const GET_PROBLEM_URL = buildUrlWithContextPath("getProblem");
+const USER_IN_PROBLEM_URL = buildUrlWithContextPath("inProblemConfigsServlet");
 var id;
 
 $(function () {
     ajaxGetProblemInfo();
+    ajaxUserInProblem();
     ajaxUsersList();
+    ajaxOnSendInfo();
     //ajaxProblemList();
     setInterval(ajaxUsersList, refreshRate);
-    document.getElementById('mut-add').onclick = function (event){
-        addMutationCell();
-    };
-
+    document.getElementById('mut-add').onclick = addMutationCell;
     setInfoFormListener();
     setSelectionListener();
     setCrossoverListener();
 })
 
+
+function ajaxUserInProblem(){
+    $.ajax({
+        url: USER_IN_PROBLEM_URL,
+        timeout: 2000,
+        error: function (errObject){
+            alert(errObject.responseText);
+        },
+        success: function (response){
+            if(response === "true"){
+                $(".header-label").css("color", "green");
+            }else{
+                $(".header-label").css("color", "red");
+            }
+        }
+    })
+}
 
 function ajaxGetProblemInfo(){
     $.ajax({

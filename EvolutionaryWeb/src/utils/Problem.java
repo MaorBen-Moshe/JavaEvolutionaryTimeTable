@@ -112,6 +112,8 @@ public class Problem {
         }else{
             usersSolveProblem.put(user, createEngine(info));
         }
+
+        usersSolveProblemSize = usersSolveProblem.size();
     }
 
     public void runProblem(User user){

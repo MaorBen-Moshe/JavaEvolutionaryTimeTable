@@ -118,6 +118,10 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     }
 
     public void setInitialPopulationSize(int initialPopulationSize) {
+        if(initialPopulationSize <= 0 ){
+            throw new IllegalArgumentException("Population size should be greater than zero");
+        }
+
         this.initialPopulationSize = initialPopulationSize;
     }
 

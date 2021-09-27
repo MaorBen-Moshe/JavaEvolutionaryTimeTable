@@ -98,7 +98,7 @@
             </table>
         </aside>
         <section id="table-container">
-            <form id="info-form">
+            <form id="info-form" method="POST" >
                 <h4>Engine Info Editor:</h4>
                 <diV>
                     <label for="population">Population:</label>
@@ -127,7 +127,7 @@
                         <option value="Aspect">Aspect Oriented</option>
                     </select>
                     <label for="cutting">cutting points:</label>
-                    <input id="cutting" type="number" />
+                    <input id="cutting" type="number" min="0"/>
                     <div id="orientation">
                         <label for="aspect">Crossover aspect:</label>
                         <select name="aspect" id="aspect">
@@ -136,12 +136,10 @@
                         </select>
                     </div>
                 </div>
-                <div>
+                <div id="mut-section">
                     <label>Mutations:</label>
-                    <div id="mut-list">
-
-                    </div>
                     <input value="add mutation" id="mut-add" type="button">
+
                 </div>
                 <div>
                     <label for="jumps">Jump in generations:</label>

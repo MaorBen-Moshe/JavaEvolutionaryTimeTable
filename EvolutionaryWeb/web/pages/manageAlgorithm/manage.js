@@ -8,13 +8,9 @@ $(function () {
     ajaxGetProblemInfo();
     ajaxUserInProblem();
     ajaxUsersList();
-    ajaxOnSendInfo();
-    //ajaxProblemList();
+    getProblemData();
+    callListeners(); // include form engine info listener
     setInterval(ajaxUsersList, refreshRate);
-    document.getElementById('mut-add').onclick = addMutationCell;
-    setInfoFormListener();
-    setSelectionListener();
-    setCrossoverListener();
 })
 
 

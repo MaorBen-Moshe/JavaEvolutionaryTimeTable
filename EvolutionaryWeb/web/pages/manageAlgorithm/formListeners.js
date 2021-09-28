@@ -1,4 +1,5 @@
 const SET_ENGINE_INFO_URL = buildUrlWithContextPath("setEngineInfo");
+const TIMEOUT = 2000;
 
 function ajaxOnSendInfo(){
     $("#info-form").submit(function (){
@@ -8,7 +9,7 @@ function ajaxOnSendInfo(){
             method: this.method,
             type: "POST",
             url: SET_ENGINE_INFO_URL,
-            timeout: 2000,
+            timeout: TIMEOUT,
             error: function (errObj){
                 alert(errObj.responseText);
             },success: function (properties){

@@ -7,15 +7,21 @@ import java.util.Set;
 public class TeacherDTO extends SerialItemDTO implements Comparable<TeacherDTO>{
     private final Set<SubjectDTO> subjects;
     private final Set<SubjectDTO> unModifiedSubjects;
+    private final int workingHoursPref;
 
-    public TeacherDTO(String name, int id, Set<SubjectDTO> subjects) {
+    public TeacherDTO(String name, int id, Set<SubjectDTO> subjects, int workingHoursPref) {
         super(name, id);
         this.subjects = subjects;
         this.unModifiedSubjects = Collections.unmodifiableSet(subjects);
+        this.workingHoursPref = workingHoursPref;
     }
 
     public Set<SubjectDTO> getSubjects() {
         return unModifiedSubjects;
+    }
+
+    public int getWorkingHoursPref(){
+        return workingHoursPref;
     }
 
     @Override

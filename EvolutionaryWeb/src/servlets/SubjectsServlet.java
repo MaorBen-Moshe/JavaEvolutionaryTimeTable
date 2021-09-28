@@ -1,8 +1,10 @@
 package servlets;
 
-import utils.*;
+import DTO.ModelToDTOConverter;
+import DTO.SubjectDTO;
+import com.google.gson.Gson;
+import utils.CollectionsServletHelper;
 import utils.models.Problem;
-import utils.models.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,20 +12,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-@WebServlet(name="GetProblem", urlPatterns = {"/getProblem"})
-public class GetProblemServlet extends HttpServlet {
+@WebServlet(name = "SubjectsServlet", urlPatterns = {"/subjects"})
+public class SubjectsServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
-        response.setContentType("application/json");
-        UserManager userManager = ServletUtils.getUserManager(getServletContext());
-        String usernameFromSession = SessionUtils.getUsername(request);
-        User user = userManager.getUserByName(usernameFromSession);
-        ProblemManager problemManager = ServletUtils.getProblemManager(getServletContext());
-        Problem problem = problemManager.getProblemById(user.getLastSeenProblem());
-        // serialize problem to json and send back
-        response.setStatus(200);
-        response.getOutputStream().println(Constants.Third_Page_URL);
+        CollectionsServletHelper.ProcessCollectionsRequest(request, response, getServletContext(), this::createAnswer);
+    }
+
+    private String createAnswer(Problem problem) {
+        List<SubjectDTO> subjects = new ArrayList<>();
+        ModelToDTOConverter converter = new ModelToDTOConverter();
+        problem.getSubjectsModel().forEach(subject -> {
+            subjects.add(converter.createSubjectDTO(subject));
+        });
+
+        return new Gson().toJson(subjects);
     }
 
     @Override

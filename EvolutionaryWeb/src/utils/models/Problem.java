@@ -2,11 +2,12 @@ package utils.models;
 
 import evolutinary.EvolutionarySystem;
 import evolutinary.TimeTableEvolutionarySystemImpel;
-import models.TimeTable;
-import models.TimeTableSystemDataSupplier;
+import models.*;
 import utils.infoModels.EngineInfoObject;
+import utils.infoModels.Info;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Problem {
     private static int idCounter;
@@ -23,6 +24,15 @@ public class Problem {
     private int numberOfHardRules;
     private TimeTableEvolutionarySystemImpel system;
     private double currentBestFitnessOfProblem;
+    private Info problemRawInfo;
+
+    public Info getProblemRawInfo() {
+        return problemRawInfo;
+    }
+
+    public void setProblemRawInfo(Info problemRawInfo) {
+        this.problemRawInfo = problemRawInfo;
+    }
 
     public int getProblemId() {
         return problemId;
@@ -54,13 +64,19 @@ public class Problem {
         return teachers;
     }
 
+    public List<Teacher> getTeachersModel() {return new ArrayList<>(system.getTeachers().values()); }
+
     public int getClasses() {
         return classes;
     }
 
+    public List<SchoolClass> getClassesModel() {return new ArrayList<>(system.getClasses().values()); }
+
     public int getSubjects() {
         return subjects;
     }
+
+    public List<Subject> getSubjectsModel() {return new ArrayList<>(system.getSubjects().values()); }
 
     public int getNumberOfSoftRules() {
         return numberOfSoftRules;
@@ -69,6 +85,8 @@ public class Problem {
     public int getNumberOfHardRules() {
         return numberOfHardRules;
     }
+
+    public Rules getRulesModel() {return system.getRules(); }
 
     public String getCreatorName() {
         return creatorName;

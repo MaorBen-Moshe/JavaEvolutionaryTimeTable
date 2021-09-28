@@ -1,9 +1,7 @@
 const START_PROBLEM_URL = buildUrlWithContextPath("startProblem");
-const START_PROBLEM_URL = buildUrlWithContextPath("pauseProblem");
-const START_PROBLEM_URL = buildUrlWithContextPath("resumeProblem");
-const START_PROBLEM_URL = buildUrlWithContextPath("stopProblem");
-
-const TIMEOUT = 2000;
+const PAUSE_PROBLEM_URL = buildUrlWithContextPath("pauseProblem");
+const RESUME_PROBLEM_URL = buildUrlWithContextPath("resumeProblem");
+const STOP_PROBLEM_URL = buildUrlWithContextPath("stopProblem");
 
 function startAlgorithm(){
 

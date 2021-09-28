@@ -1,23 +1,211 @@
-const TIMEOUT = 2000;
-const RULES_URL = buildUrlWithContextPath("");
-const TEACHERS_URL = buildUrlWithContextPath("");
-const CLASSES_URL = buildUrlWithContextPath("");
-const SUBJECTS_URL = buildUrlWithContextPath("");
+
+const GENERIC_INFO_URL = buildUrlWithContextPath("genericInfo");
+const RULES_URL = buildUrlWithContextPath("rules");
+const TEACHERS_URL = buildUrlWithContextPath("teachers");
+const CLASSES_URL = buildUrlWithContextPath("classes");
+const SUBJECTS_URL = buildUrlWithContextPath("subjects");
 
 function ajaxRulesList(){
+    $.ajax({
+        url: RULES_URL,
+        timeout: TIMEOUT,
+        success: function(rulesObj) {
+            setRulesTable(rulesObj);
+        }
+    });
+}
 
+function setRulesTable(rulesObj){
+    var tableBody = $(".rules-table-body")[0];
+    var rules_List = rulesObj.rules;
+
+    tableBody.innerHTML = "";
+    $.each(rules_List || [], function(index, rule) {
+        var trRow = document.createElement("tr");
+
+        var tdName = document.createElement("td");
+        var tdStrength = document.createElement("td");
+        var tdConfigs = document.createElement("td");
+
+        tdName.innerText = rule.type;
+        tdStrength.innerText = rule.strength;
+        tdConfigs.appendChild(getConfigurationsOfRules(rule.configurations));
+
+        trRow.appendChild(tdName);
+        trRow.appendChild(tdStrength);
+        trRow.appendChild(tdConfigs);
+
+        tableBody.appendChild(trRow);
+    });
+}
+
+function getConfigurationsOfRules(configurationsObj){
+    var hasConfigs = false;
+    var sectionInfo = $(document.createElement("section")).addClass("grid")[0];
+    for(var key in configurationsObj){
+        hasConfigs = true;
+        var configLabel = $(document.createElement("label")).text("Config: " + key + " = " + configurationsObj[key])[0];
+        sectionInfo.appendChild(configLabel);
+    }
+
+    if(hasConfigs === false){
+        sectionInfo.appendChild($(document.createElement("label")).text("No Configurations")[0]);
+    }
+
+    return sectionInfo;
 }
 
 function ajaxTeachersList(){
+    $.ajax({
+        url: TEACHERS_URL,
+        timeout: TIMEOUT,
+        success: function(teachers) {
+            setTeachersTable(teachers);
+        }
+    });
+}
 
+function setTeachersTable(teachers){
+    var tableBody = $(".teachers-table-body")[0];
+
+    tableBody.innerHTML = "";
+    $.each(teachers || [], function(index, teacher) {
+        var trRow = document.createElement("tr");
+
+        var tdID = document.createElement("td");
+        var tdName = document.createElement("td");
+        var tdHoursPref = document.createElement("td");
+        var tdSubjects = document.createElement("td");
+
+        tdID.innerText = teacher.id;
+        tdName.innerText = teacher.name;
+        tdHoursPref.innerText = teacher.workingHoursPref;
+        tdSubjects.appendChild(createSectionSubjectsInfo(teacher.subjects));
+
+        trRow.appendChild(tdID);
+        trRow.appendChild(tdName);
+        trRow.appendChild(tdHoursPref);
+        trRow.appendChild(tdSubjects);
+
+        tableBody.appendChild(trRow);
+    });
+}
+
+function createSectionSubjectsInfo(subjects) {
+    var sectionInfo = $(document.createElement("section")).addClass("grid")[0];
+
+    $.each(subjects || [], function (index, subject){
+       var subjectLabel = $(document.createElement("label")).text("Subject: id=" + subject.id + ", name="+ subject.name + ".")[0];
+        sectionInfo.appendChild(subjectLabel);
+    });
+
+    return sectionInfo;
 }
 
 function ajaxClassesList(){
+    $.ajax({
+        url: CLASSES_URL,
+        timeout: TIMEOUT,
+        success: function(classes) {
+            setClassesTable(classes);
+        }
+    });
+}
 
+function setClassesTable(classes){
+    var tableBody = $(".klass-table-body")[0];
+
+    tableBody.innerHTML = "";
+    $.each(classes || [], function(index, klass) {
+        var trRow = document.createElement("tr");
+
+        var tdID = document.createElement("td");
+        var tdName = document.createElement("td");
+        var tdTotalHours = document.createElement("td");
+        var tdSubjects = document.createElement("td");
+
+        tdID.innerText = klass.id;
+        tdName.innerText = klass.name;
+        tdTotalHours.innerText = klass.totalNumberOfHours;
+        tdSubjects.appendChild(getSubjectsFromObject(klass.subjectsNeeded));
+
+        trRow.appendChild(tdID);
+        trRow.appendChild(tdName);
+        trRow.appendChild(tdTotalHours);
+        trRow.appendChild(tdSubjects);
+
+        tableBody.appendChild(trRow);
+    });
+}
+
+function getSubjectsFromObject(subjectObj){
+    var sectionInfo = $(document.createElement("section")).addClass("grid")[0];
+    for(var key in subjectObj){
+        var subjectLabel = $(document.createElement("label")).text("Subject: " + key + " hours= " + subjectObj[key])[0];
+        sectionInfo.appendChild(subjectLabel);
+    }
+
+    return sectionInfo;
 }
 
 function ajaxSubjectsList(){
+    $.ajax({
+        url: SUBJECTS_URL,
+        timeout: TIMEOUT,
+        success: function(subjects) {
+            setSubjectsTable(subjects);
+        }
+    });
+}
 
+function setSubjectsTable(subjects){
+    var tableBody = $(".subjects-table-body")[0];
+
+    tableBody.innerHTML = "";
+    $.each(subjects || [], function(index, subject) {
+        var trRow = document.createElement("tr");
+
+        var tdID = document.createElement("td");
+        var tdName = document.createElement("td");
+
+        tdName.innerText = subject.name;
+        tdID.innerText = subject.id;
+
+        trRow.appendChild(tdID);
+        trRow.appendChild(tdName);
+
+        tableBody.appendChild(trRow);
+    });
+}
+
+function ajaxGenericProblemInfo(){
+    $.ajax({
+        url: GENERIC_INFO_URL,
+        timeout: TIMEOUT,
+        success: function(generic) {
+            setGenericInfoTable(generic);
+        }
+    });
+}
+
+function setGenericInfoTable(generic){
+    var tableBody = $(".generic-table-body")[0];
+
+    tableBody.innerHTML = "";
+    for(var key in generic){
+        var trRow = document.createElement("tr");
+
+        var tdKey = document.createElement("td");
+        var tdVal = document.createElement("td");
+
+        tdKey.innerText = key;
+        tdVal.innerText = generic[key];
+
+        trRow.appendChild(tdKey);
+        trRow.appendChild(tdVal);
+
+        tableBody.appendChild(trRow);
+    }
 }
 
 var x = 0;
@@ -102,6 +290,7 @@ function addMutationCell(){
 
 
 function getProblemData(){
+    ajaxGenericProblemInfo();
     ajaxRulesList();
     ajaxTeachersList();
     ajaxClassesList();

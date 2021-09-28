@@ -7,6 +7,7 @@
     <script src="../../utils/context-path-helper.js"></script>
     <script src="formListeners.js"></script>
     <script src="manage-buttons.js"></script>
+    <script src="manage-dataMethods.js"></script>
     <script src="manage.js"></script>
     <link rel="stylesheet" href="../../utils/bootstrap.min.css">
     <link href="manage.css" type="text/css" rel="stylesheet">
@@ -26,12 +27,12 @@
 </header>
 <main>
     <section class="upload-section">
-        <form id="upload-form" action="upload" enctype="multipart/form-data" method="post">
+        <div>
             <div class="left-form-side">
-                <input type="button" class="button" value="Start" onclick="startAlgorithm()"/>
-                <input type="button" class="button" value="Pause" onclick="pauseAlgorithm()"/>
-                <input type="button" class="button" value="Resume" onclick="resumeAlgorithm()"/>
-                <input type="button" class="button" value="Stop" onclick="stopAlgorithm()"/>
+                <input id="startButton" type="button" class="button" value="Start" onclick="startAlgorithm()"/>
+                <input id="pauseButton" type="button" class="button" value="Pause" onclick="pauseAlgorithm()"/>
+                <input id="resumeButton" type="button" class="button" value="Resume" onclick="resumeAlgorithm()"/>
+                <input id="stopButton" type="button" class="button" value="Stop" onclick="stopAlgorithm()"/>
             </div>
             <div class="right-form-side">
                 <div class="right-form-side">
@@ -39,10 +40,30 @@
                     <label class="fitness"></label>
                 </div>
             </div>
-        </form>
+        </div>
     </section>
     <div class="flex-container">
         <aside id="rules-menu">
+            <h4>Engine:</h4>
+            <table class="engine-table">
+                <thead>
+                <th>Property Name</th>
+                <th>Property Value</th>
+                </thead>
+                <tbody class="engine-table-body">
+
+                </tbody>
+            </table>
+            <h4>Generic Info:</h4>
+            <table class="generic-table">
+                <thead>
+                <th>Property Name</th>
+                <th>Property Value</th>
+                </thead>
+                <tbody class="generic-table-body">
+
+                </tbody>
+            </table>
             <h4>Rules:</h4>
             <table class="rules-table">
                 <thead>
@@ -59,6 +80,7 @@
                 <thead>
                 <th>Id</th>
                 <th>Name</th>
+                <th>Working Hours Pref</th>
                 <th>Subjects</th>
                 </thead>
                 <tbody class="teachers-table-body">
@@ -70,6 +92,7 @@
                 <thead>
                 <th>Id</th>
                 <th>Name</th>
+                <th>Total number of hours</th>
                 <th>Subjects</th>
                 </thead>
                 <tbody class="klass-table-body">
@@ -83,16 +106,6 @@
                 <th>Name</th>
                 </thead>
                 <tbody class="subjects-table-body">
-
-                </tbody>
-            </table>
-            <h4>Engine:</h4>
-            <table class="engine-table">
-                <thead>
-                <th>Property Name</th>
-                <th>Property Value</th>
-                </thead>
-                <tbody class="engine-table-body">
 
                 </tbody>
             </table>

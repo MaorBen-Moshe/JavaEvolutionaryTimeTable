@@ -31,4 +31,10 @@ public class ProblemUtils {
             response.getOutputStream().println(e.getMessage());
         }
     }
+
+    public static Problem getProblemByUser(HttpServletRequest request, ServletContext ctx) throws Exception {
+        User user = UserUtils.getUserByRequest(request, ctx);
+        ProblemManager problemManager = ServletUtils.getProblemManager(ctx);
+        return problemManager.getProblemById(user.getLastSeenProblem());
+    }
 }

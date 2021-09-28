@@ -46,7 +46,7 @@ public class ModelToDTOConverter {
 
     public TeacherDTO createTeacherDTO(Teacher old){
         Set<SubjectDTO> subjects = createSubjects(old.getSubjects());
-        return new TeacherDTO(old.getName(), old.getId(), subjects);
+        return new TeacherDTO(old.getName(), old.getId(), subjects, old.getWorkingHoursPref());
     }
 
     public SchoolClassDTO createClassDTO(SchoolClass old){
@@ -70,7 +70,7 @@ public class ModelToDTOConverter {
 
     private Map<Integer, TeacherDTO> createTeacherMap(Map<Integer, Teacher> old){
         Map<Integer, TeacherDTO> ret = new HashMap<>();
-        old.forEach((key, val) -> ret.put(key, new TeacherDTO(val.getName(), val.getId(), createSubjects(val.getSubjects()))));
+        old.forEach((key, val) -> ret.put(key, new TeacherDTO(val.getName(), val.getId(), createSubjects(val.getSubjects()), val.getWorkingHoursPref())));
         return ret;
     }
 

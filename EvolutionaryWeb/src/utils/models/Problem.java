@@ -7,6 +7,7 @@ import utils.infoModels.EngineInfoObject;
 import utils.infoModels.Info;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class Problem {
@@ -143,12 +144,12 @@ public class Problem {
         usersSolveProblemSize = usersSolveProblem.size();
     }
 
-    public void runProblem(User user){
+    public void runProblem(User user, Consumer<JumpInGenerationsResult> onRun){
         if(!usersSolveProblem.containsKey(user)){
             throw new IllegalArgumentException("user " + user.getName() + " does not exist");
         }
 
-        usersSolveProblem.get(user).run();
+        usersSolveProblem.get(user).run(onRun);
     }
 
     public void pauseProblem(User user){

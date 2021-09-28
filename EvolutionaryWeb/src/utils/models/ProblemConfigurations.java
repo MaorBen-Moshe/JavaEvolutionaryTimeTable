@@ -2,11 +2,13 @@ package utils.models;
 
 import evolutinary.EvolutionarySystem;
 import evolutinary.TimeTableEvolutionarySystemImpel;
+import models.JumpInGenerationsResult;
 import models.TerminateRule;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class ProblemConfigurations {
     private Set<TerminateRule> terminateRules;
@@ -36,9 +38,14 @@ public class ProblemConfigurations {
     public void setTerminateRules(Set<TerminateRule> terminateRules, int jumps) {
         this.terminateRules = terminateRules;
         this.jumps = jumps;
+
+        if(system != null){
+            system.clearTerminateRules();
+            this.terminateRules.forEach(system::addTerminateRule);
+        }
     }
 
-    public void run(){
+    public void run(Consumer<JumpInGenerationsResult> onRun){
         if(system == null){
             throw new IllegalArgumentException("Please enter system info first");
         }
@@ -51,7 +58,7 @@ public class ProblemConfigurations {
             throw new IllegalArgumentException("Algorithm still processing");
         }
 
-        new Thread(() -> system.StartAlgorithm(lock, terminateRules, jumps, null)).start();
+        new Thread(() -> system.StartAlgorithm(lock, terminateRules, jumps, onRun)).start();
     }
 
     public void pause(){

@@ -30,6 +30,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     private volatile boolean pauseOccurred = false;
     private volatile int currentNumberOfGenerations;
     private volatile int elitism;
+    private Set<TerminateRule> terminateBy;
     private Instant startTime;
     private Instant blockTime;
     private final CustomLock generationsLock;
@@ -128,12 +129,13 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     @Override
     public void StartAlgorithm(Object pauseLock, Set<TerminateRule> terminateBy, int jumpInGenerations, Consumer<JumpInGenerationsResult> listener){
         jumpInGenerations = jumpInGenerations <= 0 ? 1 : jumpInGenerations;
+        this.terminateBy = terminateBy;
         initialAlgoData();
         try{
             /* initial*/
             initialAndEvaluatePopulation();
             /* iterative*/
-            while(!isTerminate(terminateBy) && !isStopOccurred()){
+            while(!isTerminate() && !isStopOccurred()){
                 synchronized (pauseLock){
                     while(isPauseOccurred()){
                         // stop algorithm for while
@@ -186,6 +188,29 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
     }
 
     @Override
+    public void addTerminateRule(TerminateRule terminate){
+        TerminateRules type = terminate.getType();
+        if(this.terminateBy == null){
+            this.terminateBy = new HashSet<>();
+        }
+
+        for(TerminateRule curr : this.terminateBy){
+            if(curr.getType().equals(type)){
+                return;
+            }
+        }
+
+        this.terminateBy.add(terminate);
+    }
+
+    @Override
+    public void clearTerminateRules(){
+        if(this.terminateBy != null){
+            this.terminateBy.clear();
+        }
+    }
+
+    @Override
     public boolean isRunningProcess() { return isRunning; }
 
     @Override
@@ -226,7 +251,7 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
                   .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1));
     }
 
-    private boolean isTerminate(Set<TerminateRule> terminateBy) {
+    private boolean isTerminate() {
         boolean answer = false;
         for (TerminateRule terminate : terminateBy) {
             switch (terminate.getType()){

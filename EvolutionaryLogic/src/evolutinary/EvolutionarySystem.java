@@ -31,6 +31,10 @@ public interface EvolutionarySystem<T, S extends DataSupplier> extends Serializa
 
     void setCrossover(Crossover<T, S> crossover);
 
+    void addTerminateRule(TerminateRule terminate);
+
+    void clearTerminateRules();
+
     Crossover<T, S> getCrossover();
 
     List<Mutation<T, S>> getMutations();

@@ -28,6 +28,12 @@ function handleProcessInfo(processInfoObj){
     $("#pauseButton").attr("disabled", !processInfoObj.isRunning);
     $("#resumeButton").attr("disabled", !processInfoObj.isPaused);
     $("#stopButton").attr("disabled", !processInfoObj.isRunning);
+
+    $("#generationRunning").css("visibility", processInfoObj.isRunning ? "visible" : "hidden");
+    $("#fitnessRunning").css("visibility", processInfoObj.isRunning ? "visible" : "hidden");
+
+    $("#generationRunning").empty().append("Generations: " + processInfoObj.userGenerations);
+    $("#fitnessRunning").empty().append("Fitness: " + processInfoObj.userFitness);
 }
 
 function ajaxUserInProblem(){

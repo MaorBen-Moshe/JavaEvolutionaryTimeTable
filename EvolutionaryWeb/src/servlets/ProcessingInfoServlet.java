@@ -2,8 +2,10 @@ package servlets;
 
 import com.google.gson.Gson;
 import utils.ProblemUtils;
+import utils.UserUtils;
 import utils.models.Problem;
 import utils.models.ProcessingObject;
+import utils.models.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,7 +20,25 @@ public class ProcessingInfoServlet extends HttpServlet {
             throws Exception {
         response.setContentType("application/json");
         Problem problem = ProblemUtils.getProblemByUser(request, getServletContext());
-        ProcessingObject ret = new ProcessingObject(problem.getSystem().isRunningProcess(), problem.getSystem().isPauseOccurred());
+        User user = UserUtils.getUserByRequest(request, getServletContext());
+        int gens = 0;
+        double fitness = 0;
+        boolean running = false;
+        boolean paused = false;
+        if(problem.getUsersSolveProblem().containsKey(user)){
+            gens = problem.getUsersSolveProblem().get(user).getGenerationNumber();
+            fitness = problem.getUsersSolveProblem().get(user).getCurrentBestFitness();
+        }
+
+        if(problem.getUsersSolveProblem().containsKey(user)){
+            running = problem.getSystemByUser(user).isRunningProcess();
+            paused = problem.getSystemByUser(user).isPauseOccurred();
+        }
+
+        ProcessingObject ret = new ProcessingObject(running,
+                                                    paused,
+                                                    gens,
+                                                    fitness);
         response.setStatus(200);
         response.getOutputStream().print(new Gson().toJson(ret));
     }

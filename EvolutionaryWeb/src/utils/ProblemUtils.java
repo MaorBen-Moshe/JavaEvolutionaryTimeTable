@@ -20,7 +20,10 @@ public class ProblemUtils {
         Problem problem = problemManager.getProblemById(id);
         try{
             switch (method){
-                case Start: problem.runProblem(user); break;
+                case Start: problem.runProblem(user, (jumps) -> {
+
+                });
+                break; // send consumer to start Algorithm to updating the user info in problemConfig ( generation and fitness)
                 case Pause: problem.pauseProblem(user); break;
                 case Resume: problem.resumeProblem(user); break;
                 case Stop: problem.stopProblem(user); break;

@@ -49,7 +49,7 @@ public class TableServlet extends HttpServlet {
     }
 
     private String createAnswer(User user, Problem problem, String aspect, String aspectValue){
-        EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> system = problem.getUsersSolveProblem().get(user).getSystem();
+        EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> system = problem.getSystemByUser(user);
         TimeTable table = system.getBestSolution().getSolution();
         Map<Integer, Map<Integer, List<TimeTableItem>>> toRet;
         switch (aspect){

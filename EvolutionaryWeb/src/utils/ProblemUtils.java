@@ -21,9 +21,9 @@ public class ProblemUtils {
         try{
             switch (method){
                 case Start: problem.runProblem(user, (jumps) -> {
-
+                    // send consumer to start Algorithm to updating the user info in problemConfig ( generation and fitness)
                 });
-                break; // send consumer to start Algorithm to updating the user info in problemConfig ( generation and fitness)
+                break;
                 case Pause: problem.pauseProblem(user); break;
                 case Resume: problem.resumeProblem(user); break;
                 case Stop: problem.stopProblem(user); break;

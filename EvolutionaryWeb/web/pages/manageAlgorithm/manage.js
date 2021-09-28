@@ -2,11 +2,13 @@ const refreshRate = 2000;
 const USERS_RUN_PROBLEM_LIST_URL = buildUrlWithContextPath("usersRunProblemList");
 const USER_IN_PROBLEM_URL = buildUrlWithContextPath("inProblemConfigsServlet");
 const PROCESS_INFO_URL = buildUrlWithContextPath("processInfo");
+const ORIENTATION_DISPLAY_URL = buildUrlWithContextPath("orientationDisplay");
 
 $(function () {
     ajaxUserInProblem();
     ajaxUsersList();
     getProblemData();
+    orientationChoice();
     callListeners(); // include form engine info listener
     setInterval(ajaxUsersList, refreshRate);
     setInterval(ajaxProcessingInfo, refreshRate);
@@ -90,4 +92,40 @@ function refreshUsersList(users) {
 
 function goBack() {
     window.location.replace("../timeTableProblem/timeTableProblem.html");
+}
+
+function orientationChoice(){
+    ajaxOrientationCall();
+    const select = document.querySelector("#orientation-display");
+    select.addEventListener('change', (event) => {
+        ajaxOrientationCall();
+    });
+}
+
+function ajaxOrientationCall(){
+    const orient = $("#orientation-display").val();
+    $.ajax({
+        data: {orientation: orient},
+        timeout:TIMEOUT,
+        url: ORIENTATION_DISPLAY_URL,
+        error: function (err){
+            alert(err.responseText);
+        },
+        success: function (objects){
+            setOrientationChoice(objects);
+        }
+    });
+}
+
+function setOrientationChoice(objects){
+    const objects_select = document.querySelector("#object-display");
+    objects_select.innerHTML = "";
+    $.each(objects || [], function (index, object){
+        var option = document.createElement("option");
+        var object_string = "ID = " + object.id + ", Name = " + object.name;
+        option.value = object_string;
+        option.id = object_string;
+        option.text = object_string;
+        objects_select.appendChild(option);
+    });
 }

@@ -3,10 +3,6 @@ const PAUSE_PROBLEM_URL = buildUrlWithContextPath("pauseProblem");
 const RESUME_PROBLEM_URL = buildUrlWithContextPath("resumeProblem");
 const STOP_PROBLEM_URL = buildUrlWithContextPath("stopProblem");
 
-function runningProcessInfo(){
-
-}
-
 function startAlgorithm(){
     $.ajax({
        url: START_PROBLEM_URL,

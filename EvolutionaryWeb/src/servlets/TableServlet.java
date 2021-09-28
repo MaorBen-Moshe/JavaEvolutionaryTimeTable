@@ -22,22 +22,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-@WebServlet(name = "TableServlet", urlPatterns = {"/tableInfo"})
+@WebServlet(name = "TableServlet", urlPatterns = {"/tableDisplay"})
 public class TableServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
         try{
             // get Engine info from data of request
             response.setContentType("application/json");
-            String aspect = request.getParameter("aspect");
-            String aspectValue = request.getParameter("aspectValue");
+            String orientation = request.getParameter("orientation");
+            String id = request.getParameter("id");
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             String usernameFromSession = SessionUtils.getUsername(request);
             User user = userManager.getUserByName(usernameFromSession);
             ProblemManager problemManager = ServletUtils.getProblemManager(getServletContext());
             Problem problem = problemManager.getProblemById(user.getLastSeenProblem());
             try(PrintWriter writer = response.getWriter()){
-                writer.println(createAnswer(user, problem, aspect, aspectValue));
+                writer.println(createAnswer(user, problem, orientation, id));
             }
 
             response.setStatus(200);
@@ -62,7 +62,7 @@ public class TableServlet extends HttpServlet {
     }
 
     private Map<Integer, Map<Integer, List<TimeTableItem>>> getByClass(String aspectValue, TimeTableSystemDataSupplier info, TimeTable table) {
-        int klass = info.getClasses().entrySet().stream().filter(e -> e.getValue().getName().equals(aspectValue)).map(Map.Entry::getKey).findFirst().orElse(0);
+        int klass = info.getClasses().entrySet().stream().filter(e -> e.getValue().getId() == Integer.parseInt(aspectValue)).map(Map.Entry::getKey).findFirst().orElse(0);
         if(klass == 0) throw new IllegalArgumentException(aspectValue + " is not one of the classes!");
         Map<Integer, Map<Integer, List<TimeTableItem>>> dayHourTable = initializeTableView(info);
         table.getSortedItems().forEach(item -> {
@@ -75,7 +75,7 @@ public class TableServlet extends HttpServlet {
     }
 
     private Map<Integer, Map<Integer, List<TimeTableItem>>> getByTeacher(String aspectValue, TimeTableSystemDataSupplier info, TimeTable table) {
-        int teacher = info.getTeachers().entrySet().stream().filter(e -> e.getValue().getName().equals(aspectValue)).map(Map.Entry::getKey).findFirst().orElse(0);
+        int teacher = info.getTeachers().entrySet().stream().filter(e -> e.getValue().getId() == Integer.parseInt(aspectValue)).map(Map.Entry::getKey).findFirst().orElse(0);
         if(teacher == 0) throw new IllegalArgumentException(aspectValue + " is not one of the teachers!");
         Map<Integer, Map<Integer, List<TimeTableItem>>> dayHourTable = initializeTableView(info);
         table.getSortedItems().forEach(item -> {

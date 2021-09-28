@@ -109,7 +109,7 @@ header {
 
 /*Main content styles: center-container and his children*/
 /* upload section */
-.upload-section {
+.run-section {
     display: grid;
     border-bottom: 2px solid #dce8f1;
     padding-bottom: 5px;

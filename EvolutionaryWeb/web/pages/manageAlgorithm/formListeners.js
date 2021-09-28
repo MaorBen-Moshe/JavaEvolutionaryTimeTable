@@ -1,4 +1,5 @@
 const SET_ENGINE_INFO_URL = buildUrlWithContextPath("setEngineInfo");
+const TABLE_DISPLAY_URL = buildUrlWithContextPath("tableDisplay");
 const TIMEOUT = 2000;
 
 function ajaxOnSendInfo(){
@@ -21,6 +22,33 @@ function ajaxOnSendInfo(){
 
         return false;
     });
+}
+
+function ajaxOnDisplayProblem(){
+    $("#display-problem-form").submit(function () {
+       const orientation =  $("#orientation-display").val();
+       // the format is: 'id=?, name=?' and we want the id value
+       const object_chosen = $("#object-display").val().split(",")[0].trim().split("=")[1].trim();
+        $.ajax({
+           data: {
+               orientation: orientation,
+               id: object_chosen
+           },
+            url: TABLE_DISPLAY_URL,
+            method: this.method,
+            timeout: TIMEOUT,
+            error: function(err){
+               alert(err.responseText);
+            },
+            success: function(data){
+               displayTable(data);
+            }
+        });
+    });
+}
+
+function displayTable(data){
+    // need to implement
 }
 
 function addPropertiesInfo(properties){
@@ -127,4 +155,5 @@ function callListeners(){
     setCrossoverListener();
     setSelectionListener();
     ajaxOnSendInfo();
+    ajaxOnDisplayProblem();
 }

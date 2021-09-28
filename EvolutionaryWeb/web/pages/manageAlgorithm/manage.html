@@ -26,7 +26,7 @@
     </div>
 </header>
 <main>
-    <section class="upload-section">
+    <section class="run-section">
         <div>
             <div class="left-form-side">
                 <input id="startButton" type="button" class="button" value="Start" onclick="startAlgorithm()"/>
@@ -111,6 +111,24 @@
             </table>
         </aside>
         <section id="table-container">
+            <div id="problem-display">
+                <h4>Display Problem Section:</h4>
+                <form id="display-problem-form" method="get">
+                    <select name="orientation-display" id="orientation-display">
+                        <option value="Class">Class</option>
+                        <option value="Teacher">Teacher</option>
+                    </select>
+                    <select name="object-display" id="object-display">
+
+                    </select>
+                    <input type="submit" value="display problem">
+                </form>
+                <table class="problem-table">
+                    <tbody class="problem-table-body">
+                    </tbody>
+                </table>
+            </div>
+
             <form id="info-form" method="POST" >
                 <h4>Engine Info Editor:</h4>
                 <diV>
@@ -178,23 +196,6 @@
                 </div>
                 <input type="submit" value="Submit" />
             </form>
-
-            <div id="problem-display" style="display: none">
-                <form>
-                    <select name="orientation-display" id="orientation-display">
-                        <option value="Class">Class</option>
-                        <option value="Teacher">Teacher</option>
-                    </select>
-                    <select name="object-display" id="object-display">
-
-                    </select>
-                    <input type="submit" value="display problem">
-                </form>
-                <table class="problem-table">
-                    <tbody class="problem-table-body">
-                    </tbody>
-                </table>
-            </div>
         </section>
         <aside id="side-menu">
             <h4>Users: </h4>

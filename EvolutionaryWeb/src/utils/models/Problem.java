@@ -3,8 +3,8 @@ package utils.models;
 import evolutinary.EvolutionarySystem;
 import evolutinary.TimeTableEvolutionarySystemImpel;
 import models.*;
-import utils.infoModels.EngineInfoObject;
-import utils.infoModels.Info;
+import utils.models.infoModels.EngineInfoObject;
+import utils.models.infoModels.Info;
 
 import java.util.*;
 import java.util.function.Consumer;

@@ -6,9 +6,9 @@ import mutation.FlippingMutation;
 import mutation.Mutation;
 import mutation.SizerMutation;
 import selection.Selection;
-import utils.infoModels.EngineInfoObject;
-import utils.infoModels.Info;
-import utils.infoModels.MutationInfo;
+import utils.models.infoModels.EngineInfoObject;
+import utils.models.infoModels.Info;
+import utils.models.infoModels.MutationInfo;
 
 import java.util.*;
 

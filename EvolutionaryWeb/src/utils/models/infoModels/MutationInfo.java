@@ -1,4 +1,4 @@
-package utils.infoModels;
+package utils.models.infoModels;
 
 public class MutationInfo {
 

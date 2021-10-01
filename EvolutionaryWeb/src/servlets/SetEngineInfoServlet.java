@@ -3,8 +3,8 @@ package servlets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import utils.*;
-import utils.infoModels.Info;
-import utils.infoModels.InfoDeserializer;
+import utils.models.infoModels.Info;
+import utils.models.infoModels.InfoDeserializer;
 import utils.models.Problem;
 import utils.models.User;
 

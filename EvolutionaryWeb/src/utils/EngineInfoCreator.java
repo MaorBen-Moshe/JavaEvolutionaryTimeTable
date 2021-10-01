@@ -4,8 +4,8 @@ import evolutinary.EvolutionarySystem;
 import models.TimeTable;
 import models.TimeTableSystemDataSupplier;
 import mutation.Mutation;
-import utils.infoModels.Info;
-import utils.infoModels.PropertyInfoObject;
+import utils.models.infoModels.Info;
+import utils.models.infoModels.PropertyInfoObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +21,7 @@ public class EngineInfoCreator {
         ret.add(new PropertyInfoObject("Crossover", system.getCrossover().toString()));
         ret.add(new PropertyInfoObject("Mutations", ""));
         List<Mutation<TimeTable, TimeTableSystemDataSupplier>> mutations = system.getMutations();
-        IntStream.range(0, mutations.size()).forEach(i -> {
-            ret.add(new PropertyInfoObject("Mutation " + (i + 1), mutations.get(i).toString()));
-        });
+        IntStream.range(0, mutations.size()).forEach(i -> ret.add(new PropertyInfoObject("Mutation " + (i + 1), mutations.get(i).toString())));
 
         ret.add(new PropertyInfoObject("Terminate By:", ""));
         if(info.getGensChecked()){

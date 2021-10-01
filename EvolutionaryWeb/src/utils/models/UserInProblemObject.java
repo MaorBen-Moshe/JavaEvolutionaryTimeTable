@@ -1,6 +1,6 @@
 package utils.models;
 
-import utils.infoModels.PropertyInfoObject;
+import utils.models.infoModels.PropertyInfoObject;
 
 import java.util.List;
 

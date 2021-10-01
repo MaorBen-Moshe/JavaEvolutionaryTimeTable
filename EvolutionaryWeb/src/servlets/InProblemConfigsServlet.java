@@ -2,7 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import utils.*;
-import utils.infoModels.PropertyInfoObject;
+import utils.models.infoModels.PropertyInfoObject;
 import utils.models.Problem;
 import utils.models.User;
 import utils.models.UserInProblemObject;

@@ -2,11 +2,11 @@ package servlets;
 
 import com.google.gson.Gson;
 import evolutinary.EvolutionarySystem;
-import models.TimeTable;
-import models.TimeTableItem;
-import models.TimeTableSystemDataSupplier;
+import javafx.scene.control.Cell;
+import models.*;
 import utils.*;
 import utils.models.Problem;
+import utils.models.SolutionObject;
 import utils.models.User;
 
 import javax.servlet.ServletException;
@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,10 +37,7 @@ public class TableServlet extends HttpServlet {
             User user = userManager.getUserByName(usernameFromSession);
             ProblemManager problemManager = ServletUtils.getProblemManager(getServletContext());
             Problem problem = problemManager.getProblemById(user.getLastSeenProblem());
-            try(PrintWriter writer = response.getWriter()){
-                writer.println(createAnswer(user, problem, orientation, id));
-            }
-
+            response.getOutputStream().print(createAnswer(user, problem, orientation, id));
             response.setStatus(200);
 
         }catch (Exception e){
@@ -48,47 +46,52 @@ public class TableServlet extends HttpServlet {
         }
     }
 
-    private String createAnswer(User user, Problem problem, String aspect, String aspectValue){
+    private String createAnswer(User user, Problem problem, String aspect, String aspectValue) throws Exception {
         EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> system = problem.getSystemByUser(user);
-        TimeTable table = system.getBestSolution().getSolution();
-        Map<Integer, Map<Integer, List<TimeTableItem>>> toRet;
+        BestSolutionItem<TimeTable, TimeTableSystemDataSupplier> bestItem = system.getBestSolution();
+        TimeTable table = bestItem.getSolution();
+        if(table == null) throw new Exception("No best solution available. Are you sure you run the problem at least one time?");
+        Map<Integer, Map<Integer, List<SolutionObject.CellItem>>> info;
         switch (aspect){
-            case "Class": toRet = getByClass(aspectValue, system.getSystemInfo(), table); break;
-            case "Teacher": toRet = getByTeacher(aspectValue, system.getSystemInfo(), table); break;
+            case "Class": info = getByClass(aspectValue, system.getSystemInfo(), table); break;
+            case "Teacher": info = getByTeacher(aspectValue, system.getSystemInfo(), table); break;
             default: throw new IllegalArgumentException(aspect + " is wrong you should only give 'Class' or 'Teacher' ");
         }
 
-        return new Gson().toJson(toRet);
+        SolutionObject solution = new SolutionObject(table.getSoftRulesAvg(), table.getHardRulesAvg(), bestItem.getGenerationCreated(), bestItem.getFitness(), table.getRulesScore(), info);
+        return new Gson().toJson(solution);
     }
 
-    private Map<Integer, Map<Integer, List<TimeTableItem>>> getByClass(String aspectValue, TimeTableSystemDataSupplier info, TimeTable table) {
+    private Map<Integer, Map<Integer, List<SolutionObject.CellItem>>> getByClass(String aspectValue, TimeTableSystemDataSupplier info, TimeTable table) {
         int klass = info.getClasses().entrySet().stream().filter(e -> e.getValue().getId() == Integer.parseInt(aspectValue)).map(Map.Entry::getKey).findFirst().orElse(0);
         if(klass == 0) throw new IllegalArgumentException(aspectValue + " is not one of the classes!");
-        Map<Integer, Map<Integer, List<TimeTableItem>>> dayHourTable = initializeTableView(info);
+        Map<Integer, Map<Integer, List<SolutionObject.CellItem>>> dayHourTable = initializeTableView(info);
         table.getSortedItems().forEach(item -> {
-            if(item.getSchoolClass().getId() == klass){
-                dayHourTable.get(item.getDay()).get(item.getHour()).add(item);
+            SchoolClass curr = item.getSchoolClass();
+            if(curr.getId() == klass){
+                dayHourTable.get(item.getDay()).get(item.getHour()).add(new SolutionObject.CellItem(curr.getName(), curr.getId()));
             }
         });
 
         return dayHourTable;
     }
 
-    private Map<Integer, Map<Integer, List<TimeTableItem>>> getByTeacher(String aspectValue, TimeTableSystemDataSupplier info, TimeTable table) {
+    private Map<Integer, Map<Integer, List<SolutionObject.CellItem>>> getByTeacher(String aspectValue, TimeTableSystemDataSupplier info, TimeTable table) {
         int teacher = info.getTeachers().entrySet().stream().filter(e -> e.getValue().getId() == Integer.parseInt(aspectValue)).map(Map.Entry::getKey).findFirst().orElse(0);
         if(teacher == 0) throw new IllegalArgumentException(aspectValue + " is not one of the teachers!");
-        Map<Integer, Map<Integer, List<TimeTableItem>>> dayHourTable = initializeTableView(info);
+        Map<Integer, Map<Integer, List<SolutionObject.CellItem>>> dayHourTable = initializeTableView(info);
         table.getSortedItems().forEach(item -> {
-            if(item.getTeacher().getId() == teacher){
-                dayHourTable.get(item.getDay()).get(item.getHour()).add(item);
+            Teacher curr = item.getTeacher();
+            if(curr.getId() == teacher){
+                dayHourTable.get(item.getDay()).get(item.getHour()).add(new SolutionObject.CellItem(curr.getName(), curr.getId()));
             }
         });
 
         return dayHourTable;
     }
 
-    private Map<Integer, Map<Integer, List<TimeTableItem>>> initializeTableView(TimeTableSystemDataSupplier supplier){
-        Map<Integer, Map<Integer, List<TimeTableItem>>> dayHourTable = new HashMap<>();
+    private Map<Integer, Map<Integer, List<SolutionObject.CellItem>>> initializeTableView(TimeTableSystemDataSupplier supplier){
+        Map<Integer, Map<Integer, List<SolutionObject.CellItem>>> dayHourTable = new HashMap<>();
         IntStream.range(1, supplier.getDays() + 1).forEach(i -> {
             dayHourTable.put(i, new HashMap<>());
             IntStream.range(1, supplier.getHours() + 1).forEach(j -> dayHourTable.get(i).put(j, new ArrayList<>()));

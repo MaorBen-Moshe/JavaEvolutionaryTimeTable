@@ -31,11 +31,15 @@ function handleProcessInfo(processInfoObj){
     $("#resumeButton").attr("disabled", !processInfoObj.isPaused);
     $("#stopButton").attr("disabled", !processInfoObj.isRunning);
 
-    $("#generationRunning").css("visibility", processInfoObj.isRunning ? "visible" : "hidden");
-    $("#fitnessRunning").css("visibility", processInfoObj.isRunning ? "visible" : "hidden");
+    var genLabel = $("#generationRunning");
+    var fitLabel = $("#fitnessRunning");
+    genLabel.css("visibility", processInfoObj.isRunning ? "visible" : "hidden");
+    fitLabel.css("visibility", processInfoObj.isRunning ? "visible" : "hidden");
 
-    $("#generationRunning").empty().append("Generations: " + processInfoObj.userGenerations);
-    $("#fitnessRunning").empty().append("Fitness: " + processInfoObj.userFitness);
+    genLabel.empty().append("Generations: " + processInfoObj.userGenerations);
+    fitLabel.empty().append("Fitness: " + processInfoObj.userFitness);
+
+    $("#run-info-label").empty().append( "Algorithm is " + (processInfoObj.isRunning ? "" : "not ") + "running.");
 }
 
 function ajaxUserInProblem(){
@@ -97,7 +101,7 @@ function goBack() {
 function orientationChoice(){
     ajaxOrientationCall();
     const select = document.querySelector("#orientation-display");
-    select.addEventListener('change', (event) => {
+    select.addEventListener('change', () => {
         ajaxOrientationCall();
     });
 }

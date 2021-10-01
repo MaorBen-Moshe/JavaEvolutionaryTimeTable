@@ -50,7 +50,7 @@ public class ProblemConfigurations {
             throw new IllegalArgumentException("Please enter system info first");
         }
 
-        if(jumps == 0 || terminateRules == null || terminateRules.size() <= 0){
+        if(terminateRules == null || terminateRules.size() <= 0){
             throw new IllegalArgumentException("Please enter system terminate rules first");
         }
 

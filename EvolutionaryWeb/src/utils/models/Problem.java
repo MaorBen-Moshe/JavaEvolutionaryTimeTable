@@ -8,7 +8,6 @@ import utils.infoModels.Info;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class Problem {
     private static int idCounter;

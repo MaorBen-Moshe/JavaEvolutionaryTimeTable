@@ -18,6 +18,9 @@
         <label class="header-label">
             Problem Display
         </label>
+        <label id="run-info-label" class="header-label">
+
+        </label>
     </div>
     <div class="header-column">
         <label class="simple-blue-button underline-hover" onclick="goBack()">
@@ -114,16 +117,43 @@
             <div id="problem-display">
                 <h4>Display Problem Section:</h4>
                 <form id="display-problem-form" method="get">
+                    <label for="orientation-display">Orientation:</label>
                     <select name="orientation-display" id="orientation-display">
                         <option value="Class">Class</option>
                         <option value="Teacher">Teacher</option>
                     </select>
+                    <label for="object-display">Option:</label>
                     <select name="object-display" id="object-display">
 
                     </select>
                     <input type="submit" value="display problem">
                 </form>
+
+                <table class="rules-problem-table">
+                    <thead>
+                        <th>Name</th>
+                        <th>Strength</th>
+                        <th>Score</th>
+                    </thead>
+                    <tbody class="rules-problem-table-body">
+
+                    </tbody>
+                </table>
+
+                <table class="generic-problem-table">
+                    <thead>
+                    <th>Property Name</th>
+                    <th>Property Value</th>
+                    </thead>
+                    <tbody class="generic-problem-table-body">
+
+                    </tbody>
+                </table>
+
                 <table class="problem-table">
+                    <thead class="problem-table-head">
+
+                    </thead>
                     <tbody class="problem-table-body">
                     </tbody>
                 </table>
@@ -173,7 +203,7 @@
 
                 </div>
                 <div>
-                    <label for="jumps">Jump in generations:</label>
+                    <label for="jumps">Jump in generations (Optional, default is 1):</label>
                     <input id="jumps" type="number" min="1" name="jumps"/>
                 </div>
                 <div>

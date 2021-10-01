@@ -6,6 +6,7 @@ import utils.ProblemManager;
 import utils.ServletUtils;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,12 +20,12 @@ public class ProblemListServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
-        try (PrintWriter out = response.getWriter()) {
+        try (ServletOutputStream out = response.getOutputStream()) {
             Gson gson = new Gson();
             ProblemManager problemManager = ServletUtils.getProblemManager(getServletContext());
             List<Problem> problems = problemManager.getProblems();
             String json = gson.toJson(problems);
-            out.println(json);
+            out.print(json);
             out.flush();
         }
     }

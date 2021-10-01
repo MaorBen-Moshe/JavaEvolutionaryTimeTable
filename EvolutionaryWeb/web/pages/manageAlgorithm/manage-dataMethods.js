@@ -227,6 +227,7 @@ function addMutationCell(){
     div.appendChild(titleLabel);
     var select = document.createElement("select");
     select.id = idPrefix + "type";
+    select.addEventListener('change', setMutationListener);
     var flipping = document.createElement("option");
     flipping.value = "Flipping";
     flipping.text = "Flipping";
@@ -249,7 +250,8 @@ function addMutationCell(){
     probInput.step = "0.01";
     div.appendChild(probInput);
     var tupplesLabel = document.createElement("label");
-    tupplesLabel.innerHTML = "Tupples:";
+    tupplesLabel.id = idPrefix + "tupplesLabel";
+    tupplesLabel.innerHTML = "Max Tupples: (Positive only)";
     div.appendChild(tupplesLabel);
     var tupplesInput = document.createElement("input");
     tupplesInput.id = idPrefix + "tupples";
@@ -260,6 +262,7 @@ function addMutationCell(){
 
     var componentLabel = document.createElement("label");
     componentLabel.innerHTML = "Component:";
+    componentLabel.id = idPrefix + "component-label";
     div.appendChild(componentLabel);
 
     var componentSelect = document.createElement("select");

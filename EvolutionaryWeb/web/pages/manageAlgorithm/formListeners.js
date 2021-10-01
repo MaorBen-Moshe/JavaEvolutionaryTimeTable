@@ -44,11 +44,68 @@ function ajaxOnDisplayProblem(){
                displayTable(data);
             }
         });
+
+        return false;
     });
 }
 
 function displayTable(data){
-    // need to implement
+    setRulesScore(data.rules);
+    setGenericSolutionInfo(data);
+    console.log(data.tableInfo);
+    setTable(data.tableInfo);
+}
+
+function setTable(tableInfo){
+    var tableHead = $(".problem-table-head")[0];
+    var tableBody = $(".problem-table-body")[0];
+}
+
+function setGenericSolutionInfo(data){
+    var tableBody = $(".generic-problem-table-body")[0];
+
+    tableBody.innerHTML = "";
+
+    tableBody.appendChild(setGenericHelper("Soft Rules Average", data.softRulesAvg));
+    tableBody.appendChild(setGenericHelper("Hard Rules Average", data.hardRulesAvg));
+    tableBody.appendChild(setGenericHelper("Generation Created", data.generationCreated));
+    tableBody.appendChild(setGenericHelper("Fitness Score", data.fitnessScore));
+}
+
+function setGenericHelper(name, value){
+    var trRow = document.createElement("tr");
+    var tdName = document.createElement("td");
+    var tdValue = document.createElement("td");
+
+    tdName.innerText = name;
+    tdValue.innerText = value;
+
+    trRow.appendChild(tdName);
+    trRow.appendChild(tdValue);
+    return trRow;
+}
+
+function setRulesScore(rules){
+    var tableBody = $(".rules-problem-table-body")[0];
+
+    tableBody.innerHTML = "";
+    $.each(rules || [], function(index, rule) {
+        var trRow = document.createElement("tr");
+
+        var tdName = document.createElement("td");
+        var tdStrength = document.createElement("td");
+        var tdScore = document.createElement("td");
+
+        tdName.innerText = rule.name;
+        tdStrength.innerText = rule.strength;
+        tdScore.innerText = rule.score;
+
+        trRow.appendChild(tdName);
+        trRow.appendChild(tdStrength);
+        trRow.appendChild(tdScore);
+
+        tableBody.appendChild(trRow);
+    });
 }
 
 function addPropertiesInfo(properties){
@@ -111,20 +168,18 @@ function setSelectionListener(){
     $("#selection-input-tag-label").empty();
     selectElement.addEventListener('change', (event) => {
         var input = document.getElementById("selection-input-tag");
+        var div = document.getElementById("selection-input");
         const value = event.target.value;
         if(value === 'RouletteWheel') {
-            var div = document.getElementById("selection-input");
             div.style.visibility = 'hidden';
             $("#selection-input-tag-label").empty();
         }else if(value === 'Tournament'){
-            var div = document.getElementById("selection-input");
             div.style.visibility = 'visible';
             $("#selection-input-tag-label").empty().append("PTE:");
             input.min = "0";
             input.max = "1";
             input.step = "0.01";
         }else if(value === 'Truncation'){
-            var div = document.getElementById("selection-input");
             div.style.visibility = 'visible';
             $("#selection-input-tag-label").empty().append("Top percent:");
             input.min = "1";
@@ -140,14 +195,23 @@ function setCrossoverListener(){
     div.style.visibility = 'hidden';
     crossElement.addEventListener('change', (event) => {
         const value = event.target.value;
+        var div = document.getElementById("orientation");
         if(value === 'Aspect') {
-            var div = document.getElementById("orientation");
             div.style.visibility = 'visible';
         }else if(value === 'DayTime'){
-            var div = document.getElementById("orientation");
             div.style.visibility = 'hidden';
         }
     });
+}
+
+function setMutationListener(event){
+    var type = $("#" + event.target.id).val();
+    var mutIdPrefix = event.target.id.split("-")[0] + "-";
+    var isFlipping = type === "Flipping";
+
+    $("#" + mutIdPrefix + "component-label").css("visibility", (isFlipping ? "visible" : "hidden"));
+    $("#" + mutIdPrefix + "component").css("visibility", (isFlipping ? "visible" : "hidden"));
+    $("#" + mutIdPrefix + "tupplesLabel").empty().append((isFlipping ? "Max Tupples: (Positive only)" : "Total Tupples:"));
 }
 
 function callListeners(){

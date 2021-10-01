@@ -12,23 +12,19 @@ public final class ProblemManager {
         problemsList = new HashMap<>();
     }
 
-    public synchronized void addProblem(Problem evoSystem) {
+    public void addProblem(Problem evoSystem) {
         if(!problemsList.containsKey(evoSystem.getProblemId())){
             problemsList.put(evoSystem.getProblemId(), evoSystem);
         }
     }
 
-    public synchronized void removeProblem(Problem evoSystem) {
-        problemsList.remove(evoSystem.getProblemId());
-    }
-
-    public synchronized List<Problem> getProblems() {
+    public List<Problem> getProblems() {
         List<Problem> x = problemsList.values().stream().sorted(Comparator.comparing(Problem::getProblemId)).collect(Collectors.toList());
         System.out.println(x);
         return x;
     }
 
-    public synchronized Problem getProblemById(int id){
+    public Problem getProblemById(int id){
         return problemsList.get(id);
     }
 

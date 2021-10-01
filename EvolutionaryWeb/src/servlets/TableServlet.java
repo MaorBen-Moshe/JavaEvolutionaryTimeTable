@@ -49,6 +49,7 @@ public class TableServlet extends HttpServlet {
     private String createAnswer(User user, Problem problem, String aspect, String aspectValue) throws Exception {
         EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> system = problem.getSystemByUser(user);
         BestSolutionItem<TimeTable, TimeTableSystemDataSupplier> bestItem = system.getBestSolution();
+        if(bestItem == null) throw new Exception("No best solution available. Are you sure you run the problem at least one time?");
         TimeTable table = bestItem.getSolution();
         if(table == null) throw new Exception("No best solution available. Are you sure you run the problem at least one time?");
         Map<Integer, Map<Integer, List<SolutionObject.CellItem>>> info;
@@ -67,9 +68,10 @@ public class TableServlet extends HttpServlet {
         if(klass == 0) throw new IllegalArgumentException(aspectValue + " is not one of the classes!");
         Map<Integer, Map<Integer, List<SolutionObject.CellItem>>> dayHourTable = initializeTableView(info);
         table.getSortedItems().forEach(item -> {
-            SchoolClass curr = item.getSchoolClass();
-            if(curr.getId() == klass){
-                dayHourTable.get(item.getDay()).get(item.getHour()).add(new SolutionObject.CellItem(curr.getName(), curr.getId()));
+            Teacher currTeacher = item.getTeacher();
+            Subject currSubject = item.getSubject();
+            if(item.getSchoolClass().getId() == klass){
+                dayHourTable.get(item.getDay()).get(item.getHour()).add(new SolutionObject.CellItem(currTeacher.getName(), currTeacher.getId(), currSubject.getName(), currSubject.getId()));
             }
         });
 
@@ -81,9 +83,10 @@ public class TableServlet extends HttpServlet {
         if(teacher == 0) throw new IllegalArgumentException(aspectValue + " is not one of the teachers!");
         Map<Integer, Map<Integer, List<SolutionObject.CellItem>>> dayHourTable = initializeTableView(info);
         table.getSortedItems().forEach(item -> {
-            Teacher curr = item.getTeacher();
-            if(curr.getId() == teacher){
-                dayHourTable.get(item.getDay()).get(item.getHour()).add(new SolutionObject.CellItem(curr.getName(), curr.getId()));
+            SchoolClass currClass = item.getSchoolClass();
+            Subject currSubject = item.getSubject();
+            if(item.getTeacher().getId() == teacher){
+                dayHourTable.get(item.getDay()).get(item.getHour()).add(new SolutionObject.CellItem(currClass.getName(), currClass.getId(), currSubject.getName(), currSubject.getId()));
             }
         });
 

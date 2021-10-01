@@ -1,5 +1,5 @@
 html, body {
-    background-color: #56baed;
+    background-color: #842029;
 }
 
 .cut-text {
@@ -24,7 +24,7 @@ table tr {
 table tr:hover {
     background-color: #f4f4f4;
     font-weight: bold;
-    color: #17b2f3;
+    color: #842029;
 }
 table tr:active {
     background-color: #ebebeb;
@@ -37,8 +37,8 @@ table td {
 table th {
     color: white;
     padding: 10px;
-    border-bottom: 3px solid #20a6ea;
-    background-color: #17b2f3;
+    border-bottom: 3px solid #842029;
+    background-color: #842029;
     width: 19%;
 }
 
@@ -56,8 +56,8 @@ table {
     width: 100%;
     text-align: center;
     border-radius: 6px 6px 0 0;
-    box-shadow: 0 4px 16px -4px #56baed;
-    border-bottom: 3px solid #20a6ea;
+    box-shadow: 0 4px 16px -4px #842029;
+    border-bottom: 3px solid #842029;
 }
 
 #background {
@@ -114,7 +114,7 @@ header {
     border-bottom: 2px solid #dce8f1;
     padding-bottom: 5px;
     margin-bottom: 10px;
-    box-shadow: 0 10px 10px -14px #56baed;
+    box-shadow: 0 10px 10px -14px #842029;
 }
 
 .upload-button {
@@ -179,11 +179,11 @@ header {
 
 .users-information {
     color: white;
-    background-color: #17b2f3;
+    background-color: #842029;
     padding: 5px;
     border-radius: 6px 6px 0 0;
-    box-shadow: 0 4px 16px -4px #56baed;
-    border-bottom: 3px solid #20a6ea;
+    box-shadow: 0 4px 16px -4px #842029;
+    border-bottom: 3px solid #842029;
     text-align: center;
     min-width: 100px;
 }
@@ -224,8 +224,8 @@ header {
 
 /*General styles*/
 .button {
-    background-color: #56baed;
-    border: 2px solid #56baed;
+    background-color: #842029;
+    border: 2px solid #842029;
     color: white;
     padding: 8px 30px;
     margin: 5px;
@@ -243,12 +243,12 @@ header {
 .button:hover {
     background-color: white;
     color: black;
-    border: 2px solid #5AF;
+    border: 2px solid #842029;
     transition-duration: 0.15s;
 }
 
 .button:active {
-    background-color: #4ad;
+    background-color: #842029;
     color: white;
 }
 
@@ -263,7 +263,7 @@ header {
 .simple-blue-button {
     float: right;
     font-size: 18px;
-    color: #74b3ea;
+    color: #842029;
     display:inline-block;
     text-decoration: none;
     font-weight: 400;
@@ -276,7 +276,7 @@ header {
     bottom: -10px;
     width: 0;
     height: 2px;
-    background-color: #56baed;
+    background-color: #842029;
     content: "";
     transition: width 0.2s;
 }
@@ -287,4 +287,56 @@ header {
 
 .underline-hover:hover:after {
     width: 100%;
+}
+
+h4 {
+    color: #842029;
+    margin: 5px;
+}
+
+h6{
+    color: #842029;
+    margin: 5px;
+}
+
+label{
+    color: #842029;
+    margin: 5px;
+}
+
+input[type="checkbox"]:checked{
+    color: #842029;
+}
+
+option{
+    color: #842029;
+}
+
+select{
+    margin: 5px;
+}
+
+input[type="number"]{
+    color: #842029;
+    margin: 5px;
+}
+
+.mutation-title{
+    text-decoration: underline;
+}
+
+.rules-problem-table {
+    margin-bottom: 5px;
+}
+
+.generic-problem-table{
+    margin-bottom: 5px;
+}
+
+.problem-table{
+    margin-bottom: 5px;
+}
+
+#display-problem-form{
+    margin-bottom: 5px;
 }

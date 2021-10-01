@@ -29,3 +29,66 @@ body {
 
 }
 
+.button {
+  background-color: #842029;
+  border: 2px solid #842029;
+  color: white;
+  padding: 8px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  text-transform: uppercase;
+  font-size: 13px;
+  box-shadow: 0 2px 6px 0 rgba(95,186,233,0.6);
+  border-radius: 5px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: white;
+  color: black;
+  border: 2px solid #842029;
+  transition-duration: 0.15s;
+}
+
+.button:active {
+  background-color: #842029;
+  color: white;
+}
+
+.button:disabled {
+  background-color: #d1dfe7;
+  border: 2px solid #d1dfe7;
+  color: white;
+  box-shadow: 0 2px 6px 0 rgba(227, 239, 246, 0.6);
+  cursor: default;
+}
+
+.simple-blue-button {
+  font-size: 18px;
+  color: #842029;
+  display:inline-block;
+  text-decoration: none;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.underline-hover:after {
+  display: block;
+  left: 0;
+  bottom: -10px;
+  width: 0;
+  height: 2px;
+  background-color: #842029;
+  content: "";
+  transition: width 0.2s;
+}
+
+.underline-hover:hover {
+  color: #0d0d0d;
+}
+
+.underline-hover:hover:after {
+  width: 100%;
+}

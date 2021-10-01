@@ -1,4 +1,3 @@
-
 const GENERIC_INFO_URL = buildUrlWithContextPath("genericInfo");
 const RULES_URL = buildUrlWithContextPath("rules");
 const TEACHERS_URL = buildUrlWithContextPath("teachers");
@@ -223,10 +222,12 @@ function addMutationCell(){
     div.id = "mut" + x;
     mut_list.appendChild(div);
     var titleLabel = document.createElement("label");
-    titleLabel.innerHTML = "mutation:";
+    titleLabel.innerHTML = "Mutation " + x + ":";
+    titleLabel.class = "mutation-title"
     div.appendChild(titleLabel);
     var select = document.createElement("select");
     select.id = idPrefix + "type";
+    select.className = "form-select form-select-sm";
     select.addEventListener('change', setMutationListener);
     var flipping = document.createElement("option");
     flipping.value = "Flipping";
@@ -238,7 +239,7 @@ function addMutationCell(){
     select.appendChild(sizer);
     div.appendChild(select);
     var probLabel = document.createElement("label");
-    probLabel.innerHTML = "probability:";
+    probLabel.innerHTML = "Probability:";
     div.appendChild(probLabel);
     var probInput = document.createElement("input");
     probInput.id = idPrefix + "probability";
@@ -267,6 +268,7 @@ function addMutationCell(){
 
     var componentSelect = document.createElement("select");
     componentSelect.id = idPrefix + "component";
+    componentSelect.className = "form-select form-select-sm";
     var S = document.createElement("option");
     S.value = "S";
     S.text = "S";
@@ -289,8 +291,8 @@ function addMutationCell(){
     componentSelect.appendChild(D);
     componentSelect.name = "component";
     div.appendChild(componentSelect);
-}
 
+}
 
 function getProblemData(){
     ajaxGenericProblemInfo();

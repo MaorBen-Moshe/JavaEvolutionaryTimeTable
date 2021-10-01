@@ -21,6 +21,7 @@ public class ProblemUtils {
         try{
             switch (method){
                 case Start: problem.runProblem(user, (jumps) -> {
+                    problem.setCurrentBestFitnessOfProblem(jumps.getFitness());
                     // send consumer to start Algorithm to updating the user info in problemConfig ( generation and fitness)
                 });
                 break;

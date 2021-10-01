@@ -117,19 +117,22 @@
             <div id="problem-display">
                 <h4>Display Problem Section:</h4>
                 <form id="display-problem-form" method="get">
-                    <label for="orientation-display">Orientation:</label>
-                    <select name="orientation-display" id="orientation-display">
-                        <option value="Class">Class</option>
-                        <option value="Teacher">Teacher</option>
-                    </select>
-                    <label for="object-display">Option:</label>
-                    <select name="object-display" id="object-display">
+                    <div class="display-problem-form-div">
+                        <label for="orientation-display">Orientation:</label>
+                        <select name="orientation-display" class="form-select form-select-sm" id="orientation-display">
+                            <option value="Class">Class</option>
+                            <option value="Teacher">Teacher</option>
+                        </select>
+                        <label for="object-display">Option:</label>
+                        <select name="object-display" class="form-select form-select-sm" id="object-display">
 
-                    </select>
-                    <input type="submit" value="display problem">
+                        </select>
+                    </div>
+
+                    <input type="submit" class="button" value="Display Problem">
                 </form>
 
-                <table class="rules-problem-table">
+                <table class="rules-problem-table" id="rules-problem-table">
                     <thead>
                         <th>Name</th>
                         <th>Strength</th>
@@ -140,7 +143,7 @@
                     </tbody>
                 </table>
 
-                <table class="generic-problem-table">
+                <table class="generic-problem-table" id="generic-problem-table">
                     <thead>
                     <th>Property Name</th>
                     <th>Property Value</th>
@@ -150,7 +153,7 @@
                     </tbody>
                 </table>
 
-                <table class="problem-table">
+                <table class="problem-table" id="problem-table">
                     <thead class="problem-table-head">
 
                     </thead>
@@ -171,7 +174,7 @@
                 </diV>
                 <div>
                     <label for="selection">Selection:</label>
-                    <select name="selection" id="selection">
+                    <select name="selection" class="form-select form-select-sm" id="selection">
                         <option value="RouletteWheel">Roulette Wheel</option>
                         <option value="Tournament">Tournament</option>
                         <option value="Truncation">Truncation</option>
@@ -183,15 +186,15 @@
                 </div>
                 <div>
                     <label for="crossover">Crossover:</label>
-                    <select name="crossover" id="crossover">
+                    <select name="crossover" class="form-select form-select-sm" id="crossover">
                         <option value="DayTime">Day Time Oriented</option>
                         <option value="Aspect">Aspect Oriented</option>
                     </select>
-                    <label for="cutting">cutting points:</label>
+                    <label for="cutting">Cutting points:</label>
                     <input id="cutting" type="number" min="0"/>
                     <div id="orientation">
                         <label for="aspect">Crossover aspect:</label>
-                        <select name="aspect" id="aspect">
+                        <select name="aspect" class="form-select form-select-sm" id="aspect">
                             <option value="Teacher">Teacher</option>
                             <option value="Class">Class</option>
                         </select>
@@ -199,16 +202,17 @@
                 </div>
                 <div id="mut-section">
                     <label>Mutations:</label>
-                    <input value="add mutation" id="mut-add" type="button">
+                    <input value="add mutation" id="mut-add" type="button" class="button">
 
                 </div>
                 <div>
-                    <label for="jumps">Jump in generations (Optional, default is 1):</label>
-                    <input id="jumps" type="number" min="1" name="jumps"/>
-                </div>
-                <div>
                     <h6>Terminate Rules:</h6>
-                    <label for="gens">generations:</label>
+                    <div>
+                        <label for="jumps">Jump in generations (Optional, default is 1):</label>
+                        <input id="jumps" type="number" min="1" name="jumps"/>
+                    </div>
+
+                    <label for="gens">Generations:</label>
                     <div id="gens">
                         <input type="checkbox" id="gens-check" name="gensPicked">
                         <input type="number" id="gens-input" min="100" name="gens"/>
@@ -224,7 +228,7 @@
                         <input type="number" id="time-input" min="1" name="time"/>
                     </div>
                 </div>
-                <input type="submit" value="Submit" />
+                <input type="submit" class="button" value="Submit" />
             </form>
         </section>
         <aside id="side-menu">

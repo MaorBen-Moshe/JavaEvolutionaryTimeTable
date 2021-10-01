@@ -41,7 +41,7 @@ function ajaxOnDisplayProblem(){
                alert(err.responseText);
             },
             success: function(data){
-               displayTable(data);
+               displayTable(data, orientation);
             }
         });
 
@@ -49,19 +49,69 @@ function ajaxOnDisplayProblem(){
     });
 }
 
-function displayTable(data){
+function displayTable(data, orientation){
     setRulesScore(data.rules);
     setGenericSolutionInfo(data);
-    console.log(data.tableInfo);
-    setTable(data.tableInfo);
+    setTable(data.tableInfo, orientation);
 }
 
-function setTable(tableInfo){
+function setTable(tableInfo, orientation){
+    document.getElementsByClassName("problem-table")[0].style.display = "block";
     var tableHead = $(".problem-table-head")[0];
     var tableBody = $(".problem-table-body")[0];
+
+    tableHead.innerHTML = "";
+    tableBody.innerHTML = "";
+
+    var thDaysHours = document.createElement("th");
+    thDaysHours.innerText = "Days/Hours";
+    tableHead.appendChild(thDaysHours);
+    var first = true;
+    for(var day in tableInfo){
+        var dayElements = tableInfo[day];
+        if(first){
+            for(var hour in dayElements){
+                var currTh = document.createElement("th");
+                currTh.innerText = hour;
+                tableHead.appendChild(currTh);
+            }
+
+            first = false;
+        }
+
+        var currDayRow = document.createElement("tr");
+        var currDay = document.createElement("td");
+        currDay.innerText = day;
+        currDayRow.appendChild(currDay);
+
+        for(var hour in dayElements){
+            var currCellList = dayElements[hour];
+            var currTd = document.createElement("td");
+            currTd.appendChild(createCell(currCellList, orientation));
+            currDayRow.appendChild(currTd);
+        }
+
+        tableBody.appendChild(currDayRow);
+    }
+}
+
+function createCell(list, orientation){
+    var sectionInfo = $(document.createElement("section")).addClass("grid")[0];
+    var prefix = orientation === "Class" ? "Teacher" : "Class";
+    $.each(list || [], function(index, curr){
+        var itemTd = $(document.createElement("label")).text("Item number " + (index + 1))[0];
+        var objectTd = $(document.createElement("label")).text(prefix + ": " + curr.objectId + ", " + curr.objectName)[0];
+        var subjectTd = $(document.createElement("label")).text("Subject: " + curr.subjectId + ", " + curr.subjectName)[0];
+        sectionInfo.appendChild(itemTd);
+        sectionInfo.appendChild(objectTd);
+        sectionInfo.appendChild(subjectTd);
+    });
+
+    return sectionInfo;
 }
 
 function setGenericSolutionInfo(data){
+    document.getElementsByClassName("generic-problem-table")[0].style.display = "block";
     var tableBody = $(".generic-problem-table-body")[0];
 
     tableBody.innerHTML = "";
@@ -86,6 +136,7 @@ function setGenericHelper(name, value){
 }
 
 function setRulesScore(rules){
+    document.getElementsByClassName("rules-problem-table")[0].style.display = "block";
     var tableBody = $(".rules-problem-table-body")[0];
 
     tableBody.innerHTML = "";
@@ -214,10 +265,17 @@ function setMutationListener(event){
     $("#" + mutIdPrefix + "tupplesLabel").empty().append((isFlipping ? "Max Tupples: (Positive only)" : "Total Tupples:"));
 }
 
+function setDisplayTablesHidden(){
+    document.getElementsByClassName("rules-problem-table")[0].style.display = "none";
+    document.getElementsByClassName("generic-problem-table")[0].style.display = "none";
+    document.getElementsByClassName("problem-table")[0].style.display = "none";
+}
+
 function callListeners(){
     document.getElementById('mut-add').onclick = addMutationCell;
     setCrossoverListener();
     setSelectionListener();
     ajaxOnSendInfo();
     ajaxOnDisplayProblem();
+    setDisplayTablesHidden();
 }

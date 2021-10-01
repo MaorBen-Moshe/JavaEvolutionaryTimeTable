@@ -1,18 +1,21 @@
 package utils.models;
 
 import models.Rule;
-import models.TimeTableItem;
 
 import java.util.*;
 
 public class SolutionObject {
     public static class CellItem{
-        private final String name;
-        private final int id;
+        private final String objectName;
+        private final int objectId;
+        private final String subjectName;
+        private final int subjectId;
 
-        public CellItem(String name, int id){
-            this.name = name;
-            this.id = id;
+        public CellItem(String objectName, int objectId, String subjectName, int subjectId){
+            this.objectName = objectName;
+            this.objectId = objectId;
+            this.subjectId = subjectId;
+            this.subjectName = subjectName;
         }
     }
 

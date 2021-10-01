@@ -1,18 +1,16 @@
 package servlets;
 
 import com.google.gson.Gson;
-import utils.models.Problem;
 import utils.ProblemManager;
 import utils.ServletUtils;
+import utils.models.Problem;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 @WebServlet(name="ProblemListServlet", urlPatterns = {"/problemslist"})
@@ -20,14 +18,11 @@ public class ProblemListServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
-        try (ServletOutputStream out = response.getOutputStream()) {
-            Gson gson = new Gson();
-            ProblemManager problemManager = ServletUtils.getProblemManager(getServletContext());
-            List<Problem> problems = problemManager.getProblems();
-            String json = gson.toJson(problems);
-            out.print(json);
-            out.flush();
-        }
+        Gson gson = new Gson();
+        ProblemManager problemManager = ServletUtils.getProblemManager(getServletContext());
+        List<Problem> problems = problemManager.getProblems();
+        String json = gson.toJson(problems);
+        response.getOutputStream().print(json);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

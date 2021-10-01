@@ -13,7 +13,7 @@ public class Problem {
     private static int idCounter;
     private final int problemId;
     private final String creatorName;
-    private final Map<User, ProblemConfigurations> usersSolveProblem;
+    private transient final Map<User, ProblemConfigurations> usersSolveProblem;
     private int usersSolveProblemSize;
     private int days;
     private int hours;
@@ -43,8 +43,12 @@ public class Problem {
     }
 
     public double getCurrentBestFitnessOfProblem() {
-        currentBestFitnessOfProblem = usersSolveProblem.values().stream().map(ProblemConfigurations::getCurrentBestFitness).max(Comparator.naturalOrder()).orElse((double) 0);
         return currentBestFitnessOfProblem;
+    }
+
+    public void setCurrentBestFitnessOfProblem(double fitness){
+        double current = usersSolveProblem.values().stream().map(ProblemConfigurations::getCurrentBestFitness).max(Comparator.naturalOrder()).orElse((double) 0);
+        currentBestFitnessOfProblem = Math.max(current, fitness);
     }
 
     public int getUsersSolveProblemSize(){

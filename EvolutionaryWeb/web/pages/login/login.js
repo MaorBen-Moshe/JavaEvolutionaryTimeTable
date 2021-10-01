@@ -1,4 +1,4 @@
-$(function() { // onload...do
+function ajaxLogin(){
     //add a function to the submit event
     $("#loginForm").submit(function() {
         $.ajax({
@@ -17,4 +17,8 @@ $(function() { // onload...do
         // by default - we'll always return false so it doesn't redirect the user.
         return false;
     });
+}
+
+$(function() { // onload...do
+    ajaxLogin();
 });

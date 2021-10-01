@@ -62,7 +62,7 @@ function ajaxProblemList() {
         success: refreshProblemList,
         error: function(object) {
             console.log("Couldn't pull the problems from the server. Sent: ");
-            console.log(object);
+            console.log(object.responseText);
         }
     });
 }

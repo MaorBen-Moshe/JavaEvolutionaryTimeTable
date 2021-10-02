@@ -32,12 +32,13 @@ public class TableServlet extends HttpServlet {
             response.setContentType("application/json");
             String orientation = request.getParameter("orientation");
             String id = request.getParameter("id");
+            int generationNumber = Integer.parseInt(request.getParameter("generation"));
             UserManager userManager = ServletUtils.getUserManager(getServletContext());
             String usernameFromSession = SessionUtils.getUsername(request);
             User user = userManager.getUserByName(usernameFromSession);
             ProblemManager problemManager = ServletUtils.getProblemManager(getServletContext());
             Problem problem = problemManager.getProblemById(user.getLastSeenProblem());
-            response.getOutputStream().print(createAnswer(user, problem, orientation, id));
+            response.getOutputStream().print(createAnswer(user, problem, orientation, id, generationNumber));
             response.setStatus(200);
 
         }catch (Exception e){
@@ -46,11 +47,13 @@ public class TableServlet extends HttpServlet {
         }
     }
 
-    private String createAnswer(User user, Problem problem, String aspect, String aspectValue) throws Exception {
+    private String createAnswer(User user, Problem problem, String aspect, String aspectValue, int generation) throws Exception {
         EvolutionarySystem<TimeTable, TimeTableSystemDataSupplier> system = problem.getSystemByUser(user);
-        BestSolutionItem<TimeTable, TimeTableSystemDataSupplier> bestItem = system.getBestSolution();
-        if(bestItem == null) throw new Exception("No best solution available. Are you sure you run the problem at least one time?");
-        TimeTable table = bestItem.getSolution();
+        List<FitnessHistoryItem<TimeTable>> history = system.getGenerationFitnessHistory();
+        if(history == null || history.size() == 0)throw new Exception("No best solution available. Are you sure you run the problem at least one time?");
+        FitnessHistoryItem<TimeTable> currentBest = history.get(generation);
+        if(currentBest == null) throw new Exception("No solution for generation " + generation + " available. Are you sure you run the problem at least one time?");
+        TimeTable table = currentBest.getSolution();
         if(table == null) throw new Exception("No best solution available. Are you sure you run the problem at least one time?");
         Map<Integer, Map<Integer, List<SolutionObject.CellItem>>> info;
         switch (aspect){
@@ -59,7 +62,7 @@ public class TableServlet extends HttpServlet {
             default: throw new IllegalArgumentException(aspect + " is wrong you should only give 'Class' or 'Teacher' ");
         }
 
-        SolutionObject solution = new SolutionObject(table.getSoftRulesAvg(), table.getHardRulesAvg(), bestItem.getGenerationCreated(), bestItem.getFitness(), table.getRulesScore(), info);
+        SolutionObject solution = new SolutionObject(table.getSoftRulesAvg(), table.getHardRulesAvg(), currentBest.getGenerationNumber(), currentBest.getCurrentGenerationFitness(), table.getRulesScore(), info);
         return new Gson().toJson(solution);
     }
 

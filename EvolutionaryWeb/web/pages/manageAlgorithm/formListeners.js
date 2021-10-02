@@ -1,4 +1,5 @@
 const SET_ENGINE_INFO_URL = buildUrlWithContextPath("setEngineInfo");
+const GET_CURRENT_GENERATION_URL = buildUrlWithContextPath("getGeneration");
 const TABLE_DISPLAY_URL = buildUrlWithContextPath("tableDisplay");
 const TIMEOUT = 2000;
 
@@ -24,6 +25,22 @@ function ajaxOnSendInfo(){
     });
 }
 
+var generation_picked = 0;
+function ajaxGetDisplayProblem() {
+    $.ajax({
+        url: GET_CURRENT_GENERATION_URL,
+        timeout: TIMEOUT,
+        error: function (err){
+            alert(err.responseText);
+        },
+        success: function (gen){
+            generation_picked = parseInt(gen);
+            document.getElementById("display-problem-form").style.display = "block";
+            alert("You can now see the problem by clicking display");
+        }
+    });
+}
+
 function ajaxOnDisplayProblem(){
     $("#display-problem-form").submit(function () {
        const orientation =  $("#orientation-display").val();
@@ -32,7 +49,8 @@ function ajaxOnDisplayProblem(){
         $.ajax({
            data: {
                orientation: orientation,
-               id: object_chosen
+               id: object_chosen,
+               generation: generation_picked
            },
             url: TABLE_DISPLAY_URL,
             method: this.method,
@@ -70,9 +88,9 @@ function setTable(tableInfo, orientation){
     for(var day in tableInfo){
         var dayElements = tableInfo[day];
         if(first){
-            for(var hour in dayElements){
+            for(var currHour in dayElements){
                 var currTh = document.createElement("th");
-                currTh.innerText = hour;
+                currTh.innerText = currHour;
                 tableHead.appendChild(currTh);
             }
 
@@ -204,7 +222,7 @@ function createObj(){
     ret.jumps = $("#jumps").val();
     ret.gensChecked = $("#gens-check").is(":checked");
     ret.gensInput = $("#gens-input").val();
-    ret.fitnessChecked = $("#fit-check").is(":checked");;
+    ret.fitnessChecked = $("#fit-check").is(":checked");
     ret.fitnessInput = $("#fit-input").val();
     ret.timeChecked = $("#time-check").is(":checked");
     ret.timeInput = $("#time-input").val();
@@ -273,6 +291,7 @@ function setDisplayTablesHidden(){
 
 function callListeners(){
     document.getElementById('mut-add').onclick = addMutationCell;
+    document.getElementById("display-problem-form").style.display = "none";
     setCrossoverListener();
     setSelectionListener();
     ajaxOnSendInfo();

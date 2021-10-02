@@ -152,10 +152,12 @@ public abstract class EvolutionarySystemImpel<T, S extends DataSupplier> impleme
                 }
                 incCurrentNumberOfGenerations();
                 createAndEvaluateGeneration();
-                if(getCurrentNumberOfGenerations() % jumpInGenerations == 0){
-                    addFitnessItemToHistory();
-                    listener.accept(new JumpInGenerationsResult(getBestSolution().getFitness(), getCurrentNumberOfGenerations(), Duration.between(startTime, Instant.now()).toMinutes()));
-                }
+                addFitnessItemToHistory();
+                listener.accept(new JumpInGenerationsResult(getBestSolution().getFitness(), getCurrentNumberOfGenerations(), Duration.between(startTime, Instant.now()).toMinutes()));
+//                if(getCurrentNumberOfGenerations() % jumpInGenerations == 0){
+//                    addFitnessItemToHistory();
+//                    listener.accept(new JumpInGenerationsResult(getBestSolution().getFitness(), getCurrentNumberOfGenerations(), Duration.between(startTime, Instant.now()).toMinutes()));
+//                }
             }
         } catch (Exception e){
             clearAlgoData();
